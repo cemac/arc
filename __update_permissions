@@ -22,9 +22,17 @@ chmod 2775 ${CEMAC_DATA}
 
 # Top level files which should be group writeable:
 chgrp ear-cemac \
-  ${CEMAC_DATA}/{cemac.sh,cemac.csh,README.md,__update_permissions}
+  ${CEMAC_DATA}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
 chmod g+rwX \
-  ${CEMAC_DATA}/{cemac.sh,cemac.csh,README.md,__update_permissions}
+  ${CEMAC_DATA}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
+
+# git directory:
+GIT_DIR="${CEMAC_DATA}/.git"
+
+# make git directory group writeable:
+chgrp -R ear-cemac ${GIT_DIR}
+find ${GIT_DIR} -type d -exec chmod g+s '{}' \;
+chmod -R g+rwX ${GIT_DIR}
 
 # software directory:
 SOFTWARE_DIR="${CEMAC_DATA}/software"

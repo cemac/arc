@@ -1,0 +1,41 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    BISICLES Ice Sheet Model
+
+    BISICLES is a scalable AMR ice sheet modeling code built on the Chombo
+    framework and is a part of the Community Ice Sheet Model (CISM). With a
+    dynamical core based on the vertically-integrated model of Schoof and
+    Hindmarsh (2011), BISICLES can resolve dynamically important regions at
+    the sub-kilometer scale while using much coarser resolution where
+    appropriate.
+
+    PETSc enabled executables are suffied with '.PETSC', e.g.:
+
+      driver2d       : not built with PETSc support
+      driver2d.PETSC : built with PETSc support
+
+    Information:
+
+      Documentation: http://davis.lbl.gov/Manuals/BISICLES-DOCS/readme.html
+  "
+}
+
+module-whatis "BISICLES Ice Sheet Model "
+
+flavours conflict bisicles
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+flavours root     $::env(CEMAC_DATA)/software/apps/bisicles/1.1
+flavours revision 1
+flavours commit
+
+setenv BISICLES_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

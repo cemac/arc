@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#- update permissions for cemac arc4 directory
+#  make things group writeable where appropriate
+#  make things read only where appropriate
+
+# check CEMAC_DATA variable:
+if [ -z "${CEMAC_DATA}" ] ; then
+  echo "please check CEMAC_DATA variable"
+  exit
+fi
+
+# check CEMAC_DATA directory:
+if [ ! -d "${CEMAC_DATA}" ] ; then
+  echo "${CEMAC_DATA} directory does not appear to exist"
+  exit
+fi
+
+# CEMAC data should be owned by group ear-cemac, and group writeable:
+chgrp ear-cemac ${CEMAC_DATA}
+chmod 2775 ${CEMAC_DATA}
+
+# Top level files which should be group writeable:
+chgrp ear-cemac \
+  ${CEMAC_DATA}/{cemac.sh,cemac.csh,README.md,__update_permissions}
+chmod g+rwX \
+  ${CEMAC_DATA}/{cemac.sh,cemac.csh,README.md,__update_permissions}
+
+# software directory:
+SOFTWARE_DIR="${CEMAC_DATA}/software"
+
+# make build directories group writeable:
+chgrp -R ear-cemac ${SOFTWARE_DIR}
+find ${SOFTWARE_DIR} -type d -exec chmod g+s '{}' \;
+chmod -R g+rwX ${SOFTWARE_DIR}/build
+
+# make application parent directories group writeable:
+chmod g+rwX ${SOFTWARE_DIR}/apps/*/*
+chmod g+rwX ${SOFTWARE_DIR}/compilers/*/*
+chmod g+rwX ${SOFTWARE_DIR}/libraries/*/*
+# make installed apps read only:
+chmod -R a-w ${SOFTWARE_DIR}/apps/*/*/*
+chmod -R a-w ${SOFTWARE_DIR}/compilers/*/*/*
+chmod -R a-w ${SOFTWARE_DIR}/libraries/*/*/*
+
+# modulefiles ... :
+chmod g+rwX ${SOFTWARE_DIR}/modulefiles
+
+# cron directory:
+CRON_DIR="${CEMAC_DATA}/cron"
+
+# make cron directory group writeable:
+chgrp -R ear-cemac ${CRON_DIR}
+find ${CRON_DIR} -type d -exec chmod g+s '{}' \;
+chmod -R g+rwX ${CRON_DIR}

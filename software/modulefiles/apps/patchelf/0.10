@@ -1,0 +1,31 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Modify ELF executables and libraries
+
+    PatchELF is a simple utility for modifying existing ELF executables
+    and libraries.
+
+    Information:
+
+      Homepage : https://github.com/NixOS/patchelf
+  "
+}
+
+module-whatis "Modify ELF executables and libraries "
+
+flavours conflict patchelf
+
+flavours root     $::env(CEMAC_DATA)/software/apps/patchelf/0.10
+flavours revision 1
+flavours commit
+
+setenv PATCHELF_HOME [flavours path]
+
+flavours prepend-path PATH    bin
+flavours prepend-path MANPATH share/man
+
+flavours cleanup

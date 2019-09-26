@@ -1,0 +1,2 @@
+# Update time stamps and permissions in CEMAC directory:
+27 3 * * * /nobackup/cemac/cron/update_timestamps_permissions > /nobackup/cemac/cron/update_timestamps_permissions.out 2> /nobackup/cemac/cron/update_timestamps_permissions.err

@@ -213,6 +213,8 @@ function build_flexpart() {
   \mv flexpart_v10* flexpart_10.3
   cd flexpart_10.3/src/
   # build and install:
+  \cp readspecies.f90 readspecies.f90.original
+  sed -i 's|\(integer :: readerror\)|\1 = -1|g' readspecies.f90
   \cp par_mod.f90 par_mod.f90.original
   sed -i 's|idiffnorm=10800|idiffnorm=21600|g' par_mod.f90
   sed -i 's|maxpart=100000|maxpart=10000000|g' par_mod.f90

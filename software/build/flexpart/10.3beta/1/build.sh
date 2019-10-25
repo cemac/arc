@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- flexpart 10.3beta
-#  updated : 2019-10-11
+#  updated : 2019-10-25
 
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
@@ -281,6 +281,17 @@ function build_flex_extract() {
   make
   \cp -r ${BUILD_DIR}/flexpart_10.3/preprocess/flex_extract \
     ${INSTALL_DIR}/
+  # intel libs fixings ... :
+  if [ "${MY_CMP}" = "intel" ] ; then
+    # patchelf intel libs:
+    CONVERT2_RPATH=$(patchelf \
+                     --print-rpath \
+                     ${INSTALL_DIR}/flex_extract/src/CONVERT2)
+    patchelf \
+      --set-rpath \
+      "${INTEL_HOME}/lib/intel64:${INTEL_HOME}/mkl/lib/intel64:${CONVERT2_RPATH}" \
+      ${INSTALL_DIR}/flex_extract/src/CONVERT2
+  fi
   # wrap submit.py:
   cat > ${INSTALL_DIR}/bin/submit.py <<EOF
 #!/bin/bash

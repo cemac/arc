@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- bisicles 20190828
-#  updated : 2019-08-29
+#  updated : 2019-10-25
 
 # bisicles build instructions:
 #
@@ -42,9 +42,9 @@ BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which bisicles should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
+COMPILER_VERS='gnu:native gnu:6.3.0 intel:17.0.1'
 # mpi libraries for which bisicles should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='openmpi:2.0.2 mvapich2:2.2 intelmpi:2017.1.132'
 
 # get_file function:
 function get_file() {
@@ -117,19 +117,19 @@ function build_bisicles() {
       ${BISICLES_HOME}/Chombo/lib/mk/Make.defs.local
   fi
   # setup machine make options:
-  if [ ! -e ${BISICLES_HOME}/BISICLES/code/mk/arc4 ] ; then
+  if [ ! -e ${BISICLES_HOME}/BISICLES/code/mk/arc3 ] ; then
     echo "configuring machine specific make options"
-    cat > ${BISICLES_HOME}/BISICLES/code/mk/arc4 <<EOF
+    cat > ${BISICLES_HOME}/BISICLES/code/mk/arc3 <<EOF
 PYTHON_VERSION=2.7
 PYTHON_INC=-I${PYTHON_HOME}/include/python2.7
 PYTHON_LIBS=-L${PYTHON_HOME}/lib -lpython2.7
 NETCDF_INC=-I$(nc-config --includedir)
 NETCDF_LIBS=$(nc-config --flibs)
 EOF
-    ln -s arc4 \
-      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login1.arc4.leeds.ac.uk
-    ln -s arc4 \
-      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login2.arc4.leeds.ac.uk
+    ln -s arc3 \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login1.arc3.leeds.ac.uk
+    ln -s arc3 \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login2.arc3.leeds.ac.uk
   fi
   # testPetsc doesn't build:
   sed -i 's|testPetsc||g' ${BISICLES_HOME}/BISICLES/code/test/GNUmakefile
@@ -223,7 +223,7 @@ do
     # set up modules:
     module purge
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 \
-      python/2.7.16 patchelf
+      python/2.7.13 patchelf
     # build variables:
     CPATH="${PYTHON_HOME}/include/python2.7:${CPATH}"
     CFLAGS='-O2 -fPIC'

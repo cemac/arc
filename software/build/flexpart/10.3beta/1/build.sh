@@ -15,9 +15,9 @@ BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which bisicles should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
+COMPILER_VERS='gnu:native gnu:6.3.0 intel:17.0.1'
 # mpi libraries for which bisicles should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='openmpi:2.0.2 mvapich2:2.2 intelmpi:2017.1.132'
 
 # get_file function:
 function get_file() {
@@ -372,13 +372,13 @@ do
     if [ ! -e ${PYTHON_VIRTUALENV}/lib/python2.7/site-packages/gribapi ] ; then
       echo "building python bits"
       module purge
-      module load gnu/native cmake/3.15.1 netcdf hdf5
+      module load gnu/native cmake/3.10.0 netcdf hdf5
       build_python ${SRC_DIR} ${BUILD_DIR} ${PYTHON_DIR} ${PYTHON_LIB_DIR} \
                    ${PYTHON_VIRTUALENV}
     fi
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} cmake/3.15.1 \
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} cmake/3.10.0 \
       netcdf hdf5 fftw patchelf
     # build variables:
     PATH="${DEPS_DIR}/bin:${PATH}"

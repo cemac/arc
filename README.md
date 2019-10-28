@@ -1,8 +1,8 @@
-## CEMAC ARC4 Directory
+## CEMAC ARC3 Directory
 
-This directory contains CEMAC content for the ARC4 system.
+This directory contains CEMAC content for the ARC3 system.
 
-The content is located on ARC4 within the directory `/nobackup/cemac`.
+The content is located on ARC3 within the directory `/nobackup/cemac`.
 
 The Git repository contains software build scripts, environment module files,
 files for setting required shell variables, crontabs and related scripts, and a
@@ -13,7 +13,7 @@ script for setting the required permissions on the various directories.
 The `cemac.sh` and `cemac.csh` files can be used to set up the environment for
 a `bash` or `csh` shell.
 
-ARC4 defaults to `bash` shell, and the following could be added to your
+ARC3 defaults to `bash` shell, and the following could be added to your
 `${HOME}/.bashrc` file:
 
 ```
@@ -33,7 +33,7 @@ The following variables will be set:
 
 The following variables will be unset:
 
-  * `MODULE_FLAVOUR_OWNER` : defaults to `root` on ARC4, which causes issues
+  * `MODULE_FLAVOUR_OWNER` : defaults to `root` on ARC3, which causes issues
     when using custom environment modules.
 
 #### Environment Modules

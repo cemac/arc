@@ -6,7 +6,7 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-APPS_DIR="${CEMAC_DATA}/software/apps"
+APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='patchelf'
 APP_VERSION='0.10'

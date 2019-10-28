@@ -30,7 +30,7 @@ flavours conflict bisicles
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     $::env(CEMAC_DATA)/software/apps/bisicles/20190828
+flavours root     $::env(CEMAC_DIR)/software/apps/bisicles/20190828
 flavours revision 1
 flavours commit
 

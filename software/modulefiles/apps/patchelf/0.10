@@ -19,7 +19,7 @@ module-whatis "Modify ELF executables and libraries "
 
 flavours conflict patchelf
 
-flavours root     $::env(CEMAC_DATA)/software/apps/patchelf/0.10
+flavours root     $::env(CEMAC_DIR)/software/apps/patchelf/0.10
 flavours revision 1
 flavours commit
 

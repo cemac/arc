@@ -4,30 +4,30 @@
 #  make things group writeable where appropriate
 #  make things read only where appropriate
 
-# check CEMAC_DATA variable:
-if [ -z "${CEMAC_DATA}" ] ; then
-  echo "please check CEMAC_DATA variable"
+# check CEMAC_DIR variable:
+if [ -z "${CEMAC_DIR}" ] ; then
+  echo "please check CEMAC_DIR variable"
   exit
 fi
 
-# check CEMAC_DATA directory:
-if [ ! -d "${CEMAC_DATA}" ] ; then
-  echo "${CEMAC_DATA} directory does not appear to exist"
+# check CEMAC_DIR directory:
+if [ ! -d "${CEMAC_DIR}" ] ; then
+  echo "${CEMAC_DIR} directory does not appear to exist"
   exit
 fi
 
 # CEMAC data should be owned by group ear-cemac, and group writeable:
-chgrp ear-cemac ${CEMAC_DATA}
-chmod 2775 ${CEMAC_DATA}
+chgrp ear-cemac ${CEMAC_DIR}
+chmod 2775 ${CEMAC_DIR}
 
 # Top level files which should be group writeable:
 chgrp ear-cemac \
-  ${CEMAC_DATA}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_DIR}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
 chmod g+rwX \
-  ${CEMAC_DATA}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_DIR}/{cemac.sh,cemac.csh,LICENSE,README.md,__update_permissions}
 
 # git directory:
-GIT_DIR="${CEMAC_DATA}/.git"
+GIT_DIR="${CEMAC_DIR}/.git"
 
 # make git directory group writeable:
 chgrp -R ear-cemac ${GIT_DIR}
@@ -35,7 +35,7 @@ find ${GIT_DIR} -type d -exec chmod g+s '{}' \;
 chmod -R g+rwX ${GIT_DIR}
 
 # software directory:
-SOFTWARE_DIR="${CEMAC_DATA}/software"
+SOFTWARE_DIR="${CEMAC_DIR}/software"
 
 # make build directories group writeable:
 chgrp -R ear-cemac ${SOFTWARE_DIR}
@@ -55,7 +55,7 @@ chmod -R a-w ${SOFTWARE_DIR}/libraries/*/*/*
 chmod g+rwX ${SOFTWARE_DIR}/modulefiles
 
 # cron directory:
-CRON_DIR="${CEMAC_DATA}/cron"
+CRON_DIR="${CEMAC_DIR}/cron"
 
 # make cron directory group writeable:
 chgrp -R ear-cemac ${CRON_DIR}

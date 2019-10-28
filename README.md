@@ -28,7 +28,7 @@ The environment files will do the following:
 
 The following variables will be set:
 
-  * `CEMAC_DATA` : will be set to the location of the CEMAC data directory,
+  * `CEMAC_DIR` : will be set to the location of the CEMAC data directory,
     `/nobackup/cemac`
 
 The following variables will be unset:

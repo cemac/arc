@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF and WRF Chem 4.1.2
+#description    : WRF and 4.1.2
 # instructions  :
 # Source code   :
 # Register      :
@@ -68,24 +68,8 @@ function build_wrf() {
   else
     echo -e "34\n1" | ./configure
   fi
-  # Opt 15 opt 1
-  if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
-    mkdir chem/KPP/kpp/kpp-2.1/bin
-  fi
   ./compile em_real >& log.compile_wrf-chem
-  .clean -a
-  export WRF_CHEM=0
-  if [ ${MY_CMP}=="intel:19.0.4" ]; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  # HPC option 15 (dual memory Intel compiler with dmpar (15),
-  # so INTEL (ifort/icc) (dmpar))
-  # Compile for basic nesting: option 1
-  ./compile em_real >& log.compile_wrf-meteo
   cp -p main/*.exe ${INSTALL_DIR}/bin/
-  cp -p chem/*.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:
@@ -115,8 +99,6 @@ do
     CC=mpicc
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
-    YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${INSTALL_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
@@ -124,11 +106,9 @@ do
     # environment variables – WRF-Chem
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
-    WRF_CHEM=1        # selects the WRF-Chem module
-    WRF_KPP=1         # turns on Kinetic Pre-Processing (KPP)
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    export FC CC NETCDF NETCDF_DIR YACC FLEX_LIB_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
-    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_KPP WRF_CHEM WRF_NMM_CORE WRF_EM_CORE
+    export FC CC NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
+    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"
     # build WRF:

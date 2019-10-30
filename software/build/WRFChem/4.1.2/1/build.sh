@@ -77,8 +77,9 @@ function build_wrf() {
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
   tar xzf ${SRC_DIR}/flex.tar.gz
   tar xzf ${SRC_DIR}/byacc.tar.gz
+  mkdir flex
   cd flex-2.5.3
-  ./configure --prefix=${BUILD_DIR}
+  ./configure --prefix=${BUILD_DIR}/flex
   make
   make install
   cd ..
@@ -101,15 +102,13 @@ function build_wrf() {
   else
     echo -e "34\n1" | ./configure
   fi
-  # HPC option 15 (dual memory Intel compiler with dmpar (15),
-  # so INTEL (ifort/icc) (dmpar))
-  # Compile for basic nesting: option 1
   ./compile em_real >& log.compile_wrf-meteo
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
   cp -p main/*.exe ${INSTALL_DIR}/bin/
   cp -p chem/*.exe ${INSTALL_DIR}/bin/
+  .clean -a
 }
 
 # loop through compilers and mpi libraries:
@@ -135,12 +134,10 @@ do
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
     # build variables:
     # environment variables - shell
-    FC=ifort
-    CC=mpicc
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${INSTALL_DIR}'/flex/lib'
+    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'

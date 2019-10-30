@@ -1,4 +1,14 @@
+<div align="center">
+<a href="https://www.cemac.leeds.ac.uk/">
+  <img src="https://github.com/cemac/cemac_generic/blob/master/Images/cemac.png"></a>
+  <br>
+</div>
+
 ## CEMAC ARC4 Directory
+
+[![GitHub top language](https://img.shields.io/github/languages/top/cemac/arc.svg)](https://github.com/cemac/arc) [![GitHub issues](https://img.shields.io/github/issues/cemac/arc.svg)](https://github.com/cemac/arc/issues) [![GitHub last commit](https://img.shields.io/github/last-commit/cemac/arc.svg)](https://github.com/cemac/arc/commits/master)  ![GitHub](https://img.shields.io/github/license/cemac/arc.svg)
+[![HitCount](http://hits.dwyl.io/{cemac}/{arc}.svg)](http://hits.dwyl.io/{cemac}/{arc})
+
 
 This directory contains CEMAC content for the ARC4 system.
 
@@ -81,3 +91,7 @@ example to refresh time stamps and update permissions on the CEMAC directory.
 The `__update_permissions` script can be used to make sure the correct
 permissions are set on the various directories, such as making software
 directories read only, and making other directories group writeable.
+
+## License Information
+
+This repository is Licenced under GNU General Public License v3.0

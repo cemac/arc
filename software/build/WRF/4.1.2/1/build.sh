@@ -16,7 +16,6 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRF'
@@ -27,10 +26,8 @@ BUILD_VERSION='1'
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
-MPI_VERS='openmpi:3.1.4'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -68,7 +65,7 @@ function build_wrf() {
   else
     echo -e "34\n1" | ./configure
   fi
-  ./compile em_real >& log.compile_wrf-chem
+  ./compile em_real >& log.compile_wrf
   cp -p main/*.exe ${INSTALL_DIR}/bin/
 }
 

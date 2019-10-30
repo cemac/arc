@@ -62,7 +62,6 @@ function build_wrf() {
   rm -rf v4.1.2.tar.gz
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
   cd WRF-4.1.2
-  cd chem
   ./clean -a
   ./configure
   # Opt 15 opt 1

@@ -95,8 +95,6 @@ do
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
     # build variables:
     # environment variables - shell
-    FC=ifort
-    CC=mpicc
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
@@ -107,7 +105,7 @@ do
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    export FC CC NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
+    export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
     export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"

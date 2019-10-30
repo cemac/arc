@@ -1,11 +1,11 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF and WRF Chem 4.1.2
+#description    : WRF and WRF Chem 3.9.1
 # instructions  :
 # Source code   :
 # Register      :
 #author         : CEMAC - Helen
-#date           : 20191029
+#date           : 20191030
 #updated        : 20191030
 #version        : 1
 #usage          : ./build.sh
@@ -20,7 +20,7 @@ CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRF'
-APP_VERSION='4.1.2'
+APP_VERSION='3.9.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -48,7 +48,7 @@ if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+  get_file https://github.com/wrf-model/WRF/archive/V3.9.1.1.tar.gz
 fi
 
 # WRF Builder function:
@@ -59,11 +59,11 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf v4.1.2.tar.gz
-  tar xzf ${SRC_DIR}/v4.1.2.tar.gz
-  cd WRF-4.1.2
+  rm -rf V3.9.1.tar.gz
+  tar xzf ${SRC_DIR}/V3.9.1.tar.gz
+  cd WRF-3.9.1
   ./clean -a
-  if [ ${MY_CMP}=="intel:19.0.4" ] ; then
+  if [ ${MY_CMP}=="intel:19.0.4" ]; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
@@ -134,7 +134,7 @@ do
     # build WRF:
     if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
       echo "building wrf"
-      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
+      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
     fi
   done
 done

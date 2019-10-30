@@ -1,4 +1,4 @@
-#!/bin/bash -
+wrf#!/bin/bash -
 #title          : build.sh
 #description    : WRF and WRF Chem 4.1.2
 # instructions  :
@@ -61,7 +61,7 @@ function build_wrf() {
   cd ${BUILD_DIR}
   rm -rf v4.1.2.tar.gz
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
-  cd v4.1.2
+  cd WRF-4.1.2
   cd chem
   ./clean -a
   ./configure
@@ -126,7 +126,7 @@ do
     echo "building for : ${FLAVOUR}"
     # build WRF:
     if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
-      echo "building flexpart"
+      echo "building wrf"
       build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
     fi
   done

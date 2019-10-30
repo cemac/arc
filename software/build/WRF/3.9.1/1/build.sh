@@ -69,8 +69,11 @@ function build_wrf() {
     echo -e "34\n1" | ./configure
   fi
   ./compile em_real >& log.compile_wrf-meteo
-  .clean -a
+  if [ ! -e ${INSTALL_DIR}/bin ] ; then
+    mkdir -p ${INSTALL_DIR}/bin
+  fi
   cp -p main/*.exe ${INSTALL_DIR}/bin/
+  .clean -a
 }
 
 # loop through compilers and mpi libraries:

@@ -25,10 +25,10 @@ APP_VERSION='4.1.2'
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
-# compilers for which bisicles should be built:
+# compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
 COMPILER_VERS='intel:19.0.4'
-# mpi libraries for which bisicles should be built:
+# mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
 MPI_VERS='openmpi:3.1.4'
 # get_file function:
@@ -63,6 +63,10 @@ function build_wrf() {
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
   cd WRF-4.1.2
   ./clean -a
+  echo 'compiler: ' $MY_CMP
+  echo 'HPC opts:'
+  echo 'Intel: 15,  GNU: 34 '
+  echo 'nesting: 1 (basic nesting on always)'
   ./configure
   # Opt 15 opt 1
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
@@ -71,6 +75,10 @@ function build_wrf() {
   ./compile em_real >& log.compile_wrf-chem
   .clean -a
   export WRF_CHEM=0
+  echo 'compiler: ' $MY_CMP
+  echo 'HPC opts:'
+  echo 'Intel: 15,  GNU: 34 '
+  echo 'nesting: 1 (basic nesting on always)'
   ./configure
   # HPC option 15 (dual memory Intel compiler with dmpar (15),
   # so INTEL (ifort/icc) (dmpar))

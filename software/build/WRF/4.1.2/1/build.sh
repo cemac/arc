@@ -44,12 +44,12 @@ function get_file() {
   fi
 }
 
-if [ ! -e ]
-# make src directory:
-mkdir -p ${SRC_DIR}
-
-# get sources:
-get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
+  # make src directory:
+  mkdir -p ${SRC_DIR}
+  # get sources:
+  get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+fi
 
 # WRF Builder function:
 function build_wrf() {

@@ -1,4 +1,4 @@
-wrf#!/bin/bash -
+#!/bin/bash -
 #title          : build.sh
 #description    : WRF and WRF Chem 4.1.2
 # instructions  :

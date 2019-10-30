@@ -63,7 +63,7 @@ function build_wrf() {
   tar xzf ${SRC_DIR}/V3.9.1.tar.gz
   cd WRF-3.9.1
   ./clean -a
-  if [ ${MY_CMP}=="intel:19.0.4" ]; then
+  if [ $FC == "ifort" ]; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure

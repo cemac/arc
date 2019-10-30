@@ -110,8 +110,8 @@ do
     YACC='/usr/bin/yacc -d'
     FLEX_LIB_DIR=${INSTALL_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
-    JASPERLIB=/usr/lib64
-    JASPERINC=/usr/include
+    JASPERLIB='/usr/lib64'
+    JASPERINC='/usr/include'
 
     # environment variables – WRF-Chem
     WRF_EM_CORE=1     # selects the ARW core

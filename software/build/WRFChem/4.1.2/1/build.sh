@@ -105,6 +105,9 @@ function build_wrf() {
   # so INTEL (ifort/icc) (dmpar))
   # Compile for basic nesting: option 1
   ./compile em_real >& log.compile_wrf-meteo
+  if [ ! -e ${INSTALL_DIR}/bin ] ; then
+    mkdir -p ${INSTALL_DIR}/bin
+  fi
   cp -p main/*.exe ${INSTALL_DIR}/bin/
   cp -p chem/*.exe ${INSTALL_DIR}/bin/
 }

@@ -27,8 +27,10 @@ BUILD_VERSION='1'
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
+COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
   URL=${1}

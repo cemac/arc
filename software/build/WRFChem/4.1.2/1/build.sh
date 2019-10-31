@@ -94,21 +94,10 @@ function build_wrf() {
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
     mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
+  # fix known bug !?!
+  sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  sed -i "s|YACC) scan.y|YACC) -d scan.y|g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem
-  .clean -a
-  export WRF_CHEM=0
-  if [ $FC == "ifort" ]; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  ./compile em_real >& log.compile_wrf-meteo
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
-  fi
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
-  cp -p chem/*.exe ${INSTALL_DIR}/bin/
-  .clean -a
 }
 
 # loop through compilers and mpi libraries:

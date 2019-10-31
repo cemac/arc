@@ -1,12 +1,12 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF 3.9.1
+#description    : WRF and WRF Chem 3.7.1
 # instructions  :
 # Source code   :
 # Register      :
 #author         : CEMAC - Helen
-#date           : 20191030
-#updated        : 20191030
+#date           : 20191029
+#updated        : 20191029
 #version        : 1
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
@@ -20,7 +20,7 @@ CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRF'
-APP_VERSION='3.9.1'
+APP_VERSION='3.7.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -44,11 +44,11 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'v3.7.1.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/V3.9.1.1.tar.gz
+  get_file https://github.com/wrf-model/WRF/archive/v3.7.1.tar.gz
 fi
 
 # WRF Builder function:
@@ -59,21 +59,33 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf V3.9.1.tar.gz
-  tar xzf ${SRC_DIR}/V3.9.1.tar.gz
-  cd WRF-3.9.1
+  rm -rf v3.7.1.tar.gz
+  tar xzf ${SRC_DIR}/v3.7.1.tar.gz
+  cd WRF-3.7.1
   ./clean -a
-  if [ $FC == "ifort" ]; then
+  if [ ${MY_CMP}=="intel:19.0.4" ]; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  ./compile em_real >& log.compile_wrf-meteo
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
+  # Opt 15 opt 1
+  if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
+    mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  ./compile em_real >& log.compile_wrf-chem
   .clean -a
+  export WRF_CHEM=0
+  if [ ${MY_CMP}=="intel:19.0.4" ]; then
+    echo -e "15\n1" | ./configure
+  else
+    echo -e "34\n1" | ./configure
+  fi
+  # HPC option 15 (dual memory Intel compiler with dmpar (15),
+  # so INTEL (ifort/icc) (dmpar))
+  # Compile for basic nesting: option 1
+  ./compile em_real >& log.compile_wrf-meteo
+  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  cp -p chem/*.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:
@@ -99,8 +111,12 @@ do
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
     # build variables:
     # environment variables - shell
+    FC=ifort
+    CC=mpicc
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
+    YACC='/usr/bin/yacc -d'
+    FLEX_LIB_DIR=${INSTALL_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
@@ -108,9 +124,11 @@ do
     # environment variables – WRF-Chem
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
+    WRF_CHEM=1        # selects the WRF-Chem module
+    WRF_KPP=1         # turns on Kinetic Pre-Processing (KPP)
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
-    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
+    export FC CC NETCDF NETCDF_DIR YACC FLEX_LIB_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
+    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_KPP WRF_CHEM WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"
     # build WRF:

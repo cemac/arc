@@ -66,7 +66,9 @@ function build_wrf() {
     echo -e "34\n1" | ./configure
   fi
   ./compile em_real >& log.compile_wrf
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin ] ; then
+    mkdir -p ${INSTALL_DIR}/bin
+  fi
 }
 
 # loop through compilers and mpi libraries:

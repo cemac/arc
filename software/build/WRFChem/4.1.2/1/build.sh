@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF 3.9.1
+#description    : WRFChem 4.1.2
 # instructions  :
 # Source code   :
 # Register      :
@@ -16,21 +16,18 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
-APP_NAME='WRF'
-APP_VERSION='3.9.1'
+APP_NAME='WRFChem'
+APP_VERSION='4.1.2'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
-MPI_VERS='openmpi:3.1.4'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -48,7 +45,19 @@ if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/V3.9.1.1.tar.gz
+  get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+fi
+
+if [ ! -e ${SRC_DIR}/'flex' ] ; then
+  mkdir -p ${SRC_DIR}
+  # get sources:
+  get_file http://www.ncl.ucar.edu/Download/files/flex.tar.gz
+fi
+
+if [ ! -e ${SRC_DIR}/'byacc' ] ; then
+  mkdir -p ${SRC_DIR}
+  # get sources:
+  get_file https://invisible-island.net/datafiles/release/byacc.tar.gz
 fi
 
 # WRF Builder function:
@@ -59,21 +68,33 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf V3.9.1.tar.gz
-  tar xzf ${SRC_DIR}/V3.9.1.tar.gz
-  cd WRF-3.9.1
+  rm -rf v4.1.2.tar.gz
+  rm -rf flex.tar.gz
+  rm -rf byacc.tar.gz
+  tar xzf ${SRC_DIR}/v4.1.2.tar.gz
+  tar xzf ${SRC_DIR}/flex.tar.gz
+  tar xzf ${SRC_DIR}/byacc.tar.gz
+  mkdir flex
+  cd flex-2.5.3
+  ./configure --prefix=${BUILD_DIR}/flex
+  make
+  make install
+  cd ..
+  cd WRF-4.1.2
   ./clean -a
-  if [ $FC == "ifort" ]; then
+  if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  ./compile em_real >& log.compile_wrf-meteo
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
+  # Opt 15 opt 1
+  if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
+    mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
-  .clean -a
+  # fix known bug !?!
+  sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  sed -i "s|YACC) scan.y|YACC) -d scan.y|g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  ./compile em_real >& log.compile_wrf-chem
 }
 
 # loop through compilers and mpi libraries:
@@ -101,6 +122,8 @@ do
     # environment variables - shell
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
+    YACC='/usr/bin/yacc -d'
+    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
@@ -108,15 +131,17 @@ do
     # environment variables – WRF-Chem
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
+    WRF_CHEM=1        # selects the WRF-Chem module
+    WRF_KPP=1         # turns on Kinetic Pre-Processing (KPP)
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
-    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
+    export FC CC NETCDF NETCDF_DIR YACC FLEX_LIB_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
+    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_KPP WRF_CHEM WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"
     # build WRF:
     if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
       echo "building wrf"
-      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
+      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi
   done
 done

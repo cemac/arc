@@ -95,7 +95,7 @@ function build_wrf() {
   # fix known bug !?!
   sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   sed -i "s|YACC) scan.y|YACC) -d scan.y|g" chem/KPP/kpp/kpp-2.1/src/Makefile
-  #./compile em_real >& log.compile_wrf-chem
+  ./compile em_real >& log.compile_wrf-chem
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi

@@ -69,6 +69,7 @@ function build_wrf() {
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
+  cp -p main/*.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:

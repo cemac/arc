@@ -16,6 +16,7 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
+CEMAC_DIR="/nobackup/earhbu/arc"
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRFChem'

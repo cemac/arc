@@ -51,18 +51,29 @@ if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
   get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
 fi
 
-if [ ! -e ${SRC_DIR}/'flex' ] ; then
+if [ ! -e ${SRC_DIR}/'flex.tar.gz' ] ; then
   mkdir -p ${SRC_DIR}
   # get sources:
   get_file http://www.ncl.ucar.edu/Download/files/flex.tar.gz
 fi
 
-if [ ! -e ${SRC_DIR}/'byacc' ] ; then
+if [ ! -e ${SRC_DIR}/'byacc.tar.gz' ] ; then
   mkdir -p ${SRC_DIR}
   # get sources:
   get_file https://invisible-island.net/datafiles/release/byacc.tar.gz
 fi
 
+if [ ! -e ${SRC_DIR}/'mozbc.tar' ] ; then
+  mkdir -p ${SRC_DIR}
+  # get sources:
+  get_file http://www.acom.ucar.edu/wrf-chem/mozbc.tar
+  get_file http://www.acom.ucar.edu/wrf-chem/megan_bio_emiss.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/wes-coldens.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/ANTHRO.tar
+  get_file http://www.acom.ucar.edu/webt/wrf-chem/processors/EDGAR-HTAP.tgz
+  get_file https://www.acom.ucar.edu/wrf-chem/EPA_ANTHRO_EMIS.tgz
+  get_file http://www.acom.ucar.edu/wrf-chem/megan.data.tar.gz
+fi
 # WRF Builder function:
 function build_wrf() {
   # variables:
@@ -77,7 +88,7 @@ function build_wrf() {
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
   tar xzf ${SRC_DIR}/flex.tar.gz
   tar xzf ${SRC_DIR}/byacc.tar.gz
-  mkdir flex
+  mkdir flex finn megan mozbc wes-coldens anthro_emis
   cd flex-2.5.3
   ./configure --prefix=${BUILD_DIR}/flex
   make
@@ -95,8 +106,7 @@ function build_wrf() {
     mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
   # fix known bug !?!
-  sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
-  sed -i "s|YACC) scan.y|YACC) -d scan.y|g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  #sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin

@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRFChem 4.1.2
+#description    : WRFChem 4.0.3
 # instructions  :
 # Source code   :
 # Register      :
@@ -57,12 +57,6 @@ if [ ! -e ${SRC_DIR}/'flex.tar.gz' ] ; then
   get_file http://www.ncl.ucar.edu/Download/files/flex.tar.gz
 fi
 
-if [ ! -e ${SRC_DIR}/'byacc.tar.gz' ] ; then
-  mkdir -p ${SRC_DIR}
-  # get sources:
-  get_file https://invisible-island.net/datafiles/release/byacc.tar.gz
-fi
-
 if [ ! -e ${SRC_DIR}/'mozbc.tar' ] ; then
   mkdir -p ${SRC_DIR}
   # get sources:
@@ -82,19 +76,15 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf v4.1.2.tar.gz
-  rm -rf flex.tar.gz
-  rm -rf byacc.tar.gz
-  tar xzf ${SRC_DIR}/v4.1.2.tar.gz
-  tar xzf ${SRC_DIR}/flex.tar.gz
-  tar xzf ${SRC_DIR}/byacc.tar.gz
-  mkdir flex finn megan mozbc wes-coldens anthro_emis
-  cd flex-2.5.3
-  ./configure --prefix=${BUILD_DIR}/flex
-  make
-  make install
+  # WRFotron version all are in cd WR
+  rm -rf WRFChemotron-4.0-3.tar.gz
+  tar xzf ${SRC_DIR}/WRFChemotron-4.0-3.tar.gz
+  cd WRF4.0.3_code
+  mv * ..
+  rm -f .ncviewrc
   cd ..
-  cd WRF-4.1.2
+  rmdir WRF4.0.3_code
+  cd megan
   ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure

@@ -1,0 +1,36 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Climate Data Operators
+
+    CDO is a collection of command line Operators to manipulate and analyse
+    Climate and NWP model Data.
+
+    Supported data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.
+    There are more than 600 operators available.
+
+
+    Information     :
+
+      Homepage : https://code.zmaw.de/projects/cdo
+      Documentation :
+        https://code.zmaw.de/projects/cdo/wiki/Cdo#Documentation
+  "
+}
+
+module-whatis "Climate Data Operators "
+
+flavours conflict cdo
+
+flavours root     $::env(CEMAC_DIR)/software/apps/cdo/1.9.8
+flavours revision 1
+flavours commit
+
+setenv CDO_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

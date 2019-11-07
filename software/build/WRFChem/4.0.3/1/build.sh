@@ -44,7 +44,7 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'WRFChemotron-4.0-3.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
@@ -83,9 +83,20 @@ function build_wrf() {
   mv * ..
   rm -f .ncviewrc
   cd ..
-  rmdir WRF4.0.3_code
-  cd megan
   ./clean -a
+  rmdir WRF4.0.3_code
+  cd mozbc
+  ./make_mozbc
+  cd ../megan
+  ./make_util megan_bio_emiss
+  cd ../wes-coldens/
+  ./make_util wesely
+  ./make_util exo_coldens
+  cd ../anthro_emis/
+  ./make_anthro
+  cd ../finn/
+  ./make_fire_emis
+  cd ../WRFChem4.0.3
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
@@ -98,10 +109,27 @@ function build_wrf() {
   # fix known bug !?!
   #sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem
+  cd ../WPS4.0.3
+  ./clean -a
+  if [ $FC == "ifort" ] ; then
+    echo -e "17" | ./configure
+  else
+    echo -e "1" | ./configure
+  fi
+  ./compile >& log.compile_wps
+  cd ../WRFMeteo4.0.3
+  export WRF_CHEM=0    # deselectes the WRF-Chem module
+  ./clean -a
+  if [ $FC == "ifort" ] ; then
+    echo -e "15\n1" | ./configure
+  else
+    echo -e "34\n1" | ./configure
+  fi
+  ./compile em_real >& log.compile_wrf-meteo
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  cp -p */*.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:

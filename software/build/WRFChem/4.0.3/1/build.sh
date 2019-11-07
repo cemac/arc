@@ -77,9 +77,8 @@ function build_wrf() {
   MY_CMP=${4}
   cd ${BUILD_DIR}
   # WRFotron version all are in cd WR
-  rm -rf WRFChemotron-4.0-3.tar.gz
-  tar xzf ${SRC_DIR}/WRFChem4.0-3.tar.gz
-  mv WRFChem4.0.3_WRFotron2.0_clean WRF_Chem
+  rm -rf WRFChem4.0.3.tar.gz
+  tar xzf ${SRC_DIR}/WRFChem4.0.3.tar.gz
   cd WRFChem4.0.3
   ./clean -a
   cd mozbc

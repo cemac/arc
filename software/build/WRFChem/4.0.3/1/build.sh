@@ -20,7 +20,7 @@ CEMAC_DIR="/nobackup/earhbu/arc"
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRFChem'
-APP_VERSION='4.1.2'
+APP_VERSION='4.0.3'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -79,7 +79,8 @@ function build_wrf() {
   # WRFotron version all are in cd WR
   rm -rf WRFChemotron-4.0-3.tar.gz
   tar xzf ${SRC_DIR}/WRFChemotron-4.0-3.tar.gz
-  cd WRF4.0.3_code
+  mv WRFChem4.0.3_WRFotron2.0_clean WRF_Chem
+  cd WRFChem/WRF4.0.3_code
   mv * ..
   rm -f .ncviewrc
   cd ..

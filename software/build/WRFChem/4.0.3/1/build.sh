@@ -78,14 +78,10 @@ function build_wrf() {
   cd ${BUILD_DIR}
   # WRFotron version all are in cd WR
   rm -rf WRFChemotron-4.0-3.tar.gz
-  tar xzf ${SRC_DIR}/WRFChemotron-4.0-3.tar.gz
+  tar xzf ${SRC_DIR}/WRFChem4.0-3.tar.gz
   mv WRFChem4.0.3_WRFotron2.0_clean WRF_Chem
-  cd WRFChem/WRF4.0.3_code
-  mv * ..
-  rm -f .ncviewrc
-  cd ..
+  cd WRFChem4.0.3
   ./clean -a
-  rmdir WRF4.0.3_code
   cd mozbc
   ./make_mozbc
   cd ../megan
@@ -176,7 +172,7 @@ do
     echo "building for : ${FLAVOUR}"
     # build WRF:
     if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
-      echo "building wrf"
+      echo "building wrfchem"
       build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi
   done

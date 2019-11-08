@@ -41,7 +41,17 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'WRFChem4.0-3.tar.gz' ] ; then
+function fix_MakeFile() {
+  # File possible wrong entries and swap!
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF_DIR)/include|INCLUDE_MODULES = |g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF_DIR)/lib \$(AR_LIBS)|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF_DIR)/lib \$(AR_FILES)|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+}
+
+if [ ! -e ${SRC_DIR}/'WRFChem4.0.3.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   echo "WRFchem tar file missing manually downloading"
@@ -82,33 +92,28 @@ function build_wrf() {
   cd WRFChem4.0.3
   echo "building preprocessors"
   cd mozbc
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   cd ../megan
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   cd ../wes-coldens/
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make wesely
   make clean
   make exo_coldens
   cd ../anthro_emis/
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   cd ../finn/src
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   echo "configuring and compinging WRFChem"
-  cd ../WRFChem4.0.3
+  cd ../../WRFChem4.0.3
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else

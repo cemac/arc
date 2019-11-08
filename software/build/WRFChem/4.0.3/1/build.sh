@@ -80,18 +80,33 @@ function build_wrf() {
   rm -rf WRFChem4.0.3.tar.gz
   tar xzf ${SRC_DIR}/WRFChem4.0.3.tar.gz
   cd WRFChem4.0.3
-  ./clean -a
+  clean -a
   cd mozbc
-  ./make_mozbc
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
   cd ../megan
-  ./make_util megan_bio_emiss
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
   cd ../wes-coldens/
-  ./make_util wesely
-  ./make_util exo_coldens
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make wesely
+  make clean
+  make exo_coldens
   cd ../anthro_emis/
-  ./make_anthro
-  cd ../finn/
-  ./make_fire_emis
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
+  cd ../finn/src
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
   cd ../WRFChem4.0.3
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
@@ -102,6 +117,7 @@ function build_wrf() {
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
     mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
+  /clean -a
   # fix known bug !?!
   #sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem

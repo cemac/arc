@@ -1,12 +1,12 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF and WRF Chem 3.7.1
+#description    : WRFChem 3.7.1
 # instructions  :
 # Source code   :
 # Register      :
 #author         : CEMAC - Helen
-#date           : 20191029
-#updated        : 20191029
+#date           : 20191030
+#updated        : 20191030
 #version        : 1
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
@@ -16,10 +16,9 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
-APP_NAME='WRF'
+APP_NAME='WRFChem'
 APP_VERSION='3.7.1'
 # build version:
 BUILD_VERSION='1'
@@ -27,10 +26,8 @@ BUILD_VERSION='1'
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
-MPI_VERS='openmpi:3.1.4'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -44,12 +41,30 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v3.7.1.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'WRFChem4.0-3.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
+  echo "WRFchem tar file missing manually downloading"
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/v3.7.1.tar.gz
+  get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+  get_file http://www.acom.ucar.edu/wrf-chem/mozbc.tar
+  get_file http://www.acom.ucar.edu/wrf-chem/megan_bio_emiss.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/wes-coldens.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/ANTHRO.tar
+  get_file http://www.acom.ucar.edu/webt/wrf-chem/processors/EDGAR-HTAP.tgz
+  get_file https://www.acom.ucar.edu/wrf-chem/EPA_ANTHRO_EMIS.tgz
+  get_file http://www.acom.ucar.edu/wrf-chem/megan.data.tar.gz
+  echo "edit build script for new file sctructure"
+  echo "stopping...."
+  exit 0
 fi
+
+if [ ! -e ${SRC_DIR}/'flex.tar.gz' ] ; then
+  mkdir -p ${SRC_DIR}
+  # get sources:
+  get_file http://www.ncl.ucar.edu/Download/files/flex.tar.gz
+fi
+
 
 # WRF Builder function:
 function build_wrf() {
@@ -59,33 +74,77 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf v3.7.1.tar.gz
-  tar xzf ${SRC_DIR}/v3.7.1.tar.gz
-  cd WRF-3.7.1
-  ./clean -a
-  if [ ${MY_CMP}=="intel:19.0.4" ]; then
+  # I've Placed a Tar file of WRFMeteo, Chem, Preprocessors and WPS
+  # In src, if downloaded manually put them in a central WRFChem folder!
+  echo "extracting WRFChem"
+  rm -rf WRFChem3.7.1.tar.gz
+  tar xzf ${SRC_DIR}/WRFChem3.7.1.tar.gz
+  cd WRFChem3.7.1
+  echo "building preprocessors"
+  cd mozbc
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  cd ../megan
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
+  cd ../wes-coldens/
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make wesely
+  make clean
+  make exo_coldens
+  cd ../anthro_emis/
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
+  cd ../finn/src
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  make clean
+  make
+  echo "configuring and compinging WRFChem"
+  cd ../WRFChem3.7.1
+  if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  # Opt 15 opt 1
+  # KPP sometimes doesn't have a bin folder causing the whole thing to fail
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
     mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
+  # if fails try fixing known bug !?!
+  # sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem
-  .clean -a
-  export WRF_CHEM=0
-  if [ ${MY_CMP}=="intel:19.0.4" ]; then
+  echo "configuring and compinging WPS"
+  cd ../WPS3.7.1
+  export WRF_DIR="../WRFChem3.7.1"
+  ./clean -a
+  if [ $FC == "ifort" ] ; then
+    echo -e "17" | ./configure
+  else
+    echo -e "1" | ./configure
+  fi
+  ./compile >& log.compile_wps
+  cd ../WRFMeteo3.7.1
+  echo "configuring and compinging WRF Meteo"
+  export WRF_CHEM=0    # deselectes the WRF-Chem module
+  ./clean -a
+  if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  # HPC option 15 (dual memory Intel compiler with dmpar (15),
-  # so INTEL (ifort/icc) (dmpar))
-  # Compile for basic nesting: option 1
   ./compile em_real >& log.compile_wrf-meteo
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
-  cp -p chem/*.exe ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin ] ; then
+    mkdir -p ${INSTALL_DIR}/bin
+  fi
+  cp -p */*.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:
@@ -111,12 +170,10 @@ do
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
     # build variables:
     # environment variables - shell
-    FC=ifort
-    CC=mpicc
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${INSTALL_DIR}'/flex/lib'
+    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
@@ -133,8 +190,8 @@ do
     echo "building for : ${FLAVOUR}"
     # build WRF:
     if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
-      echo "building wrf"
-      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
+      echo "building wrfchem"
+      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi
   done
 done

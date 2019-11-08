@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRFChem 4.0.3
+#description    : WRFChem 3.7.1
 # instructions  :
 # Source code   :
 # Register      :
@@ -16,21 +16,18 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-CEMAC_DIR="/nobackup/earhbu/arc"
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRFChem'
-APP_VERSION='4.0.3'
+APP_VERSION='3.7.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
-MPI_VERS='intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -44,11 +41,22 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'WRFChemotron-4.0-3.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'WRFChem4.0-3.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
+  echo "WRFchem tar file missing manually downloading"
   # get sources:
   get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+  get_file http://www.acom.ucar.edu/wrf-chem/mozbc.tar
+  get_file http://www.acom.ucar.edu/wrf-chem/megan_bio_emiss.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/wes-coldens.tar
+  get_file https://www.acom.ucar.edu/wrf-chem/ANTHRO.tar
+  get_file http://www.acom.ucar.edu/webt/wrf-chem/processors/EDGAR-HTAP.tgz
+  get_file https://www.acom.ucar.edu/wrf-chem/EPA_ANTHRO_EMIS.tgz
+  get_file http://www.acom.ucar.edu/wrf-chem/megan.data.tar.gz
+  echo "edit build script for new file sctructure"
+  echo "stopping...."
+  exit 0
 fi
 
 if [ ! -e ${SRC_DIR}/'flex.tar.gz' ] ; then
@@ -57,17 +65,7 @@ if [ ! -e ${SRC_DIR}/'flex.tar.gz' ] ; then
   get_file http://www.ncl.ucar.edu/Download/files/flex.tar.gz
 fi
 
-if [ ! -e ${SRC_DIR}/'mozbc.tar' ] ; then
-  mkdir -p ${SRC_DIR}
-  # get sources:
-  get_file http://www.acom.ucar.edu/wrf-chem/mozbc.tar
-  get_file http://www.acom.ucar.edu/wrf-chem/megan_bio_emiss.tar
-  get_file https://www.acom.ucar.edu/wrf-chem/wes-coldens.tar
-  get_file https://www.acom.ucar.edu/wrf-chem/ANTHRO.tar
-  get_file http://www.acom.ucar.edu/webt/wrf-chem/processors/EDGAR-HTAP.tgz
-  get_file https://www.acom.ucar.edu/wrf-chem/EPA_ANTHRO_EMIS.tgz
-  get_file http://www.acom.ucar.edu/wrf-chem/megan.data.tar.gz
-fi
+
 # WRF Builder function:
 function build_wrf() {
   # variables:
@@ -76,11 +74,13 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  # WRFotron version all are in cd WR
-  rm -rf WRFChem4.0.3.tar.gz
-  tar xzf ${SRC_DIR}/WRFChem4.0.3.tar.gz
-  cd WRFChem4.0.3
-  clean -a
+  # I've Placed a Tar file of WRFMeteo, Chem, Preprocessors and WPS
+  # In src, if downloaded manually put them in a central WRFChem folder!
+  echo "extracting WRFChem"
+  rm -rf WRFChem3.7.1.tar.gz
+  tar xzf ${SRC_DIR}/WRFChem3.7.1.tar.gz
+  cd WRFChem3.7.1
+  echo "building preprocessors"
   cd mozbc
   sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
   sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
@@ -107,21 +107,23 @@ function build_wrf() {
   sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
   make clean
   make
-  cd ../WRFChem4.0.3
+  echo "configuring and compinging WRFChem"
+  cd ../WRFChem3.7.1
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  # Opt 15 opt 1
+  # KPP sometimes doesn't have a bin folder causing the whole thing to fail
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
     mkdir chem/KPP/kpp/kpp-2.1/bin
   fi
-  /clean -a
-  # fix known bug !?!
-  #sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  # if fails try fixing known bug !?!
+  # sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
   ./compile em_real >& log.compile_wrf-chem
-  cd ../WPS4.0.3
+  echo "configuring and compinging WPS"
+  cd ../WPS3.7.1
+  export WRF_DIR="../WRFChem3.7.1"
   ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
@@ -129,7 +131,8 @@ function build_wrf() {
     echo -e "1" | ./configure
   fi
   ./compile >& log.compile_wps
-  cd ../WRFMeteo4.0.3
+  cd ../WRFMeteo3.7.1
+  echo "configuring and compinging WRF Meteo"
   export WRF_CHEM=0    # deselectes the WRF-Chem module
   ./clean -a
   if [ $FC == "ifort" ] ; then

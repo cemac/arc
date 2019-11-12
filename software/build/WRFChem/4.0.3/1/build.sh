@@ -198,7 +198,7 @@ do
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
+    FLEX_LIB_DIR=${BUILD_DIR}'/WRFChem4.0.3/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'

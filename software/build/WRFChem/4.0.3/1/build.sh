@@ -149,7 +149,27 @@ function build_wrf() {
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
-  cp -p */*.exe ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRFchem
+  fi
+  cp -p WRFChem4.0.3/main/*.exe ${INSTALL_DIR}/bin/WRFchem
+  cp -p WRFChem4.0.3/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/finn/src/fire_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/mozbc/mozbc ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/wes-coldens/wesely ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/wes-coldens/exo_coldens ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFMeteo ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRF
+  fi
+  cp -p WRFMeteo4.0.3/main/*.exe ${INSTALL_DIR}/bin/WRF
+  cp -p flex/bin/* ${INSTALL_DIR}/bin/
+  cp -p WPS4.0.3/*.exe ${INSTALL_DIR}/bin/
+  cp -p WPS4.0.3/link_grib.csh
+  ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
+
 }
 
 # loop through compilers and mpi libraries:

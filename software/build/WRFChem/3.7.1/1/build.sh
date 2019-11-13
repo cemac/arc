@@ -5,8 +5,8 @@
 # Source code   :
 # Register      :
 #author         : CEMAC - Helen
-#date           : 20191030
-#updated        : 20191030
+#date           : 20191113
+#updated        : 20191113
 #version        : 1
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
@@ -27,7 +27,7 @@ TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='openmpi:3.1.4 intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -41,7 +41,17 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'WRFChem4.0-3.tar.gz' ] ; then
+function fix_MakeFile() {
+  # File possible wrong entries and swap!
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF_DIR)/include|INCLUDE_MODULES = |g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF_DIR)/lib \$(AR_LIBS)|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+  sed -i "s|LIBS   = -L\$(NETCDF_DIR)/lib \$(AR_FILES)|LIBS   = -lnetcdf -lnetcdff|g" Makefile
+}
+
+if [ ! -e ${SRC_DIR}/'WRFChem3.7.1.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   echo "WRFchem tar file missing manually downloading"
@@ -82,33 +92,29 @@ function build_wrf() {
   cd WRFChem3.7.1
   echo "building preprocessors"
   cd mozbc
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
+  make
   cd ../megan
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   cd ../wes-coldens/
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make wesely
   make clean
   make exo_coldens
   cd ../anthro_emis/
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   cd ../finn/src
-  sed -i "s|LIBS   = -L\$(NETCDF)/lib -lnetcdf -lnetcdff|LIBS   = -lnetcdf -lnetcdff|g" Makefile
-  sed -i "s|INCLUDE_MODULES = -I\$(NETCDF)/include|INCLUDE_MODULES = |g" Makefile
+  fix_MakeFile
   make clean
   make
   echo "configuring and compinging WRFChem"
-  cd ../WRFChem3.7.1
+  cd ../../WRFChem3.7.1
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
@@ -144,7 +150,27 @@ function build_wrf() {
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
-  cp -p */*.exe ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRFchem
+  fi
+  cp -p WRFChem3.7.1/WRFChem3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRFchem
+  cp -p WRFChem3.7.1/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/finn/src/fire_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/mozbc/mozbc ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/wes-coldens/wesely ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/wes-coldens/exo_coldens ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFMeteo ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRF
+  fi
+  cp -p WRFChem3.7.1/WRFMeteo3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRF
+  cp -p WRFChem3.7.1/flex/bin/* ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/WPS3.7.1/*.exe ${INSTALL_DIR}/bin/
+  cp -p WRFChem3.7.1/WPS3.7.1/link_grib.csh ${INSTALL_DIR}/bin/
+  ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
+
 }
 
 # loop through compilers and mpi libraries:
@@ -173,7 +199,7 @@ do
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
+    FLEX_LIB_DIR=${BUILD_DIR}'/WRFChem3.7.1/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'

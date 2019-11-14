@@ -1,9 +1,9 @@
 #!/bin/bash -
 #title          : build.sh
 #description    : WRFChem 4.0.3
-# instructions  :
-# Source code   :
-# Register      :
+#instructions   :
+#Source code    :
+#Register       :
 #author         : CEMAC - Helen
 #date           : 20191030
 #updated        : 20191030
@@ -93,25 +93,20 @@ function build_wrf() {
   echo "building preprocessors"
   cd mozbc
   fix_MakeFile
-  make clean
   make
   cd ../megan
   fix_MakeFile
-  make clean
   make
   cd ../wes-coldens/
   fix_MakeFile
-  make clean
   make wesely
   make clean
   make exo_coldens
   cd ../anthro_emis/
   fix_MakeFile
-  make clean
   make
   cd ../finn/src
   fix_MakeFile
-  make clean
   make
   echo "configuring and compinging WRFChem"
   cd ../../WRFChem4.0.3
@@ -130,7 +125,6 @@ function build_wrf() {
   echo "configuring and compinging WPS"
   cd ../WPS4.0.3
   export WRF_DIR="../WRFChem4.0.3"
-  ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
   else
@@ -140,7 +134,6 @@ function build_wrf() {
   cd ../WRFMeteo4.0.3
   echo "configuring and compinging WRF Meteo"
   export WRF_CHEM=0    # deselectes the WRF-Chem module
-  ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else

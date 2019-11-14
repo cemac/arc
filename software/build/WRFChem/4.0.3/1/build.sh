@@ -1,9 +1,9 @@
 #!/bin/bash -
 #title          : build.sh
 #description    : WRFChem 4.0.3
-# instructions  :
-# Source code   :
-# Register      :
+#instructions   :
+#Source code    :
+#Register       :
 #author         : CEMAC - Helen
 #date           : 20191030
 #updated        : 20191030
@@ -27,7 +27,7 @@ TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='openmpi:3.1.4 intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -93,24 +93,20 @@ function build_wrf() {
   echo "building preprocessors"
   cd mozbc
   fix_MakeFile
-  make clean
+  make
   cd ../megan
   fix_MakeFile
-  make clean
   make
   cd ../wes-coldens/
   fix_MakeFile
-  make clean
   make wesely
   make clean
   make exo_coldens
   cd ../anthro_emis/
   fix_MakeFile
-  make clean
   make
   cd ../finn/src
   fix_MakeFile
-  make clean
   make
   echo "configuring and compinging WRFChem"
   cd ../../WRFChem4.0.3
@@ -129,7 +125,6 @@ function build_wrf() {
   echo "configuring and compinging WPS"
   cd ../WPS4.0.3
   export WRF_DIR="../WRFChem4.0.3"
-  ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
   else
@@ -139,7 +134,6 @@ function build_wrf() {
   cd ../WRFMeteo4.0.3
   echo "configuring and compinging WRF Meteo"
   export WRF_CHEM=0    # deselectes the WRF-Chem module
-  ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
@@ -149,7 +143,27 @@ function build_wrf() {
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
-  cp -p */*.exe ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRFchem
+  fi
+  cp -p WRFChem4.0.3/WRFChem4.0.3/main/*.exe ${INSTALL_DIR}/bin/WRFchem
+  cp -p WRFChem4.0.3/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/finn/src/fire_emis ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/mozbc/mozbc ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/wes-coldens/wesely ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/wes-coldens/exo_coldens ${INSTALL_DIR}/bin/
+  if [ ! -e ${INSTALL_DIR}/bin/WRFMeteo ] ; then
+      mkdir -p ${INSTALL_DIR}/bin/WRF
+  fi
+  cp -p WRFChem4.0.3/WRFMeteo4.0.3/main/*.exe ${INSTALL_DIR}/bin/WRF
+  cp -p WRFChem4.0.3/flex/bin/* ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/WPS4.0.3/*.exe ${INSTALL_DIR}/bin/
+  cp -p WRFChem4.0.3/WPS4.0.3/link_grib.csh ${INSTALL_DIR}/bin/
+  ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
+
 }
 
 # loop through compilers and mpi libraries:
@@ -178,7 +192,7 @@ do
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
     YACC='/usr/bin/yacc -d'
-    FLEX_LIB_DIR=${BUILD_DIR}'/flex/lib'
+    FLEX_LIB_DIR=${BUILD_DIR}'/WRFChem4.0.3/flex/lib'
     LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'

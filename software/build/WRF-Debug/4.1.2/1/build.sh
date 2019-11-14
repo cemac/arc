@@ -104,8 +104,9 @@ do
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
     WRF_CHEM=0 # ensure chem off
+    WRF_KPP=0 # ensure kpp off
     export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
-    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE WRF_CHEM
+    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE WRF_CHEM WRF_KPP
     # start building:
     echo "building for : ${FLAVOUR}"
     # build WRF:

@@ -4,9 +4,9 @@ flavours init
 
 proc ModulesHelp { } {
         global version
-        puts stderr "   This module loads WRF v 4.1.2 em_real "
-        puts stderr "                  WRF version 4.1.2      "
-        puts stderr "     Stored at /nobackup/cemac/software/apps/WRF"
+        puts stderr "   This module load WRF v 4.1.2, for em_real DEBUG ON"
+        puts stderr "          WRF version 4.1.2                          "
+        puts stderr "     Stored at /nobackup/cemac/                      "
         puts stderr "
         Version $version
 }
@@ -17,7 +17,7 @@ flavours conflict WRFChem WRF WRF-Debug
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     $::env(CEMAC_DIR)/software/apps/WRF/4.1.2
+flavours root     $::env(CEMAC_DIR)/software/apps/WRF-Debug/4.1.2
 flavours revision 1
 flavours commit
 

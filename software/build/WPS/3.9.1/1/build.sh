@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF 3.9.1
+#description    : WPS 3.9.1
 # instructions  :
 # Source code   :
 # Register      :
@@ -19,16 +19,16 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
-APP_NAME='WRF'
+APP_NAME='WPS'
 APP_VERSION='3.9.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
-# compilers for which WRF should be built:
+# compilers for which WPS should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
 COMPILER_VERS='intel:19.0.4'
-# mpi libraries for which WRF should be built:
+# mpi libraries for which WPS should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
 MPI_VERS='openmpi:3.1.4'
 # get_file function:
@@ -48,11 +48,11 @@ if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/V3.9.1.1.tar.gz
+  get_file https://github.com/WPS-model/WPS/archive/V3.9.1.1.tar.gz
 fi
 
-# WRF Builder function:
-function build_wrf() {
+# WPS Builder function:
+function build_WPS() {
   # variables:
   SRC_DIR=${1}
   BUILD_DIR=${2}
@@ -61,14 +61,14 @@ function build_wrf() {
   cd ${BUILD_DIR}
   rm -rf V3.9.1.tar.gz
   tar xzf ${SRC_DIR}/V3.9.1.tar.gz
-  cd WRF-3.9.1
+  cd WPS-3.9.1
   ./clean -a
   if [ $FC == "ifort" ]; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
-  ./compile em_real >& log.compile_wrf-meteo
+  ./compile em_real >& log.compile_WPS-meteo
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
@@ -105,18 +105,18 @@ do
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
 
-    # environment variables – WRF-Chem
-    WRF_EM_CORE=1     # selects the ARW core
-    WRF_NMM_CORE=0    # ensures that the NMM core is deselected
-    WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
+    # environment variables – WPS-Chem
+    WPS_EM_CORE=1     # selects the ARW core
+    WPS_NMM_CORE=0    # ensures that the NMM core is deselected
+    WPSIO_NCD_LARGE_FILE_SUPPORT=1    # supports large WPSout files
     export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
-    export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
+    export WPSIO_NCD_LARGE_FILE_SUPPORT WPS_NMM_CORE WPS_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"
-    # build WRF:
-    if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
-      echo "building wrf"
-      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
+    # build WPS:
+    if [ ! -e ${INSTALL_DIR}/bin/WPS.exe ] ; then
+      echo "building WPS"
+      build_WPS ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${DEPS_DIR} ${CMP}
     fi
   done
 done

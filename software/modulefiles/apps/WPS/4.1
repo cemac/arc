@@ -4,20 +4,23 @@ flavours init
 
 proc ModulesHelp { } {
         global version
-        puts stderr "   This module loads WRF v 4.1.2 em_real "
-        puts stderr "                  WRF version 4.1.2      "
-        puts stderr "     Stored at /nobackup/cemac/software/apps/WRF"
+        puts stderr "   This module loads WPS to go with WRF v4.1.2 em_real "
+        puts stderr "                  WPS version 4.1.2      "
+        puts stderr "     Stored at /nobackup/cemac/software/apps/WPS"
         puts stderr "
         Version $version
 }
 
 module-whatis "WRF NWP "
 
-flavours conflict WRFChem WRF WRF-Debug
+flavours conflict WRFChem WRF/3.9.1 WRF-Debug/3.9.1 WPS
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     $::env(CEMAC_DIR)/software/apps/WRF/4.1.2
+module load netcdf/4.6.3
+module load hdf5/1.8.21
+
+flavours root     $::env(CEMAC_DIR)/software/apps/WPS/4.1
 flavours revision 1
 flavours commit
 

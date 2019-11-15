@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF and 4.1.2
+#description    : WPS 4.1
 # instructions  :
 # Source code   :
 # Register      :
@@ -18,15 +18,15 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
-APP_NAME='WRF'
-APP_VERSION='4.1.2'
+APP_NAME='WPS'
+APP_VERSION='4.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
-# compilers for which WRF should be built:
+# compilers for which WPS should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-# mpi libraries for which WRF should be built:
+# mpi libraries for which WPS should be built:
 MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
@@ -41,55 +41,37 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'v4.1.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/v4.1.2.tar.gz
+  get_file https://github.com/wrf-model/WPS/archive/v4.1.tar.gz
 fi
 
-# WRF Builder function:
-function build_wrf() {
+# WPS Builder function:
+function build_WPS() {
   # variables:
   SRC_DIR=${1}
   BUILD_DIR=${2}
   INSTALL_DIR=${3}
   MY_CMP=${4}
+  FLAVOUR=${5}
   cd ${BUILD_DIR}
-  rm -rf v4.1.2.tar.gz
-  tar xzf ${SRC_DIR}/v4.1.2.tar.gz
-  cd WRF-4.1.2
-  sed -i "s|I_really_want_to_output_grib2_from_WRF = \"FALSE\" ; |I_really_want_to_output_grib2_from_WRF = \"TRUE\" ; |g" arch/Config.pl
+  rm -rf v4.1.tar.gz
+  tar xzf ${SRC_DIR}/v4.1.tar.gz
+  WRF_DIR=${CEMAC_DIR}/software/build/WRF/4.1.2/1/${FLAVOUR}/WRF-4.1.2/
+  ln -sf $WRF_DIR WRFV4.1
+  cd WPS-4.1
   if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure
+    echo -e "17" | ./configure
   else
-    echo -e "34\n1" | ./configure
+    echo -e "1" | ./configure
   fi
-  if [ $MY_CMP == 'gnu:8.3.0'] ; then
-    sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
-  fi
-  ./compile em_real >& log.compile_wrf
+  ./compile  >& log.compile_WPS
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
-  for BIX in $(find main/* -maxdepth 1 \
-                 -type f -name '*.exe')
-    do
-      # add hdf5 / netcdf lib directories to rpath if required:
-      ldd ${BIX} | grep -q hdf5 >& /dev/null
-      if [ "${?}" = "0" ] ; then
-        BIX_RPATH=$(patchelf --print-rpath ${BIX})
-        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
-          ${BIX}
-      fi
-      ldd ${BIX} | grep -q netcdf >& /dev/null
-      if [ "${?}" = "0" ] ; then
-        BIX_RPATH=$(patchelf --print-rpath ${BIX})
-        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
-          ${BIX}
-      fi
-    done
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  cp -p *.exe ${INSTALL_DIR}/bin/
 }
 
 # loop through compilers and mpi libraries:
@@ -119,20 +101,20 @@ do
     NETCDF_DIR=$NETCDF
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
-    # environment variables – WRF-Chem
+    # environment variables – WPS-Chem
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
-    WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    WRF_CHEM=0 # ensure chem off
-    WRF_KPP=0 # ensure kpp off
-    export NETCDF NETCDF_DIR JASPERLIB JASPERINC
+    WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large WPSout files
+    WRF_CHEM=0
+    WRF_KPP=0
+    export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
     export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"
-    # build WRF:
-    if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
-      echo "building wrf"
-      build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
+    # build WPS:
+    if [ ! -e ${INSTALL_DIR}/bin/geogrid.exe ] ; then
+      echo "building WPS"
+      build_WPS ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP} ${FLAVOUR}
     fi
   done
 done

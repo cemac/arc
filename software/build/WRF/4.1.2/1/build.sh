@@ -65,7 +65,7 @@ function build_wrf() {
   else
     echo -e "34\n1" | ./configure
   fi
-  if [ $MY_CMP == 'gnu:8.3.0'] ; then
+  if [ $MY_CMP == 'gnu:8.3.0' ] ; then
     sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
   fi
   ./compile em_real >& log.compile_wrf

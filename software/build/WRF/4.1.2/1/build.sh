@@ -59,16 +59,36 @@ function build_wrf() {
   rm -rf v4.1.2.tar.gz
   tar xzf ${SRC_DIR}/v4.1.2.tar.gz
   cd WRF-4.1.2
-  ./clean -a
+  sed -i "s|I_really_want_to_output_grib2_from_WRF = \"FALSE\" ; |I_really_want_to_output_grib2_from_WRF = \"TRUE\" ; |g" arch/Config.pl
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
     echo -e "34\n1" | ./configure
   fi
+  if [ $MY_CMP == 'gnu:8.3.0'] ; then
+    sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
+  fi
   ./compile em_real >& log.compile_wrf
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
+  for BIX in $(find main/* -maxdepth 1 \
+                 -type f -name '*.exe')
+    do
+      # add hdf5 / netcdf lib directories to rpath if required:
+      ldd ${BIX} | grep -q hdf5 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+      ldd ${BIX} | grep -q netcdf >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+    done
   cp -p main/*.exe ${INSTALL_DIR}/bin/
 }
 
@@ -97,15 +117,15 @@ do
     # environment variables - shell
     NETCDF=$(nc-config --prefix)
     NETCDF_DIR=$NETCDF
-    LD_LIBRARY_PATH=$FLEX_LIB_DIR:$LD_LIBRARY_PATH
     JASPERLIB='/usr/lib64'
     JASPERINC='/usr/include'
-
     # environment variables – WRF-Chem
     WRF_EM_CORE=1     # selects the ARW core
     WRF_NMM_CORE=0    # ensures that the NMM core is deselected
     WRFIO_NCD_LARGE_FILE_SUPPORT=1    # supports large wrfout files
-    export NETCDF NETCDF_DIR LD_LIBRARY_PATH JASPERLIB JASPERINC
+    WRF_CHEM=0 # ensure chem off
+    WRF_KPP=0 # ensure kpp off
+    export NETCDF NETCDF_DIR JASPERLIB JASPERINC
     export WRFIO_NCD_LARGE_FILE_SUPPORT WRF_NMM_CORE WRF_EM_CORE
     # start building:
     echo "building for : ${FLAVOUR}"

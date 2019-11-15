@@ -1,0 +1,34 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads a prebuilt WRFChem only   "
+        puts stderr "                  WRFChem version 4.0          "
+        puts stderr "     Stored at /nobackup/cemac/software/apps/WRFChem/3.7.1 "
+        puts stderr "
+        Version $version
+}
+
+module-whatis "WRFChem NWP "
+
+flavours conflict WRFChem WRF
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+flavours root     $::env(CEMAC_DIR)/software/apps/WRFChem/3.7.1
+flavours revision 1
+flavours commit
+
+setenv WRF_HOME [flavours path]
+
+flavours prepend-path PATH bin
+setenv ulimit -s unlimited
+setenv ulimit -c unlimited
+setenv WRF_CHEM 1
+setenv WRF_KPP 1
+setenv OMP_STACKSIZE 4G
+setenv OMP_NUM_THREADS 1
+
+flavours cleanup

@@ -17,6 +17,9 @@ flavours conflict WRFChem WRF WRF-Debug
 flavours prereq -class compiler
 flavours prereq -class mpi
 
+module load netcdf/4.6.3
+module load hdf5/1.8.21
+
 flavours root     $::env(CEMAC_DIR)/software/apps/WRF/4.1.2
 flavours revision 1
 flavours commit

@@ -1,0 +1,22 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads ncl "
+        Version $version
+}
+
+module-whatis "NCAR Command Language "
+
+flavours root     $::env(CEMAC_DIR)/software/apps/ncl/6.5.0
+flavours revision 1
+flavours commit
+
+setenv NCARG_ROOT [flavours path]
+
+flavours prepend-path PATH bin
+
+
+flavours cleanup

@@ -15,8 +15,7 @@ flavours revision 1
 flavours commit
 
 setenv NCARG_ROOT [flavours path]
+setenv GDAL_DATA /apps/developers/libraries/gdal/2.4.2/1/intel-19.0.4/share/gdal
 
 flavours prepend-path PATH bin
-
-
 flavours cleanup

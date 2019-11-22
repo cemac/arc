@@ -10,7 +10,7 @@ proc ModulesHelp { } {
 
 module-whatis "Anaconda for WRFCHEM"
 flavours conflict python
-flavours root     $::/nobackup/WRFChem/anaconda2/bin:/nobackup/WRFChem/anaconda2/
+flavours root $::env(CEMAC_DIR)/software/apps/wrfchemconda/2.7
 flavours revision 1
 flavours commit
 

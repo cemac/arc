@@ -94,11 +94,6 @@ do
         sed -i \
           "s|/gpfs/cru/jeu11bxu/igcm3.1/sdorog|${INSTALL_DIR}/data/OROG|g" \
           igcmsrc/*
-        sed -i \
-          "s|topog_gwd.dat|${INSTALL_DIR}/data/OROG/topog_gwd.dat|g" \
-          igcmsrc/T42L35_gravd2012-m.upd
-        \cp igcmsrc/T42L20_spinup2012-m.upd \
-          igcmsrc/T42L35_spinup2012-m.upd
         rsync -a igcmsrc ${INSTALL_DIR}/
       fi
       # data:

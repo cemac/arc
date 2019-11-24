@@ -1,0 +1,36 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Intermediate Global Circulation Model version 4
+
+    The IGCM4 (Intermediate Global Circulation Model version 4) is a global
+    spectral primitive equation climate model whose predecessors have
+    extensively been used in areas such as climate research, process modelling
+    and atmospheric dynamics. The IGCM4’s niche and utility lies in its speed
+    and flexibility allied with the complexity of a primitive equation climate
+    model.
+
+    Information:
+
+      https://doi.org/10.5194/gmd-8-1157-2015
+  "
+}
+
+module-whatis "Intermediate Global Circulation Model version 4 "
+
+flavours conflict igcm4
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+flavours root     $::env(CEMAC_DIR)/software/apps/igcm4/20191125
+flavours revision 1
+flavours commit
+
+setenv IGCM4_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

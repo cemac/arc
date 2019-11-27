@@ -107,7 +107,6 @@ do
       for i in aux blas fft PAutil util
       do
         pushd ${i}
-        sed -i 's|-fast|-O2 -fPIC -xHOST|g' Makefile
         make clean
         make
         \cp *.a ${INSTALL_DIR}/lib/
@@ -128,7 +127,7 @@ do
       if [ ! -e {INSTALL_DIR}/fluxsrc ] ; then
         chmod 644 *
         cp Makefile Makefile.original
-        sed -i 's|\(-O2\)|\1 -fPIC -xHOST|g' Makefile
+        sed -i 's|\(-O2\)|\1 -fPIC|g' Makefile
         sed -i \
           "s|^\(LIBCDF = \).*$|\1\`nc-config --flibs\`|g" \
           Makefile

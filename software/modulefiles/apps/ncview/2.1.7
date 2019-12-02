@@ -1,0 +1,31 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    NetCDF visual browser
+
+    Ncview is a visual browser for netCDF format files.  Typically you would
+    use ncview to get a quick and easy, push-button look at your netCDF files.
+    You can view simple movies of the data, view along various dimensions, take
+    a look at the actual data values, change color maps, invert the data, etc.
+    It runs on UNIX platforms under X11, R4 or higher.  
+    
+      Homepage : http://meteora.ucsd.edu/~pierce/ncview_home_page.html
+  "
+}
+
+module-whatis "NetCDF visual browser "
+
+flavours conflict ncview
+
+flavours root     $::env(CEMAC_DIR)/software/apps/ncview/2.1.7
+flavours revision 1
+flavours commit
+
+setenv NCVIEW_HOME [flavours path]
+
+flavours prepend-path PATH     bin
+
+flavours cleanup

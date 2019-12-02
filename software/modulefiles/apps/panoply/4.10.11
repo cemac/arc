@@ -1,0 +1,28 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    NetCDF, HDF and GRIB Data Viewer
+
+    Panoply is a cross-platform application that plots geo-gridded and other
+    arrays from netCDF, HDF, GRIB, and other datasets.  
+
+      Homepage : http://www.giss.nasa.gov/tools/panoply/
+  "
+}
+
+module-whatis "NetCDF, HDF and GRIB Data Viewer "
+
+flavours conflict panoply
+
+flavours root     $::env(CEMAC_DIR)/software/apps/panoply/4.10.11
+flavours revision 1
+flavours commit
+
+setenv PANOPLY_HOME [flavours path]
+
+flavours prepend-path PATH     bin
+
+flavours cleanup

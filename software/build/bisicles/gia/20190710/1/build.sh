@@ -15,10 +15,10 @@
 # this requires an account, which can be obtained here:
 #
 #   https://anag-repo.lbl.gov/
+#
 # gia files can be found here:
 #
 #   https://github.com/skachuck/giabisicles
-#
 
 # verion information:
 #

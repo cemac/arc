@@ -60,7 +60,7 @@ function build_WPS() {
   rm -rf v4.1.tar.gz
   tar xzf ${SRC_DIR}/v4.1.tar.gz
   WRF_DIR=${CEMAC_DIR}/software/build/WRF/4.1.2/1/${FLAVOUR}/WRF-4.1.2/
-  ln -sf $WRF_DIR WRFV4.1
+  ln -sf $WRF_DIR WRF
   cd WPS-4.1
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure

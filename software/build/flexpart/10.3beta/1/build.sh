@@ -14,9 +14,9 @@ APP_VERSION='10.3beta'
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
-# compilers for which bisicles should be built:
+# compilers for which flexpart should be built:
 COMPILER_VERS='gnu:native gnu:6.3.0 intel:17.0.1'
-# mpi libraries for which bisicles should be built:
+# mpi libraries for which flexpart should be built:
 MPI_VERS='openmpi:2.0.2 mvapich2:2.2 intelmpi:2017.1.132'
 
 # get_file function:

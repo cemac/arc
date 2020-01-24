@@ -1,4 +1,4 @@
-##%Module 1.0
+#%Module 1.0
 package require flavours
 flavours init
 

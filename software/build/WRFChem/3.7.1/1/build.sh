@@ -153,6 +153,7 @@ function build_wrf() {
     sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
   fi
   ./compile em_real >& log.compile_wrf-meteo
+  cd ../..
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi

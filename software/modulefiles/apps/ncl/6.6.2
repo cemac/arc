@@ -32,14 +32,13 @@ module-whatis "NCAR Command Language "
 
 flavours conflict ncl
 
-flavours root     $::env(CEMAC_DIR)/software/apps/ncl/6.5.0
+flavours root     $::env(CEMAC_DIR)/software/apps/ncl/6.6.2
 flavours revision 1
 flavours commit
 
 setenv NCL_HOME   [flavours path]
 setenv NCARG_ROOT [flavours path]
 setenv NCARG_LIB  [flavours path]/lib
-setenv GDAL_DATA  /apps/developers/libraries/gdal/2.4.2/1/intel-19.0.4/share/gdal
 
 flavours prepend-path PATH         bin
 flavours prepend-path CPATH        include

@@ -153,30 +153,13 @@ function build_wrf() {
     sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
   fi
   ./compile em_real >& log.compile_wrf-meteo
-  cd ../..
+  cd ${BUILD_DIR}
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
   if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
       mkdir -p ${INSTALL_DIR}/bin/WRFchem
   fi
-  for BIX in $(find WRFChem3.7.1/* -maxdepth 3 \
-                 -type f -name '*.exe')
-    do
-      # add hdf5 / netcdf lib directories to rpath if required:
-      ldd ${BIX} | grep -q hdf5 >& /dev/null
-      if [ "${?}" = "0" ] ; then
-        BIX_RPATH=$(patchelf --print-rpath ${BIX})
-        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
-          ${BIX}
-      fi
-      ldd ${BIX} | grep -q netcdf >& /dev/null
-      if [ "${?}" = "0" ] ; then
-        BIX_RPATH=$(patchelf --print-rpath ${BIX})
-        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
-          ${BIX}
-      fi
-    done
   cp -p WRFChem3.7.1/WRFChem3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRFchem
   cp -p WRFChem3.7.1/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
@@ -194,7 +177,25 @@ function build_wrf() {
   ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
   ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
   ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
-
+  cd ${INSTALL_DIR}
+  for BIX in $(find * -maxdepth 1 \
+                 -type f -name '*')
+    do
+      # add hdf5 / netcdf lib directories to rpath if required:
+      ldd ${BIX} | grep -q hdf5 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+      ldd ${BIX} | grep -q netcdf >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+    done
+  cd ${BUILD_DIR}
 }
 
 # loop through compilers and mpi libraries:
@@ -217,7 +218,7 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf
     # build variables:
     # environment variables - shell
     NETCDF=$(nc-config --prefix)

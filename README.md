@@ -7,7 +7,7 @@
 ## CEMAC ARC4 Directory
 
 [![GitHub top language](https://img.shields.io/github/languages/top/cemac/arc.svg)](https://github.com/cemac/arc) [![GitHub issues](https://img.shields.io/github/issues/cemac/arc.svg)](https://github.com/cemac/arc/issues) [![GitHub last commit](https://img.shields.io/github/last-commit/cemac/arc.svg)](https://github.com/cemac/arc/commits/master)  ![GitHub](https://img.shields.io/github/license/cemac/arc.svg)
-[![HitCount](http://hits.dwyl.io/{cemac}/{arc}.svg)](http://hits.dwyl.io/{cemac}/{arc})
+[![HitCount](http://hits.dwyl.com/{cemac}/{arc}.svg)](http://hits.dwyl.com/{cemac}/{arc})
 
 
 This directory contains CEMAC content for the ARC4 system.

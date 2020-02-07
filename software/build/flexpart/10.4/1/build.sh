@@ -319,22 +319,35 @@ DATA_DIR="\${1}"
 if [ -z "\${DATA_DIR}" ] ; then
   DATA_DIR="."
 fi
+ERA_FILES="\$(\ls \${DATA_DIR}/E* 2> /dev/null)"
+GFS_FILES="\$(\ls \${DATA_DIR}/gfs* 2> /dev/null)"
 if [ -e "\${DATA_DIR}/AVAILABLE" ] ; then
-  \mv \${DATA_DIR}/AVAILABLE \
-    \${DATA_DIR}/AVAILABLE.\$(date +%s)
+  \mv \${DATA_DIR}/AVAILABLE     \${DATA_DIR}/AVAILABLE.\$(date +%s)
 fi
 cat > \${DATA_DIR}/AVAILABLE <<EOH
 DATE      TIME     FILNAME     SPECIFICATIONS
 YYYYMMDD  HHMMSS
 _____________________________________________
 EOH
-for i in \${DATA_DIR}/E*
-do
-  f=\$(basename \${i})
-  d="20\${f:2:6}"
-  t="\${f:8:2}0000"
-  echo "\${d} \${t}      \${f}      ON DISC" >> \${DATA_DIR}/AVAILABLE
-done
+if [ ! -z "\${ERA_FILES}" ] ; then
+  for i in \${ERA_FILES}
+  do
+    f=\$(basename \${i})
+    d="20\${f:2:6}"
+    t="\${f:8:2}0000"
+    echo "\${d} \${t}      \${f}      ON DISC" >> \${DATA_DIR}/AVAILABLE
+  done
+elif [ ! -z "\${GFS_FILES}" ] ; then
+  for i in \${GFS_FILES}
+  do
+    f=\$(basename \${i})
+    d="\${f:9:8}"
+    h="\${f:18:2}"
+    a="\${f:25:1}"
+    t="\$(printf '%02d' \$((\${h} + \${a})))0000"
+    echo "\${d} \${t}      \${f}      ON DISC" >> \${DATA_DIR}/AVAILABLE
+  done
+fi
 EOF
   chmod 755 ${INSTALL_DIR}/bin/make_available
 }

@@ -11,7 +11,7 @@ APPS_DIR="${CEMAC_DIR}/software/apps"
 APP_NAME='flexpart'
 APP_VERSION='10.4'
 # build version:
-BUILD_VERSION='1'
+BUILD_VERSION='2'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which flexpart should be built:

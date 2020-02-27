@@ -15,6 +15,13 @@
 # this requires an account, which can be obtained here:
 #
 #   https://anag-repo.lbl.gov/
+#
+# amrfile build information here:
+#
+#   https://github.com/cemacrr/libamrfile
+#
+# built on el6 to be compatible with most current linuxes
+# ask for access to github repository (license for libamrfile unknown ...)
 
 # verion information:
 #
@@ -64,6 +71,7 @@ mkdir -p ${SRC_DIR}
 
 # get sources:
 get_file 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.12.4.tar.gz'
+get_file 'https://raw.githubusercontent.com/cemac/extract_bisicles_data/master/extract_bisicles_data'
 
 # bisicles builder function:
 function build_bisicles() {
@@ -199,6 +207,23 @@ EOF
   if [ ! -e ${INSTALL_DIR}/examples ] ; then
     ln -s BISICLES/BISICLES/examples \
       ${INSTALL_DIR}/
+  fi
+  # add bisicles extraction tool:
+  if [ ! -e ${INSTALL_DIR}/extract_bisicles_data ] ; then
+    mkdir ${INSTALL_DIR}/extract_bisicles_data
+    tar xzf ${SRC_DIR}/amrfile.tar.gz \
+      -C ${INSTALL_DIR}/extract_bisicles_data
+    \cp ${SRC_DIR}/extract_bisicles_data \
+      ${INSTALL_DIR}/extract_bisicles_data/
+    chmod 755 ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data
+    # wrap!:
+    cat > ${INSTALL_DIR}/bin/extract_bisicles_data <<EOF
+#!/bin/bash
+PYTHONPATH="${INSTALL_DIR}/extract_bisicles_data" \\
+  exec ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data \\
+  "\${@}"
+EOF
+    chmod 755 ${INSTALL_DIR}/extract_bisicles_data
   fi
 }
 

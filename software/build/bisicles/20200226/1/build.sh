@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- bisicles 20200226
-#  updated : 2019-10-25
+#  updated : 2020-02-28
 
 # bisicles build instructions:
 #

@@ -53,9 +53,6 @@ COMPILER_VERS='gnu:native gnu:6.3.0 intel:17.0.1'
 # mpi libraries for which bisicles should be built:
 MPI_VERS='openmpi:2.0.2 mvapich2:2.2 intelmpi:2017.1.132'
 
-COMPILER_VERS='gnu:native'
-MPI_VERS='openmpi:2.0.2'
-
 # get_file function:
 function get_file() {
   URL=${1}

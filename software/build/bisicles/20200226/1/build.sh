@@ -53,6 +53,9 @@ COMPILER_VERS='gnu:native gnu:6.3.0 intel:17.0.1'
 # mpi libraries for which bisicles should be built:
 MPI_VERS='openmpi:2.0.2 mvapich2:2.2 intelmpi:2017.1.132'
 
+COMPILER_VERS='gnu:native'
+MPI_VERS='openmpi:2.0.2'
+
 # get_file function:
 function get_file() {
   URL=${1}
@@ -72,6 +75,40 @@ mkdir -p ${SRC_DIR}
 # get sources:
 get_file 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.12.4.tar.gz'
 get_file 'https://raw.githubusercontent.com/cemac/extract_bisicles_data/master/extract_bisicles_data'
+get_file 'https://files.pythonhosted.org/packages/d4/0c/9840c08189e030873387a73b90ada981885010dd9aea134d6de30cd24cb8/virtualenv-15.1.0.tar.gz'
+
+# python building function
+function build_python() {
+  # variables:
+  SRC_DIR=${1}
+  BUILD_DIR=${2}
+  PYTHON_DIR=${3}
+  PYTHON_LIB_DIR=${4}
+  PYTHON_VIRTUALENV=${5}
+  # build virtualenv:
+  cd ${BUILD_DIR}
+  if [ ! -e ${PYTHON_LIB_DIR}/virtualenv.py ] ; then
+    rm -fr virtualenv-15.1.0
+    tar xzf ${SRC_DIR}/virtualenv-15.1.0.tar.gz
+    cd virtualenv-15.1.0
+    # build and install virtualenv:
+    mkdir -p ${PYTHON_LIB_DIR}
+    /usr/bin/python setup.py build && \
+    rsync -av build/lib/ \
+      ${PYTHON_LIB_DIR}/
+  fi
+  # set up virtualenv:
+  if [ ! -e ${PYTHON_VIRTUALENV}/bin/activate ] ; then
+    echo "creating virtualenv"
+    mkdir -p ${PYTHON_VIRTUALENV}
+    PYTHONPATH="${PYTHON_LIB_DIR}" \
+      /usr/bin/python -m virtualenv ${PYTHON_VIRTUALENV}
+  fi
+  # activate virtualenv:
+  . ${PYTHON_VIRTUALENV}/bin/activate
+  # install nump, h5py and netCDF4:
+  pip install -U pip numpy h5py netCDF4
+}
 
 # bisicles builder function:
 function build_bisicles() {
@@ -208,7 +245,11 @@ EOF
     ln -s BISICLES/BISICLES/examples \
       ${INSTALL_DIR}/
   fi
-  # add bisicles extraction tool:
+  # add bisicles extraction tool ... create python virtualenv:
+  build_python ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR}/python \
+               ${INSTALL_DIR}/python/lib \
+               ${INSTALL_DIR}/python/virtualenv
+  # extract extraction tool:
   if [ ! -e ${INSTALL_DIR}/extract_bisicles_data ] ; then
     mkdir ${INSTALL_DIR}/extract_bisicles_data
     tar xzf ${SRC_DIR}/amrfile.tar.gz \
@@ -217,13 +258,16 @@ EOF
       ${INSTALL_DIR}/extract_bisicles_data/
     chmod 755 ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data
     # wrap!:
+    mkdir -p ${INSTALL_DIR}/bin
     cat > ${INSTALL_DIR}/bin/extract_bisicles_data <<EOF
 #!/bin/bash
-PYTHONPATH="${INSTALL_DIR}/extract_bisicles_data" \\
-  exec ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data \\
-  "\${@}"
+. /etc/profile.d/modules.sh
+module load python/2.7.13
+. ${INSTALL_DIR}/python/virtualenv/bin/activate
+export PYTHONPATH="${INSTALL_DIR}/extract_bisicles_data"
+exec ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data "\${@}"
 EOF
-    chmod 755 ${INSTALL_DIR}/extract_bisicles_data
+    chmod 755 ${INSTALL_DIR}/bin/extract_bisicles_data
   fi
 }
 

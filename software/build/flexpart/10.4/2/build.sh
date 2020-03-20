@@ -79,9 +79,9 @@ function build_eccodes() {
     -DCMAKE_INSTALL_PREFIX=${EC_INSTALL_DIR} \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_C_COMPILER=${CC} \
-    -DCMAKE_C_FLAGS='-O2 -fPIC' \
+    -DCMAKE_C_FLAGS='-O2 -fPIC -mcmodel=medium' \
     -DCMAKE_Fortran_COMPILER="${FC}" \
-    -DCMAKE_Fortran_FLAGS='-O2 -fPIC' \
+    -DCMAKE_Fortran_FLAGS='-O2 -fPIC -mcmodel=medium' \
     -DENABLE_PNG=ON \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
     -DENABLE_INSTALL_ECCODES_SAMPLES=ON \
@@ -229,7 +229,6 @@ function build_flexpart() {
   sed -i \
     's|^FFLAGS.*$|FFLAGS = -O$(O_LEV) -fPIC -g -cpp -m64 -mcmodel=medium -fconvert=little-endian -frecord-marker=4 -fmessage-length=0 -O$(O_LEV) $(NCOPT) $(FUSER)|g' \
     makefile
-  sed -i 's|mcmodel=medium|mcmodel=large|g' makefile
   # intel compiler options:
   if [ "${MY_CMP}" = "intel" ] ; then
     sed -i 's|-fconvert=little-endian|-convert little_endian|g' makefile

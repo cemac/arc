@@ -229,6 +229,7 @@ function build_flexpart() {
   sed -i \
     's|^FFLAGS.*$|FFLAGS = -O$(O_LEV) -fPIC -g -cpp -m64 -mcmodel=medium -fconvert=little-endian -frecord-marker=4 -fmessage-length=0 -O$(O_LEV) $(NCOPT) $(FUSER)|g' \
     makefile
+  sed -i 's|mcmodel=medium|mcmodel=large|g' makefile
   # intel compiler options:
   if [ "${MY_CMP}" = "intel" ] ; then
     sed -i 's|-fconvert=little-endian|-convert little_endian|g' makefile

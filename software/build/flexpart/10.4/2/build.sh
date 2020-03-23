@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- flexpart 10.4
-#  updated : 2020-02-26
+#  updated : 2020-03-23
 
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
@@ -72,6 +72,12 @@ function build_eccodes() {
   fi
   mkdir cmake_build
   cd cmake_build
+  # check build flags depending on whether building for python ... :
+  if [ "${ENABLE_PYTHON}" = "ON" ] ; then
+    EC_FLAGS='-O2 -fPIC'
+  else
+    EC_FLAGS='-O2 -fPIC -mcmodel=large'
+  fi
   # build and install:
   cmake \
     .. \
@@ -79,9 +85,9 @@ function build_eccodes() {
     -DCMAKE_INSTALL_PREFIX=${EC_INSTALL_DIR} \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_C_COMPILER=${CC} \
-    -DCMAKE_C_FLAGS='-O2 -fPIC -mcmodel=large' \
-    -DCMAKE_Fortran_COMPILER="${FC}" \
-    -DCMAKE_Fortran_FLAGS='-O2 -fPIC -mcmodel=large' \
+    -DCMAKE_C_FLAGS="${EC_FLAGS}" \
+    -DCMAKE_Fortran_COMPILER=${FC} \
+    -DCMAKE_Fortran_FLAGS="${EC_FLAGS}" \
     -DENABLE_PNG=ON \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
     -DENABLE_INSTALL_ECCODES_SAMPLES=ON \

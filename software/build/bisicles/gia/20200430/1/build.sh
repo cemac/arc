@@ -124,10 +124,9 @@ function build_python() {
     PYTHONPATH="${PYTHON_LIB_DIR}" \
       /usr/bin/python -m virtualenv ${PYTHON_VIRTUALENV}
   fi
-  # activate virtualenv:
-  . ${PYTHON_VIRTUALENV}/bin/activate
-  # install nump, h5py and netCDF4:
-  pip install -U pip numpy h5py netCDF4==1.5.2
+  # activate virtualenv and install numpy, h5py and netCDF4:
+  (. ${PYTHON_VIRTUALENV}/bin/activate && \
+     pip install -U pip numpy h5py netCDF4==1.5.2)
 }
 
 # bisicles builder function:

@@ -242,7 +242,13 @@ EOF
       BIX_NAME=$(basename ${BIX})
       # short name ... :
       BIX_SHORTNAME=${BIX_NAME%\.Linux*}
-      # add hdf5 / netcdf lib directories to rpath if required:
+      # add fftw3 / hdf5 / netcdf lib directories to rpath if required:
+      ldd ${BIX} | grep -q fftw3 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${FFTW_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
       ldd ${BIX} | grep -q hdf5 >& /dev/null
       if [ "${?}" = "0" ] ; then
         BIX_RPATH=$(patchelf --print-rpath ${BIX})

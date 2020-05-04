@@ -191,8 +191,8 @@ function build_bisicles() {
     echo "configuring machine specific make options"
     cat > ${BISICLES_HOME}/BISICLES/code/mk/arc3 <<EOF
 PYTHON_VERSION=2.7
-PYTHON_INC=-I${PYTHON_HOME}/include/python2.7
-PYTHON_LIBS=-L${PYTHON_HOME}/lib -lpython2.7
+PYTHON_INC=-I/usr/include/python2.7
+PYTHON_LIBS=-L/usr/lib64 -lpython2.7
 NETCDF_INC=-I$(nc-config --includedir)
 NETCDF_LIBS=$(nc-config --flibs)
 EOF
@@ -241,7 +241,13 @@ EOF
       BIX_NAME=$(basename ${BIX})
       # short name ... :
       BIX_SHORTNAME=${BIX_NAME%\.Linux*}
-      # add hdf5 / netcdf lib directories to rpath if required:
+      # add fftw3 / hdf5 / netcdf lib directories to rpath, if required:
+      ldd ${BIX} | grep -q fftw3 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${FFTW_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
       ldd ${BIX} | grep -q hdf5 >& /dev/null
       if [ "${?}" = "0" ] ; then
         BIX_RPATH=$(patchelf --print-rpath ${BIX})
@@ -286,8 +292,6 @@ EOF
     mkdir -p ${INSTALL_DIR}/bin
     cat > ${INSTALL_DIR}/bin/extract_bisicles_data <<EOF
 #!/bin/bash
-. /etc/profile.d/modules.sh
-module load python/2.7.13
 . ${INSTALL_DIR}/python/virtualenv/bin/activate
 export PYTHONPATH="${INSTALL_DIR}/extract_bisicles_data"
 exec ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data "\${@}"
@@ -317,15 +321,14 @@ do
     # set up modules:
     module purge
     module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 \
-      fftw python/2.7.13 patchelf
+      fftw patchelf
     # build variables:
-    CPATH="${PYTHON_HOME}/include/python2.7:${CPATH}"
     CFLAGS='-O2 -fPIC'
     CXXFLAGS='-O2 -fPIC'
     CPPFLAGS='-O2 -fPIC'
     FFLAGS='-O2 -fPIC'
     FCFLAGS='-O2 -fPIC'
-    export CPATH CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
+    export CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
     # start building:
     echo "building for : ${FLAVOUR}"
     # petsc:

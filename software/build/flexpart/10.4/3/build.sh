@@ -225,7 +225,9 @@ function build_flexpart() {
   sed -i 's|nxmax=361|nxmax=721|g' par_mod.f90
   sed -i 's|nymax=181|nymax=361|g' par_mod.f90
   sed -i 's|maxspec=1|maxspec=10|g' par_mod.f90
-  sed -i 's|maxreceptor=20|maxreceptor=30|g' par_mod.f90
+  sed -i 's|nf90_hdf5|nf90_netcdf4|g' netcdf_output_mod.f90
+  sed -i 's|ncid = ncid,|ncid = ncid|g' netcdf_output_mod.f90
+  sed -i 's|cache_size = cache_size||g' netcdf_output_mod.f90
   \cp makefile makefile.original
   sed -i "s|\/usr\/bin\/gfortran|${FC}|g" makefile
   sed -i 's|\/usr\/bin\/mpifort|mpif90|g' makefile

@@ -84,9 +84,9 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
   fi
   cat > ${HOME}/.condarc <<EOF
 auto_activate_base: false
- channels:
-   - conda-forge
-   - defaults
+channels:
+  - conda-forge
+  - defaults
 channel_priority: strict
 EOF
   # add packages:

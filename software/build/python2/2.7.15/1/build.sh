@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#- python 2.7.17
+#- python 2.7.15
 #  updated : 2020-05-22
 
 # source directory:
@@ -9,7 +9,7 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/compilers"
 # app information:
 APP_NAME='python2'
-APP_VERSION='2.7.17'
+APP_VERSION='2.7.15'
 # build version:
 BUILD_VERSION='1'
 # 'flavour':
@@ -86,12 +86,14 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
 channels:
   - conda-forge
   - defaults
-channel_priority: strict
-auto_activate_base: false
 EOF
+  # update conda:
+  conda update -y -n base -c defaults conda
+  # add mamba:
+  conda install -y mamba
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    conda install -y ${CONDA_PACKAGES}
+    mamba install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}
@@ -117,9 +119,9 @@ EOF
            jupyter-bundlerextension jupyter-kernel jupyter-kernelspec \
            jupyter-migrate jupyter-nbconvert jupyter-nbextension \
            jupyter-notebook jupyter-run jupyter-serverextension \
-           jupyter-troubleshoot jupyter-trust pandoc pandoc-citeproc \
-           pydoc pylint pylint-gui python python2 python2.7 python2.7-config \
-           python2-config python-config
+           jupyter-troubleshoot jupyter-trust nosetests pandoc \
+           pandoc-citeproc pydoc pylint pylint-gui python python2 python2.7 \
+           python2.7-config python2-config python-config nosetests
   do
     ln -s __wrapper ${INSTALL_DIR}/bin/${i} 
   done

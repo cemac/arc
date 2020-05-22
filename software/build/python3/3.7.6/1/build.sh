@@ -86,12 +86,14 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
 channels:
   - conda-forge
   - defaults
-channel_priority: strict
-auto_activate_base: false
 EOF
+  # update conda:
+  conda update -y -n base -c defaults conda
+  # add mamba:
+  conda install -y mamba
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    conda install -y ${CONDA_PACKAGES}
+    mamba install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}
@@ -117,9 +119,9 @@ EOF
            jupyter-bundlerextension jupyter-kernel jupyter-kernelspec \
            jupyter-migrate jupyter-nbconvert jupyter-nbextension \
            jupyter-notebook jupyter-run jupyter-serverextension \
-           jupyter-troubleshoot jupyter-trust pandoc pandoc-citeproc \
-           pydoc pylint pylint-gui python python3 python3.8 python3.8-config \
-           python3-config python-config
+           jupyter-troubleshoot jupyter-trust nosetests pandoc \
+           pandoc-citeproc pydoc pylint pylint-gui python python3 python3.8 \
+           python3.8-config python3-config python-config
   do
     ln -s __wrapper ${INSTALL_DIR}/bin/${i} 
   done

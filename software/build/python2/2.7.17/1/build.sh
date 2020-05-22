@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#- python 2.7.15
+#- python 2.7.17
 #  updated : 2020-05-22
 
 # source directory:
@@ -9,7 +9,7 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/compilers"
 # app information:
 APP_NAME='python2'
-APP_VERSION='2.7.15'
+APP_VERSION='2.7.17'
 # build version:
 BUILD_VERSION='1'
 # 'flavour':
@@ -21,7 +21,7 @@ CONDA_INSTALLER='Miniconda2-latest-Linux-x86_64.sh'
 # conda directory:
 CONDA_DIR="${INSTALL_DIR}/conda"
 # conda packages to add:
-CONDA_PACKAGES="pylint ipython notebook requests matplotlib scipy numpy iris paramiko nose netcdf4 cartopy cf_units pandas pyproj geopandas pyresample xarray"
+CONDA_PACKAGES="cartopy cf_units geopandas ipython iris matplotlib netcdf4 nose notebook numpy pandas paramiko pylint pyproj pyresample requests scipy xarray"
 # pip packages to add:
 PIP_PACKAGES=""
 
@@ -123,6 +123,11 @@ EOF
   do
     ln -s __wrapper ${INSTALL_DIR}/bin/${i} 
   done
+  # Tidy up:
+  \rm -f ${HOME}/.condarc
+  if [ -e "${HOME}/.__condarc" ] ; then
+    \mv ${HOME}/.__condarc ${HOME}/.condarc
+  fi
 fi
 
 # complete:

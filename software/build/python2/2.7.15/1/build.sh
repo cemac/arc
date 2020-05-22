@@ -99,7 +99,7 @@ EOF
     pip install ${PIP_PACKAGES}
   fi
   # update:
-  mamba update -y --all
+  conda update -y --all
   # wrap:
   mkdir ${INSTALL_DIR}/bin 
   cat > ${INSTALL_DIR}/bin/__wrapper <<EOF

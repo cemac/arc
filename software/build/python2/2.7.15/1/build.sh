@@ -87,15 +87,19 @@ channels:
   - conda-forge
   - defaults
 EOF
+  # update first:
+  conda update -y --all
+  # install mamba:
+  conda install -y mamba
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    conda install -y ${CONDA_PACKAGES}
+    mamba install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}
   fi
   # update:
-  conda update -y --all
+  mamba update -y --all
   # wrap:
   mkdir ${INSTALL_DIR}/bin 
   cat > ${INSTALL_DIR}/bin/__wrapper <<EOF

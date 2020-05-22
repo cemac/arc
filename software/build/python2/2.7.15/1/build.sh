@@ -83,17 +83,15 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
     \mv ${HOME}/.condarc ${HOME}/.__condarc
   fi
   cat > ${HOME}/.condarc <<EOF
-channels:
-  - conda-forge
-  - defaults
+auto_activate_base: false
+ channels:
+   - conda-forge
+   - defaults
+channel_priority: strict
 EOF
-  # update conda:
-  conda update -y -n base -c defaults conda
-  # add mamba:
-  conda install -y mamba
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    mamba install -y ${CONDA_PACKAGES}
+    conda install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}

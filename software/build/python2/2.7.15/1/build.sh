@@ -121,7 +121,7 @@ EOF
            jupyter-notebook jupyter-run jupyter-serverextension \
            jupyter-troubleshoot jupyter-trust nosetests pandoc \
            pandoc-citeproc pydoc pylint pylint-gui python python2 python2.7 \
-           python2.7-config python2-config python-config nosetests
+           python2.7-config python2-config python-config
   do
     ln -s __wrapper ${INSTALL_DIR}/bin/${i} 
   done

@@ -1,0 +1,61 @@
+#%Module1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Anaconda Python2 environment
+
+    Includes matplotlib, numpy, scipy, etc.
+  "
+}
+
+module-whatis "Anaconda Python2 environment "
+
+flavours conflict python python3
+
+flavours root     $::env(CEMAC_DIR)/software/compilers/python2/2.7.15
+flavours revision 1
+flavours commit
+
+setenv PYTHON_HOME [flavours path]/conda
+
+flavours prepend-path PATH bin
+
+if { [module-info mode load] } {
+  if { [module-info shell csh] ||  [module-info shell tcsh] } {
+    puts stdout "alias >& /dev/null && source [flavours path]/conda/etc/profile.d/conda.csh ;"
+  } else {
+    puts stdout "alias >& /dev/null && source [flavours path]/conda/etc/profile.d/conda.sh ;"
+  }
+}
+
+if { [module-info mode remove] } {
+  if { [module-info shell csh] ||  [module-info shell tcsh] } {
+    unsetenv _CE_CONDA
+    unsetenv _CE_M
+    unsetenv _CONDA_EXE
+    unsetenv CONDA_EXE
+    unsetenv CONDA_PYTHON_EXE
+    unsetenv _CONDA_ROOT
+    unsetenv CONDA_SHLVL
+    unset-alias ask_conda
+    unset-alias conda
+  } else {
+    unsetenv _CE_CONDA
+    unsetenv _CE_M
+    unsetenv CONDA_EXE
+    unsetenv CONDA_PYTHON_EXE
+    unsetenv CONDA_SHLVL
+    unsetenv SYSP
+    unset-alias __add_sys_prefix_to_path
+    unset-alias __conda_activate
+    unset-alias __conda_hashr
+    unset-alias __conda_reactivate
+    unset-alias conda
+  }
+  remove-path PATH [flavours path]/conda/bin
+  remove-path PATH [flavours path]/conda/condabin
+}
+
+flavours cleanup

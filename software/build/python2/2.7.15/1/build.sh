@@ -83,11 +83,9 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
     \mv ${HOME}/.condarc ${HOME}/.__condarc
   fi
   cat > ${HOME}/.condarc <<EOF
-auto_activate_base: false
 channels:
   - conda-forge
   - defaults
-channel_priority: strict
 EOF
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then

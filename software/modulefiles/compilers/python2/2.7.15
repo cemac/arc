@@ -24,9 +24,9 @@ flavours prepend-path PATH bin
 
 if { [module-info mode load] } {
   if { [module-info shell csh] ||  [module-info shell tcsh] } {
-    puts stdout "source [flavours path]/conda/etc/profile.d/conda.csh ;"
+    puts stdout "alias >& /dev/null && source [flavours path]/conda/etc/profile.d/conda.csh ;"
   } else {
-    puts stdout "source [flavours path]/conda/etc/profile.d/conda.sh ;"
+    puts stdout "alias >& /dev/null && source [flavours path]/conda/etc/profile.d/conda.sh ;"
   }
 }
 

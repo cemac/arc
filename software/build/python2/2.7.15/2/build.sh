@@ -178,7 +178,7 @@ if [ ! -e ${INSTALL_DIR}/bin/mule-unpack ] ; then
   tar xxf ${SRC_DIR}/mule-2018.07.1.tar.gz
   cd mule-2018.07.1
   # build:
-  for i in um_packing um_utils mule
+  for i in um_packing um_spiral_search um_utils mule
   do
     pushd ${i}
     CPATH="${INSTALL_DIR}/deps/shumlib/include:${CPATH}" \
@@ -189,6 +189,12 @@ if [ ! -e ${INSTALL_DIR}/bin/mule-unpack ] ; then
           --add-needed libgfortran.so.3 \
           --add-needed libgomp.so.1 \
           build/lib*/um_packing/um_packing*.so
+      fi
+      if [ -e build/lib*/um_spiral_search/um_spiral_search*.so ] ; then
+        patchelf \
+          --add-needed libgfortran.so.3 \
+          --add-needed libgomp.so.1 \
+          build/lib*/um_spiral_search/um_spiral_search*.so
       fi
       ${INSTALL_DIR}/bin/python setup.py install
     popd

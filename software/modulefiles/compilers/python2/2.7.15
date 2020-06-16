@@ -15,7 +15,7 @@ module-whatis "Anaconda Python2 environment "
 flavours conflict python python3
 
 flavours root     $::env(CEMAC_DIR)/software/compilers/python2/2.7.15
-flavours revision 1
+flavours revision 2
 flavours commit
 
 setenv PYTHON_HOME [flavours path]/conda

@@ -169,7 +169,7 @@ if [ ! -e ${INSTALL_DIR}/deps/shumlib/lib/libshum_wgdos_packing.a ] ; then
 fi
 
 # Build and install mule:
-if [ ! -e ${INSTALL_DIR}/bin/mul-unpack ] ; then
+if [ ! -e ${INSTALL_DIR}/bin/mule-unpack ] ; then
   echo "building mule"
   # set up build dir:
   cd ${BUILD_DIR}
@@ -184,11 +184,11 @@ if [ ! -e ${INSTALL_DIR}/bin/mul-unpack ] ; then
     CPATH="${INSTALL_DIR}/deps/shumlib/include:${CPATH}" \
       LIBRARY_PATH="${INSTALL_DIR}/deps/shumlib/lib:${LIBRARY_PATH}" \
       ${INSTALL_DIR}/bin/python setup.py build
-      if [ -e build/lib*/um_packing/um_packing.so ] ; then
+      if [ -e build/lib*/um_packing/um_packing*.so ] ; then
         patchelf \
           --add-needed libgfortran.so.3 \
           --add-needed libgomp.so.1 \
-          build/lib*/um_packing/um_packing.so
+          build/lib*/um_packing/um_packing*.so
       fi
       ${INSTALL_DIR}/bin/python setup.py install
     popd

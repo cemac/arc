@@ -160,8 +160,8 @@ function build_wrf() {
   cp -p WRFChem4.2/WPS-4.2/*.exe ${INSTALL_DIR}/bin/
   cp -p WRFChem4.2/WPS-4.2/link_grib.csh ${INSTALL_DIR}/bin/
   ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFchem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFchem/real.exe ${INSTALL_DIR}/bin/real.exe
   for BIX in $(find ${INSTALL_DIR}/bin/* -maxdepth 1 \
                  -type f )
     do

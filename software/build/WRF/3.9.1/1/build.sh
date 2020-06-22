@@ -16,7 +16,6 @@
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
-CEMAC_DIR='/nobackup/earhbu/arc'
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRF'
@@ -44,7 +43,7 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.2.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'V3.9.1.1.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
@@ -59,9 +58,9 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf V3.9.1.tar.gz
-  tar xzf ${SRC_DIR}/V3.9.1.tar.gz
-  cd WRF-3.9.1
+  rm -rf V3.9.1.1.tar.gz
+  tar xzf ${SRC_DIR}/V3.9.1.1.tar.gz
+  cd WRF-3.9.1.1
   ./clean -a
   if [ $FC == "ifort" ]; then
     echo -e "15\n1" | ./configure
@@ -73,7 +72,24 @@ function build_wrf() {
     mkdir -p ${INSTALL_DIR}/bin
   fi
   cp -p main/*.exe ${INSTALL_DIR}/bin/
-  .clean -a
+  cd ${INSTALL_DIR}/bin/
+  for BIX in $(find main/* -maxdepth 1 \
+                 -type f -name '*.exe')
+    do
+      # add hdf5 / netcdf lib directories to rpath if required:
+      ldd ${BIX} | grep -q hdf5 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+      ldd ${BIX} | grep -q netcdf >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+    done
 }
 
 # loop through compilers and mpi libraries:
@@ -96,7 +112,7 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf
     # build variables:
     # environment variables - shell
     NETCDF=$(nc-config --prefix)

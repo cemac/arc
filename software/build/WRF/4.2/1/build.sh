@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRF and 4.1.3
+#description    : WRF and 4.2
 # instructions  :
 # Source code   :
 # Register      :
@@ -19,15 +19,15 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRF'
-APP_VERSION='4.1.3'
+APP_VERSION='4.2'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
+COMPILER_VERS='intel:17.0.1'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+MPI_VERS='openmpi:2.0.2 intelmpi:2017.1.132'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -41,11 +41,11 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.3.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'v4.2.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WRF/archive/v4.1.3.tar.gz
+  get_file https://github.com/wrf-model/WRF/archive/v4.2.tar.gz
 fi
 
 # WRF Builder function:
@@ -56,9 +56,9 @@ function build_wrf() {
   INSTALL_DIR=${3}
   MY_CMP=${4}
   cd ${BUILD_DIR}
-  rm -rf v4.1.3.tar.gz
-  tar xzf ${SRC_DIR}/v4.1.3.tar.gz
-  cd WRF-4.1.3
+  rm -rf v4.2.tar.gz
+  tar xzf ${SRC_DIR}/v4.2.tar.gz
+  cd WRF-4.2
   sed -i "s|I_really_want_to_output_grib2_from_WRF = \"FALSE\" ; |I_really_want_to_output_grib2_from_WRF = \"TRUE\" ; |g" arch/Config.pl
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
@@ -73,7 +73,7 @@ function build_wrf() {
     mkdir -p ${INSTALL_DIR}/bin
   fi
   cp -p main/*.exe ${INSTALL_DIR}/bin/
-  cd ${INSTALL_DIR}/bin/
+  cd ${INSTALL_DIR}/bin
   for BIX in $(find main/* -maxdepth 1 \
                  -type f -name '*.exe')
     do

@@ -243,7 +243,7 @@ function build_flexpart() {
     sed -i 's|-fmessage-length=0||g' makefile
   fi
   # netcdf creation patching:
-  \cp ${SRC_DR}/netcdf_output_mod.f90.patch .
+  \cp ${SRC_DIR}/netcdf_output_mod.f90.patch .
   patch -p1 < netcdf_output_mod.f90.patch
   # make!:
   make mpi ncf=yes

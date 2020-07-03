@@ -1,0 +1,24 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads anaconda "
+        Version $version
+}
+
+module-whatis "Anaconda for WRFCHEM"
+flavours conflict python
+flavours root $::env(CEMAC_DIR)/software/apps/wrfchemconda/2.7
+flavours revision 1
+flavours commit
+
+setenv CONDA_PREFIX /nobackup/WRFChem/anaconda2
+setenv CONDA_PATH /nobackup/WRFChem/anaconda2/etc/profile.d
+setenv CONDA_PYTHON_EXE /nobackup/WRFChem/anaconda2/bin/python
+setenv ANACONDA_PATH /nobackup/WRFChem/anaconda2
+
+
+flavours prepend-path PATH bin condabin
+flavours cleanup

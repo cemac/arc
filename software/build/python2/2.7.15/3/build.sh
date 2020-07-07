@@ -121,7 +121,7 @@ exec \$(basename \${0}) "\${@}"
 EOF
   chmod 755 ${INSTALL_DIR}/bin/__wrapper
   # links:
-  for i in 2to3 f2py f2py3 f2py3.7 idle idle3 ipython ipython3 jupyter \
+  for i in 2to3 f2py f2py2 f2py2.7 idle ipython ipython2 jupyter \
            jupyter-bundlerextension jupyter-kernel jupyter-kernelspec \
            jupyter-migrate jupyter-nbconvert jupyter-nbextension \
            jupyter-notebook jupyter-qtconsole jupyter-run \
@@ -130,9 +130,9 @@ EOF
            obspy-flinn-engdahl obspy-indexer obspy-mopad \
            obspy-mseed-recordanalyzer obspy-plot obspy-print \
            obspy-reftek-rescue obspy-runtests obspy-scan obspy-sds-report \
-           obspy-xseed2dataless pandoc pandoc-citeproc pydoc pydoc3 pylint \
-           pylint-gui python python3 python3.7 python3.7-config \
-           python3-config python-config spyder
+           obspy-xseed2dataless pandoc pandoc-citeproc pydoc pylint \
+           pylint-gui python python2 python2.7 python2.7-config \
+           python2-config python-config spyder
   do
     ln -s __wrapper ${INSTALL_DIR}/bin/${i} 
   done

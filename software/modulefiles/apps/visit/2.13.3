@@ -1,0 +1,32 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Visualization, animation and analysis tool
+
+    VisIt is an open source interactive parallel visualization and graphical
+    analysis tool for viewing scientific data. It can be used to visualize
+    scalar and vector fields defined on 2D and 3D structured and unstructured
+    meshes. VisIt was designed to handle very large data set sizes in the
+    terascale range and yet can also handle small data sets in the kilobyte
+    range.
+
+      Homepage : https://wci.llnl.gov/simulation/computer-codes/visit
+  "
+}
+
+module-whatis "Visualization, animation and analysis tool "
+
+flavours conflict visit
+
+flavours root     $::env(CEMAC_DIR)/software/apps/visit/2.13.3
+flavours revision 1
+flavours commit
+
+setenv VISIT_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

@@ -23,6 +23,6 @@ flavours commit
 
 setenv PANOPLY_HOME [flavours path]
 
-flavours prepend-path PATH     bin
+flavours prepend-path PATH bin
 
 flavours cleanup

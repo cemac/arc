@@ -81,71 +81,10 @@ function build_wrf() {
   cd ${BUILD_DIR}
   # I've Placed a Tar file of WRFMeteo, Chem, Preprocessors and WPS
   # In src, if downloaded manually put them in a central WRFChem folder!
-  echo "extracting WRFChem"
-  rm -rf WRFChem4.2.tar.gz
-  tar xzf ${SRC_DIR}/WRFChem4.2.tar.gz
-  cd WRFChem4.2
-  echo "building preprocessors"
-  cd mozbc
-  fix_MakeFile
-  make
-  cd ../megan
-  fix_MakeFile
-  make
-  cd ../wes-coldens/
-  fix_MakeFile
-  make wesely
-  make clean
-  make exo_coldens
-  cd ../anthro_emis/
-  fix_MakeFile
-  make
-  cd ../finn/src
-  fix_MakeFile
-  make
-  echo "configuring and compinging WRFChem"
-  cd ../../WRFChem4.2
-  if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  # KPP sometimes doesn't have a bin folder causing the whole thing to fail
-  if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
-    mkdir chem/KPP/kpp/kpp-2.1/bin
-  fi
-  # if fails try fixing known bug !?!
-  # sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
-  ./compile em_real >& log.compile_wrf-chem
-  echo "configuring and compinging WPS"
-  cd ../WPS-4.2
-  export WRF_DIR="../WRFChem4.2"
-  if [ $FC == "ifort" ] ; then
-    echo -e "17" | ./configure
-  else
-    echo -e "1" | ./configure
-  fi
-  ./compile >& log.compile_wps
-  cd ../WRFMeteo4.2
-  echo "configuring and compinging WRF Meteo"
-  export WRF_CHEM=0    # deselectes the WRF-Chem module
-  if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  ./compile em_real >& log.compile_wrf-meteo
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
-  fi
-  if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
-      mkdir -p ${INSTALL_DIR}/bin/WRFchem
-  fi
-  cd ${BUILD_DIR}
   if [ ! -e ${INSTALL_DIR}/bin/WRFChem ] ; then
       mkdir -p ${INSTALL_DIR}/bin/WRFChem
   fi
-  cp -p WRFChem4.2/WRFChem4.2/main/*.exe ${INSTALL_DIR}/bin/WRFchem
+  cp -p WRFChem4.2/WRFChem4.2/main/*.exe ${INSTALL_DIR}/bin/WRFChem
   cp -p WRFChem4.2/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
   cp -p WRFChem4.2/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
   cp -p WRFChem4.2/finn/src/fire_emis ${INSTALL_DIR}/bin/

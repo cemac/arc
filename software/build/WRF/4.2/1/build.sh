@@ -6,7 +6,7 @@
 # Register      :
 #author         : CEMAC - Helen
 #date           : 20191029
-#updated        : 20191030
+#updated        : 20200620
 #version        : 1
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
@@ -72,6 +72,8 @@ function build_wrf() {
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin
   fi
+  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  cd ${INSTALL_DIR}/bin
   for BIX in $(find main/* -maxdepth 1 \
                  -type f -name '*.exe')
     do
@@ -89,7 +91,7 @@ function build_wrf() {
           ${BIX}
       fi
     done
-  cp -p main/*.exe ${INSTALL_DIR}/bin/
+  
 }
 
 # loop through compilers and mpi libraries:

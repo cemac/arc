@@ -26,9 +26,9 @@ BUILD_VERSION='1'
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 # compilers for which WRF should be built:
-COMPILER_VERS='intel:17.0.1'
+COMPILER_VERS='intel:17.0.1 intel:18.0.2'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:2.0.2 intelmpi:2017.1.132'
+MPI_VERS='openmpi:2.0.2 openmpi:2.1.3 intelmpi:2017.1.132 intelmpi:2018.2.199'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -168,7 +168,7 @@ function build_wrf() {
   cp -p WRFChem3.7.1/mozbc/mozbc ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/wes-coldens/wesely ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/wes-coldens/exo_coldens ${INSTALL_DIR}/bin/
-  if [ ! -e ${INSTALL_DIR}/bin/WRFMeteo ] ; then
+  if [ ! -e ${INSTALL_DIR}/bin/WRF ] ; then
       mkdir -p ${INSTALL_DIR}/bin/WRF
   fi
   cp -p WRFChem3.7.1/WRFMeteo3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRF

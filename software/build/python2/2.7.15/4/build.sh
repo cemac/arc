@@ -23,7 +23,9 @@ CONDA_INSTALLER='Miniconda2-latest-Linux-x86_64.sh'
 # conda directory:
 CONDA_DIR="${INSTALL_DIR}/conda"
 # conda packages to add:
-CONDA_PACKAGES="cartopy cdsapi cf_units genshi geopandas geopy ipython iris matplotlib netcdf4 nose notebook numpy obspy pandas paramiko pygeode pylint pyproj pyqt pyresample python-eccodes requests scipy shapely spyder wrf-python xarray"
+CONDA_PACKAGES="'ipython matplotlib netcdf4 nose notebook numpy pandas pylint pyqt requests scipy spyder' \
+                'cartopy cf_units geopandas geopy iris obspy pygeode pyproj shapely wrf-python xarray' \
+                'cdsapi genshi paramiko pyresample python-eccodes'"
 # pip packages to add:
 PIP_PACKAGES=""
 

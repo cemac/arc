@@ -98,7 +98,10 @@ EOF
   conda install -y mamba
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    mamba install -y ${CONDA_PACKAGES}
+    for CONDA_PACKAGE in ${CONDA_PACKAGES}
+    do
+      mamba install -y ${CONDA_PACKAGE}
+    done
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}

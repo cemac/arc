@@ -23,7 +23,8 @@ CONDA_INSTALLER='Miniconda2-latest-Linux-x86_64.sh'
 # conda directory:
 CONDA_DIR="${INSTALL_DIR}/conda"
 # conda packages to add:
-CONDA_PACKAGES="cartopy cdsapi cf_units genshi geopandas geopy ipython iris matplotlib netcdf4 nose notebook numpy obspy pandas paramiko pygeode pylint pyproj pyqt pyresample python-eccodes requests scipy shapely spyder wrf-python xarray"
+CONDA_PACKAGESA="ipython matplotlib netcdf4 nose notebook numpy pandas paramiko pylint pyqt pyresample requests scipy spyder"
+CONDA_PACKAGESB="basemap cartopy cdsapi cf_units genshi geopandas geopy iris obspy pygeode pyproj python-eccodes shapely wrf-python xarray"
 # pip packages to add:
 PIP_PACKAGES=""
 
@@ -93,10 +94,16 @@ channels:
   - aph42
 EOF
   # update first:
+  conda update -y conda
   conda update -y --all
+  # install mamba:
+  conda install -y mamba
   # add packages:
-  if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    conda install -y ${CONDA_PACKAGES}
+  if [ ! -z "${CONDA_PACKAGESA}" ] ; then
+    mamba install -y ${CONDA_PACKAGESA}
+  fi
+  if [ ! -z "${CONDA_PACKAGESB}" ] ; then
+    mamba install -y ${CONDA_PACKAGESB}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}

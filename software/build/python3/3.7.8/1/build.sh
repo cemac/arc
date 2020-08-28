@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#- python 3.7.6
+#- python 3.7.8
 #  updated : 2020-08-27
 
 # source directory:
@@ -9,9 +9,9 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/compilers"
 # app information:
 APP_NAME='python3'
-APP_VERSION='3.7.6'
+APP_VERSION='3.7.8'
 # build version:
-BUILD_VERSION='4'
+BUILD_VERSION='1'
 # build dir:
 BUILD_DIR=$(pwd)
 # 'flavour':
@@ -23,8 +23,7 @@ CONDA_INSTALLER='Miniconda3-latest-Linux-x86_64.sh'
 # conda directory:
 CONDA_DIR="${INSTALL_DIR}/conda"
 # conda packages to add:
-CONDA_PACKAGESA="ipython matplotlib netcdf4 nose notebook numpy pandas paramiko pylint pyqt pyresample requests scipy spyder"
-CONDA_PACKAGESB="basemap cartopy cdsapi cf_units genshi geopandas geopy iris obspy pygeode pyproj python-eccodes shapely wrf-python xarray"
+CONDA_PACKAGES="basemap cartopy cdsapi cf_units genshi geopandas geopy ipython iris matplotlib netcdf4 nose notebook numpy obspy pandas paramiko pygeode pylint pyproj pyqt pyresample python-eccodes requests scipy shapely spyder wrf-python xarray "
 # pip packages to add:
 PIP_PACKAGES=""
 
@@ -91,6 +90,7 @@ if [ ! -e ${INSTALL_DIR}/bin/python ] ; then
 channels:
   - conda-forge
   - defaults
+  - aph42
 EOF
   # update first:
   conda update -y conda
@@ -98,11 +98,8 @@ EOF
   # install mamba:
   conda install -y mamba
   # add packages:
-  if [ ! -z "${CONDA_PACKAGESA}" ] ; then
-    mamba install -y ${CONDA_PACKAGESA}
-  fi
-  if [ ! -z "${CONDA_PACKAGESB}" ] ; then
-    mamba install -y ${CONDA_PACKAGESB}
+  if [ ! -z "${CONDA_PACKAGES}" ] ; then
+    mamba install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}

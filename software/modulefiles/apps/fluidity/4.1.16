@@ -1,0 +1,27 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Computational Fluid Dynamics Code
+
+    Homepage : 
+      https://github.com/FluidityProject
+  "
+}
+
+module-whatis "Computational Fluid Dynamics Code "
+
+flavours conflict fluidity
+flavours prereq -class mpi
+
+flavours root     $::env(CEMAC_DIR)/software/apps/fluidity/4.1.16
+flavours revision 1
+flavours commit
+
+setenv FLUIDITY_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

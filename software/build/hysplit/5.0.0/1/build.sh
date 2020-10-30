@@ -140,6 +140,10 @@ if [ ! -e ${INSTALL_DIR}/bin/hycs_std ] ; then
   # patch and wrap hysplit gui:
   cp guicode/hysplit.tcl guicode/hysplit.tcl.original
   sed -i "s|\.\.\/guicode|${INSTALL_DIR}/guicode|g" guicode/hysplit.tcl
+  sed -i "s|\.\.\/graphics|${INSTALL_DIR}/graphics|g" guicode/hysplit.tcl
+  sed -i \
+    's|\(set Work_path \)\[file.*$|\1 $::env(HOME)/.hysplit_working\n   file mkdir $::env(HOME)/.hysplit_working|g' \
+    guicode/hysplit.tcl
   cat > bin/hysplit <<EOF
 #!/bin/bash
 HYSPLIT_GUI=\$(dirname \$(readlink -f \${0}))/../guicode/hysplit.tcl

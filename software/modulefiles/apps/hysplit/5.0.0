@@ -1,0 +1,30 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    HYSPLIT Trajectory model
+
+      The HYSPLIT model is a complete system for computing simple air parcel
+    trajectories, as well as complex transport, dispersion, chemical
+    transformation, and deposition simulations. 
+
+    Homepage : https://ready.arl.noaa.gov/HYSPLIT.php
+       
+  "
+}
+
+module-whatis "HYSPLIT Trajectory model "
+
+flavours conflict hysplit
+
+flavours root     $::env(CEMAC_DIR)/software/apps/hysplit/5.0.0
+flavours revision 1
+flavours commit
+
+setenv HYSPLIT_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

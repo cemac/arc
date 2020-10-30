@@ -146,7 +146,7 @@ HYSPLIT_GUI=\$(dirname \$(readlink -f \${0}))/../guicode/hysplit.tcl
 exec \${HYSPLIT_GUI} "\${@}"
 EOF
   chmod 755 bin/hysplit
-  ln -s hysplot bin/hysplit.tcl
+  ln -s hysplit bin/hysplit.tcl
 fi
 
 # python components:

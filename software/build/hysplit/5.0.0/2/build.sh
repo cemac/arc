@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- hysplit 5.0.0
-#  updated : 2020-10-20
+#  updated : 2020-11-03
 
 # Obtaining HYSPLIT requires following an outdated registration procedure ...
 # find out more here:

@@ -20,7 +20,7 @@ module-whatis "HYSPLIT Trajectory model "
 flavours conflict hysplit
 
 flavours root     $::env(CEMAC_DIR)/software/apps/hysplit/5.0.0
-flavours revision 1
+flavours revision 2
 flavours commit
 
 setenv HYSPLIT_HOME [flavours path]

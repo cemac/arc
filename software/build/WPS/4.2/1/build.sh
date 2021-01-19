@@ -73,7 +73,7 @@ function build_WPS() {
   fi
   cp -p *.exe ${INSTALL_DIR}/bin/
   cd ${INSTALL_DIR}/bin
-  for BIX in $(find main/* -maxdepth 1 \
+  for BIX in $(find *  -maxdepth 1 \
                  -type f -name '*.exe')
     do
       # add hdf5 / netcdf lib directories to rpath if required:

@@ -19,15 +19,15 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WPS'
-APP_VERSION='4.1'
+APP_VERSION='4.2'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WPS should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-# mpi libraries for which WPS should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+COMPILER_VERS='intel:17.0.1'
+# mpi libraries for which WRF should be built:
+MPI_VERS='openmpi:2.0.2 intelmpi:2017.1.132'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -41,11 +41,11 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v4.1.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'v4.2.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   # get sources:
-  get_file https://github.com/wrf-model/WPS/archive/v4.1.tar.gz
+  get_file https://github.com/wrf-model/WPS/archive/v4.2.tar.gz
 fi
 
 # WPS Builder function:
@@ -57,11 +57,11 @@ function build_WPS() {
   MY_CMP=${4}
   FLAVOUR=${5}
   cd ${BUILD_DIR}
-  rm -rf v4.1.tar.gz
-  tar xzf ${SRC_DIR}/v4.1.tar.gz
-  WRF_DIR=${CEMAC_DIR}/software/build/WRF/4.1.2/1/${FLAVOUR}/WRF-4.1.2/
+  rm -rf v4.2.tar.gz
+  tar xzf ${SRC_DIR}/v4.2.tar.gz
+  WRF_DIR=${CEMAC_DIR}/software/build/WRF/4.2/1/${FLAVOUR}/WRF-4.2/
   ln -sf $WRF_DIR WRF
-  cd WPS-4.1
+  cd WPS-4.2
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
   else
@@ -72,6 +72,24 @@ function build_WPS() {
     mkdir -p ${INSTALL_DIR}/bin
   fi
   cp -p *.exe ${INSTALL_DIR}/bin/
+  cd ${INSTALL_DIR}/bin
+  for BIX in $(find main/* -maxdepth 1 \
+                 -type f -name '*.exe')
+    do
+      # add hdf5 / netcdf lib directories to rpath if required:
+      ldd ${BIX} | grep -q hdf5 >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${HDF5_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+      ldd ${BIX} | grep -q netcdf >& /dev/null
+      if [ "${?}" = "0" ] ; then
+        BIX_RPATH=$(patchelf --print-rpath ${BIX})
+        patchelf --set-rpath "${NETCDF_HOME}/lib:${BIX_RPATH}" \
+          ${BIX}
+      fi
+    done
 }
 
 # loop through compilers and mpi libraries:

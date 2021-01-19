@@ -1,0 +1,37 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads WPS to go with WRF v4.2 em_real "
+        puts stderr "                  WPS version 4.2      "
+        puts stderr "     Stored at /nobackup/cemac/software/apps/WPS"
+        puts stderr "
+        Version $version
+}
+
+module-whatis "WRF NWP "
+
+flavours conflict WRFChem WPS
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+module load netcdf/4.6.3
+module load hdf5/1.8.21
+
+flavours root     $::env(CEMAC_DIR)/software/apps/WPS/4.2
+flavours revision 1
+flavours commit
+
+setenv WRF_HOME [flavours path]
+
+flavours prepend-path PATH bin
+setenv ulimit -s unlimited
+setenv ulimit -c unlimited
+setenv WRF_CHEM 0
+setenv WRF_KPP 0
+setenv OMP_STACKSIZE 4G
+setenv OMP_NUM_THREADS 1
+
+flavours cleanup

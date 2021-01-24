@@ -162,6 +162,7 @@ function build_wrf() {
   ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
   ln -sf ${INSTALL_DIR}/bin/WRFchem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
   ln -sf ${INSTALL_DIR}/bin/WRFchem/real.exe ${INSTALL_DIR}/bin/real.exe
+  cd  ${INSTALL_DIR}/bin/
   for BIX in $(find ${INSTALL_DIR}/bin/* -maxdepth 1 \
                  -type f )
     do

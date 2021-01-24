@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRFChem 3.7.1
+#description    : WRFChem 3.7.1.1 build lukes code mods
 # instructions  :
 # Source code   :
 # Register      :
@@ -19,13 +19,13 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='WRFChem'
-APP_VERSION='3.7.1'
+APP_VERSION='3.7.1.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
+COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
 MPI_VERS='openmpi:3.1.4 intelmpi:2019.4.243'
 # get_file function:
@@ -175,8 +175,8 @@ function build_wrf() {
   cp -p WRFChem3.7.1/WPS3.7.1/*.exe ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/WPS3.7.1/link_grib.csh ${INSTALL_DIR}/bin/
   ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFChem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFChem/real.exe ${INSTALL_DIR}/bin/real.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFchem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
+  ln -sf ${INSTALL_DIR}/bin/WRFchem/real.exe ${INSTALL_DIR}/bin/real.exe
   cd ${INSTALL_DIR}
   for BIX in $(find * -maxdepth 1 \
                  -type f -name '*')

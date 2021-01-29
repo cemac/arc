@@ -119,6 +119,7 @@ function build_wrf() {
   ./compile em_real >& log.compile_wrf-chem
   echo "configuring and compinging WPS"
   cd ../WPS-4.2
+  ./clean -a
   export WRF_DIR="../WRFChem4.2"
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
@@ -127,8 +128,10 @@ function build_wrf() {
   fi
   ./compile >& log.compile_wps
   cd ../WRFMeteo4.2
+  ./clean -a
   echo "configuring and compinging WRF Meteo"
-  export WRF_CHEM=0    # deselectes the WRF-Chem module
+  WRF_CHEM=0    # deselectes the WRF-Chem module
+  export WRF_CHEM
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
   else
@@ -142,9 +145,6 @@ function build_wrf() {
       mkdir -p ${INSTALL_DIR}/bin/WRFchem
   fi
   cd ${BUILD_DIR}
-  if [ ! -e ${INSTALL_DIR}/bin/WRFChem ] ; then
-      mkdir -p ${INSTALL_DIR}/bin/WRFChem
-  fi
   cp -p WRFChem4.2/WRFChem4.2/main/*.exe ${INSTALL_DIR}/bin/WRFchem
   cp -p WRFChem4.2/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
   cp -p WRFChem4.2/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/

@@ -6,8 +6,8 @@
 # Register      :
 #author         : CEMAC - Helen
 #date           : 20191113
-#updated        : 20210119
-#version        : 2
+#updated        : 20191113
+#version        : 1
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
 #bash_version   : 4.2.46(2)-release
@@ -86,55 +86,11 @@ function build_wrf() {
   cd ${BUILD_DIR}
   # I've Placed a Tar file of WRFMeteo, Chem, Preprocessors and WPS
   # In src, if downloaded manually put them in a central WRFChem folder!
-  echo "extracting WRFChem"
-  rm -rf WRFChem3.7.1.tar.gz
-  tar xzf ${SRC_DIR}/WRFChem3.7.1.tar.gz
-  cd WRFChem3.7.1
-  echo "building preprocessors"
-  cd mozbc
-  fix_MakeFile
-  make clean
-  make
-  cd ../megan
-  fix_MakeFile
-  make clean
-  make
-  cd ../wes-coldens/
-  fix_MakeFile
-  make clean
-  make wesely
-  make clean
-  make exo_coldens
-  cd ../anthro_emis/
-  fix_MakeFile
-  make clean
-  make
-  cd ../finn/src
-  fix_MakeFile
-  make clean
-  make
-  echo "configuring and compinging WRFChem"
-  cd ../../WRFChem3.7.1
-  if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  # KPP sometimes doesn't have a bin folder causing the whole thing to fail
-  if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
-    mkdir chem/KPP/kpp/kpp-2.1/bin
-  fi
-  # if fails try fixing known bug !?!
-  # sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
-  if [ $MY_CMP == 'gnu:8.3.0' ] ; then
-    sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
-  fi
-  ./compile em_real >& log.compile_wrf-chem
   echo "configuring and compinging WPS"
-  cd ../WPS3.7.1
-  ln -sf ../WRFChem3.7.1 ../WRFV3
-  WRF_DIR="../WRFChem3.7.1"
-  export WRF_DIR
+  cd WRFChem3.7.1
+  ln -sf WRFChem3.7.1 WRFV3
+  cd WPS3.7.1
+  export WRF_DIR="../WRFChem3.7.1"
   ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "17" | ./configure
@@ -142,44 +98,9 @@ function build_wrf() {
     echo -e "1" | ./configure
   fi
   ./compile >& log.compile_wps
-  cd ../WRFMeteo3.7.1
-  echo "configuring and compinging WRF Meteo"
-  WRF_CHEM=0    # deselectes the WRF-Chem module
-  export WRF_CHEM
-  ./clean -a
-  if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure
-  else
-    echo -e "34\n1" | ./configure
-  fi
-  if [ $MY_CMP == 'gnu:8.3.0' ] ; then
-    sed -i "s|-DBUILD_RRTMG_FAST=1 \ ||g" configure.wrf
-  fi
-  ./compile em_real >& log.compile_wrf-meteo
   cd ${BUILD_DIR}
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
-  fi
-  if [ ! -e ${INSTALL_DIR}/bin/WRFchem ] ; then
-      mkdir -p ${INSTALL_DIR}/bin/WRFchem
-  fi
-  cp -p WRFChem3.7.1/WRFChem3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRFchem
-  cp -p WRFChem3.7.1/megan/megan_bio_emiss ${INSTALL_DIR}/bin/
-  cp -p WRFChem3.7.1/anthro_emis/anthro_emis ${INSTALL_DIR}/bin/
-  cp -p WRFChem3.7.1/finn/src/fire_emis ${INSTALL_DIR}/bin/
-  cp -p WRFChem3.7.1/mozbc/mozbc ${INSTALL_DIR}/bin/
-  cp -p WRFChem3.7.1/wes-coldens/wesely ${INSTALL_DIR}/bin/
-  cp -p WRFChem3.7.1/wes-coldens/exo_coldens ${INSTALL_DIR}/bin/
-  if [ ! -e ${INSTALL_DIR}/bin/WRFMeteo ] ; then
-      mkdir -p ${INSTALL_DIR}/bin/WRF
-  fi
-  cp -p WRFChem3.7.1/WRFMeteo3.7.1/main/*.exe ${INSTALL_DIR}/bin/WRF
-  cp -p WRFChem3.7.1/flex/bin/* ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/WPS3.7.1/*.exe ${INSTALL_DIR}/bin/
   cp -p WRFChem3.7.1/WPS3.7.1/link_grib.csh ${INSTALL_DIR}/bin/
-  ln -sf ${INSTALL_DIR}/bin/WRF/wrf.exe ${INSTALL_DIR}/bin/wrfmeteo.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFchem/wrf.exe ${INSTALL_DIR}/bin/wrf.exe
-  ln -sf ${INSTALL_DIR}/bin/WRFchem/real.exe ${INSTALL_DIR}/bin/real.exe
   cd ${INSTALL_DIR}
   for BIX in $(find * -maxdepth 1 \
                  -type f -name '*')
@@ -243,7 +164,7 @@ do
     # start building:
     echo "building for : ${FLAVOUR}"
     # build WRF:
-    if [ ! -e ${INSTALL_DIR}/bin/wrf.exe ] ; then
+    if [ ! -e ${INSTALL_DIR}/bin/geogrid.exe ] ; then
       echo "building wrfchem"
       build_wrf ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi

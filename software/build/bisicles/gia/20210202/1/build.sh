@@ -368,9 +368,9 @@ do
       # extract source:
       tar xzf ${SRC_DIR}/petsc-lite-3.11.3.tar.gz
       cd petsc-3.11.3
-      # hypre update:
-      \cp ${SRC_DIR}/hypre.py \
-        config/BuildSystem/config/packages/
+      # hypre source location update:
+      sed -i 's|LLNL|hypre-space|g' \
+        config/BuildSystem/config/packages/hypre.py
       # configure and build:
       ./configure \
         --download-fblaslapack=yes \

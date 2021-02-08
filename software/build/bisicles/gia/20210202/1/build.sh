@@ -29,39 +29,39 @@
 
 # verion information:
 #
-#  bisicles/gia 20190710: 
+#  bisicles/gia 20190710:
 #
 #    > r3822 | skachuck | 2019-07-10 13:24:54 +0100 (Wed, 10 Jul 2019) | 1 line
 #
 #  chombo 3.2.patch8:
-# 
+#
 #    > r23611 | dmartin | 2019-08-05 20:58:03 +0100 (Mon, 05 Aug 2019) | 3 lines
-#    > 
+#    >
 #    > added patch8 branch, which is copied from the 3.2.patch7 branch...
 
 # this version of the code has been patched from the BISICLES ocean_conn
 # branch, commit:
-# 
+#
 #    > r4001 | slcornford | 2021-02-02 14:20:34 +0000 (Tue, 02 Feb 2021) | 21 lines
-#    > 
+#    >
 #    > An option to restict floating ice/open sea fluxes to cells that are connected by
 #    > sub-ice shelf cavities at least 1m thick to the submarine domain edges.
 #    > This should prevent ocean malt rates being applied to egions in the interior that
 #    > happen to think to flotation.
-#    > 
+#    >
 #    > To make this work,
-#    > 
+#    >
 #    > 1. Use a maskedFlux, with a new option
-#    > 
+#    >
 #    > basalFlux.type =  maskedFlux
 #    > basalFlux.floating_check_ocean_connected = true
-#    > 
+#    >
 #    > 2. and set
-#    > 
+#    >
 #    > geometry.compute_ocean_connection_iter = 10
-#    > 
+#    >
 #    > (or some larger number)
-# 
+#
 # the gia patches from the GIANT-BISICLES branch were then applied.
 # code is on GitHub at:
 #
@@ -230,6 +230,8 @@ EOF
     if [ "${MPI_TYPE}" = "mvapich2" ] || [ "${MPI_TYPE}" = "intelmpi" ] ; then
       sed -i 's|-lmpi_cxx|-lmpicxx|g' cdriver/GNUmakefile
     fi
+    # don't build testPetsc:
+    sed -i "s|testPetsc ||g" test/GNUmakefile
     FFTWDIR=${FFTW_HOME} \
     make -j8 \
       all \

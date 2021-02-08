@@ -100,7 +100,7 @@ function get_file() {
 mkdir -p ${SRC_DIR}
 
 # get sources:
-get_file 'http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.11.3.tar.gz'
+get_file 'https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.14.4.tar.gz'
 get_file 'https://raw.githubusercontent.com/cemac/extract_bisicles_data/master/extract_bisicles_data'
 get_file 'https://files.pythonhosted.org/packages/d4/0c/9840c08189e030873387a73b90ada981885010dd9aea134d6de30cd24cb8/virtualenv-15.1.0.tar.gz'
 
@@ -364,10 +364,10 @@ do
       echo "building petsc"
       # set up build dir:
       cd ${BUILD_DIR}
-      rm -fr ${BUILD_DIR}/petsc-3.11.3
+      rm -fr ${BUILD_DIR}/petsc-3.14.4
       # extract source:
-      tar xzf ${SRC_DIR}/petsc-lite-3.11.3.tar.gz
-      cd petsc-3.11.3
+      tar xzf ${SRC_DIR}/petsc-lite-3.14.4.tar.gz
+      cd petsc-3.14.4
       # configure and build:
       ./configure \
         --download-fblaslapack=yes \
@@ -380,11 +380,11 @@ do
         --with-c2html=0 \
         --with-ssl=0  && \
         make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.11.3 \
+        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
         PETSC_ARCH=arch-linux2-c-debug \
         all && \
         make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.11.3 \
+        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
         PETSC_ARCH=arch-linux2-c-debug \
         install
     fi

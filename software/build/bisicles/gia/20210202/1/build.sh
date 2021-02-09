@@ -100,7 +100,7 @@ function get_file() {
 mkdir -p ${SRC_DIR}
 
 # get sources:
-get_file 'https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.11.3.tar.gz'
+get_file 'https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.14.4.tar.gz'
 get_file 'https://raw.githubusercontent.com/cemac/extract_bisicles_data/master/extract_bisicles_data'
 get_file 'https://files.pythonhosted.org/packages/d4/0c/9840c08189e030873387a73b90ada981885010dd9aea134d6de30cd24cb8/virtualenv-15.1.0.tar.gz'
 
@@ -221,17 +221,17 @@ EOF
   # build bisicles:
   if [ "${USE_PETSC}" = "TRUE" ] ; then
     BIN_SUFFIX='.PETSC'
+    # don't build testPetsc when building with PETSc:
+    sed -i "s|testPetsc ||g" ${BISICLES_HOME}/BISICLES/code/test/GNUmakefile
   else
     BIN_SUFFIX=''
   fi
   if [ ! -e ${BISICLES_HOME}/bin/ftestwrapper.2d${BIN_SUFFIX} ] ; then
     echo "building bisicles"
-    cd $BISICLES_HOME/BISICLES/code && \
+    cd ${BISICLES_HOME}/BISICLES/code && \
     if [ "${MPI_TYPE}" = "mvapich2" ] || [ "${MPI_TYPE}" = "intelmpi" ] ; then
       sed -i 's|-lmpi_cxx|-lmpicxx|g' cdriver/GNUmakefile
     fi
-    # don't build testPetsc:
-    sed -i "s|testPetsc ||g" test/GNUmakefile
     FFTWDIR=${FFTW_HOME} \
     make -j8 \
       all \
@@ -366,13 +366,10 @@ do
       echo "building petsc"
       # set up build dir:
       cd ${BUILD_DIR}
-      rm -fr ${BUILD_DIR}/petsc-3.11.3
+      rm -fr ${BUILD_DIR}/petsc-3.14.4
       # extract source:
-      tar xzf ${SRC_DIR}/petsc-lite-3.11.3.tar.gz
-      cd petsc-3.11.3
-      # hypre source location update:
-      sed -i 's|LLNL|hypre-space|g' \
-        config/BuildSystem/config/packages/hypre.py
+      tar xzf ${SRC_DIR}/petsc-lite-3.14.4.tar.gz
+      cd petsc-3.14.4
       # configure and build:
       ./configure \
         --download-fblaslapack=yes \
@@ -385,11 +382,11 @@ do
         --with-c2html=0 \
         --with-ssl=0  && \
         make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.11.3 \
+        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
         PETSC_ARCH=arch-linux2-c-debug \
         all && \
         make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.11.3 \
+        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
         PETSC_ARCH=arch-linux2-c-debug \
         install
     fi

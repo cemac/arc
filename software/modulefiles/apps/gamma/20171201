@@ -1,0 +1,32 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "SAR and Interferometry Software
+
+  The GAMMA SAR and Interferometry Software is a collection
+  of programs that allows processing of SAR, interferometric
+  SAR (InSAR) and differential interferometric SAR (DInSAR)
+  data for airborne and spaceborne SAR systems.  
+
+  Information:
+
+    Homepage : http://www.gamma-rs.ch/
+
+ "
+}
+
+module-whatis "SAR and Interferometry Software "
+
+flavours conflict gamma
+
+flavours root     $::env(CEMAC_DIR)/software/apps/gamma/20171201
+flavours revision 1
+flavours commit
+
+setenv GAMMA_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

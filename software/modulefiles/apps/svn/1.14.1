@@ -1,0 +1,28 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Subversion version control
+
+    Subversion is an open source version control system
+
+      Homepage : https://subversion.apache.org/
+      Documentation : https://subversion.apache.org/docs/
+  "
+}
+
+module-whatis "Subversion version control "
+
+flavours conflict svn
+
+flavours root     $::env(CEMAC_DIR)/software/apps/svn/1.14.1
+flavours revision 1
+flavours commit
+
+setenv SVN_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

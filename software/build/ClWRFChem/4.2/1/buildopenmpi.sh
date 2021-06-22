@@ -1,12 +1,12 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WRFChem 4.2
+#description    : CLWRFChem 4.2
 #instructions   :
 #Source code    :
 #Register       :
 #author         : CEMAC - Helen
-#date           : 20200615
-#updated        : 20210119
+#date           : 20210617
+#updated        : 20210617
 #version        : 2
 #usage          : ./build.sh
 #notes          : Helen following Richard's build exmaples
@@ -18,16 +18,16 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 # software directory:
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
-APP_NAME='WRFChem'
+APP_NAME='ClWRFChem'
 APP_VERSION='4.2'
 # build version:
-BUILD_VERSION='2'
+BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
 COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:3.1.4 intelmpi:2019.4.243'
+MPI_VERS='openmpi:3.1.4'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -105,6 +105,10 @@ function build_wrf() {
   make
   echo "configuring and compinging WRFChem"
   cd ../../WRFChem4.2
+  cd Registry
+  cp -p registry.dimspec registry.dimspec.clwrf
+  cp -p Registry.EM Registry.EM_CLWRF  
+  cd ..
   ./clean -a
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure
@@ -117,6 +121,7 @@ function build_wrf() {
   fi
   # if fails try fixing known bug !?!
   # sed -i "s|-lfl||g" chem/KPP/kpp/kpp-2.1/src/Makefile
+  sed -i "s| -DNETCDF | -DNETCDF -DCLWRFXTR -DCLWRFGHG -DCLWRFHVY |g" configure.wrf
   ./compile em_real >& log.compile_wrf-chem
   echo "configuring and compinging WPS"
   cd ../WPS-4.2
@@ -138,6 +143,11 @@ function build_wrf() {
   else
     echo -e "34\n1" | ./configure
   fi
+  cd Registry
+  cp -p registry.dimspec registry.dimspec.clwrf
+  cp -p Registry.EM Registry.EM_CLWRF
+  cd ..
+  sed -i "s| -DNETCDF | -DNETCDF -DCLWRFXTR -DCLWRFGHG -DCLWRFHVY |g" configure.wrf
   ./compile em_real >& log.compile_wrf-meteo
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin

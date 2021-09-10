@@ -1,0 +1,25 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    mosrs helper tools 
+    mosrs-cache-password
+    mosrs-setup-gpg-agent
+  "
+}
+
+module-whatis "NetCDF visual browser "
+
+flavours conflict ncview
+
+flavours root     $::env(CEMAC_DIR)/software/apps/rose/2016.11.1/
+flavours revision 1
+flavours commit
+
+setenv NCVIEW_HOME [flavours path]
+
+flavours prepend-path PATH     bin
+
+flavours cleanup

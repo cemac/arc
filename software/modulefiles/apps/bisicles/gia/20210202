@@ -37,7 +37,7 @@ flavours prereq -class compiler
 flavours prereq -class mpi
 
 flavours root     $::env(CEMAC_DIR)/software/apps/bisicles/gia/20210202
-flavours revision 2
+flavours revision 3
 flavours commit
 
 setenv BISICLES_HOME [flavours path]

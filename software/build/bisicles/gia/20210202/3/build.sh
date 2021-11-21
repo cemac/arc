@@ -31,13 +31,9 @@
 #
 #  bisicles/gia 20211113:
 #
-#    > r4130 | skachuck | 2021-11-13 11:54:53 +0000 (Sat, 13 Nov 2021) | 6 lines
+#    > r4132 | skachuck | 2021-11-18 15:09:20 +0000 (Thu, 18 Nov 2021) | 1 line
 #    >
-#    > Fix error with computing GIA elastic comp on checkpoint
-#    >
-#    > Also brought Elastic Lithospher/Relaxing Asthenosphere (ELRA) option in
-#    > Use in input file with topographyFlux.ELRA = true,
-#    >                       topograyphFlux.ELRAtau = # relaxation time in yrs
+#    > Corrected checkpoint leveldata read problem
 #
 #  chombo 3.2.patch8:
 #

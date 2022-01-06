@@ -37,10 +37,19 @@ chmod -R g+rwX ${GIT_DIR}
 # software directory:
 SOFTWARE_DIR="${CEMAC_DIR}/software"
 
-# make build directories group writeable:
-chgrp -R ear-cemac ${SOFTWARE_DIR}
-find ${SOFTWARE_DIR} -type d -exec chmod g+s '{}' \;
-chmod -R g+rwX ${SOFTWARE_DIR}/build
+# set group ownership of top level directories:
+find ${SOFTWARE_DIR} -maxdepth 2 -type d -exec chgrp ear-cemac '{}' \;
+find ${SOFTWARE_DIR} -maxdepth 2 -type d -exec chmod g+s '{}' \;
+###chgrp -R ear-cemac ${SOFTWARE_DIR}
+###find ${SOFTWARE_DIR} -type d -exec chmod g+s '{}' \;
+
+# try to make build directories group writeable:
+for BUILD_DIR in $(find ${SOFTWARE_DIR}/build -maxdepth 2 -type d \
+                   ! -perm -g=w)
+do
+  chmod -R g+rwX ${BUILD_DIR}
+done
+###chmod -R g+rwX ${SOFTWARE_DIR}/build
 
 # make application parent directories group writeable:
 chmod g+rwX ${SOFTWARE_DIR}/apps/*
@@ -50,9 +59,18 @@ chmod g+rwX ${SOFTWARE_DIR}/compilers/*/*
 chmod g+rwX ${SOFTWARE_DIR}/libraries/*
 chmod g+rwX ${SOFTWARE_DIR}/libraries/*/*
 # make installed apps read only:
-chmod -R a-w ${SOFTWARE_DIR}/apps/*/*/*
-chmod -R a-w ${SOFTWARE_DIR}/compilers/*/*/*
-chmod -R a-w ${SOFTWARE_DIR}/libraries/*/*/*
+for INSTALLED_DIR in apps compilers libraries
+do
+  # try to find directories which are not read only:
+  for APP_DIR in $(find ${SOFTWARE_DIR}/${INSTALLED_DIR}/*/* \
+                   -maxdepth 1 -mindepth 1 -type d -writable)
+  do
+    chmod -R a-w ${APP_DIR}
+  done
+done
+###chmod -R a-w ${SOFTWARE_DIR}/apps/*/*/*
+###chmod -R a-w ${SOFTWARE_DIR}/compilers/*/*/*
+###chmod -R a-w ${SOFTWARE_DIR}/libraries/*/*/*
 
 # modulefiles ... :
 chmod -R a+rX ${SOFTWARE_DIR}/modulefiles

@@ -129,9 +129,9 @@ function build_wrf() {
   ./clean -a
   export WRF_DIR="../WRFChem4.2"
   if [ $FC == "ifort" ] ; then
-    echo -e "17" | ./configure -d
+    echo -e "17" | ./configure 
   else
-    echo -e "1" | ./configure -d
+    echo -e "1" | ./configure
   fi
   ./compile >& log.compile_wps
   cd ../WRFMeteo4.2

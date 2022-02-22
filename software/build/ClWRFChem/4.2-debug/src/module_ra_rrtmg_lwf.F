@@ -15246,6 +15246,7 @@ integer,external :: omp_get_thread_num
 !------------------------------------------------------------------
       SUBROUTINE RRTMG_LWRAD_FAST(                                &
                        rthratenlw,                                &
+                       rthratenlwc,                               &
                        lwupt, lwuptc, lwdnt, lwdntc,              &
                        lwupb, lwupbc, lwdnb, lwdnbc,              &
 !                      lwupflx, lwupflxc, lwdnflx, lwdnflxc,      &
@@ -15304,8 +15305,8 @@ integer,external :: omp_get_thread_num
                                                            rho3d
 
    REAL, DIMENSION( ims:ime, kms:kme, jms:jme )                 , &
-         INTENT(INOUT)  ::                            RTHRATENLW
-
+         INTENT(INOUT)  ::                            RTHRATENLW, &
+                                                      RTHRATENLWC
    REAL, DIMENSION( ims:ime, jms:jme )                          , &
          INTENT(INOUT)  ::                                   GLW, &
                                                              OLR, &
@@ -15646,14 +15647,10 @@ integer,external :: omp_get_thread_num
 #ifdef CLWRFGHG
 
    CALL read_CAMgases(yr,julian,"RRTMG",co2,n2o,ch4,cfc11,cfc12)
-!Turn on print
-!   IF ( wrf_dm_on_monitor() ) THEN
    WRITE(message,*)'CAM-CLWRF interpolated values______ year:',yr,' julian day:',julian
    call wrf_debug( 100, message)
    WRITE(message,*)'  CAM-CLWRF co2vmr: ',co2,' n2ovmr:',n2o,' ch4vmr:',ch4,' cfc11vmr:',cfc11,' cfc12vmr:',cfc12
    call wrf_debug( 100, message)
-! ENDIF
-
 #endif
 !ccc
 
@@ -16443,6 +16440,8 @@ integer,external :: omp_get_thread_num
          do k=kts,kte
             tten1d(k) = hr(icol,k)/86400.
             rthratenlw(i,k,j) = tten1d(k)/pi3d(i,k,j)
+            tten1d(k) = hrc(icol,k)/86400.
+            rthratenlwc(i,k,j) = tten1d(k)/pi3d(i,k,j)
          enddo
 !
       end do i_loop2

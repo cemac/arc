@@ -112,9 +112,9 @@ function build_wrf() {
   cd ..
   ./clean -a
   if [ $FC == "ifort" ] ; then
-    echo -e "15\n1" | ./configure -d
+    echo -e "15\n1" | ./configure
   else
-    echo -e "34\n1" | ./configure -d
+    echo -e "34\n1" | ./configure
   fi
   # KPP sometimes doesn't have a bin folder causing the whole thing to fail
   if [ ! -e chem/KPP/kpp/kpp-2.1/bin ] ; then
@@ -129,9 +129,9 @@ function build_wrf() {
   ./clean -a
   export WRF_DIR="../WRFChem4.2"
   if [ $FC == "ifort" ] ; then
-    echo -e "17" | ./configure -d
+    echo -e "17" | ./configure
   else
-    echo -e "1" | ./configure -d
+    echo -e "1" | ./configure 
   fi
   ./compile >& log.compile_wps
   cd ../WRFMeteo4.2

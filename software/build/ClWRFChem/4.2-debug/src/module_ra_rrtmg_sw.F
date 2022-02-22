@@ -10246,8 +10246,8 @@ CONTAINS
 !ccc To add time-varying trace gases (CO2, N2O and CH4). Read the conc.  from file
 ! then interpolate to date of run.
 #ifdef CLWRFGHG
-! CLWRF-UC June.09
-      REAL(8)                                      :: co2, n2o, ch4, cfc11, cfc12
+! Using data from CAMtr_volume_mixing_ratio data file
+    real(kind=8)                                 :: co2, n2o, ch4, cfc11, cfc12
 #else
 ! Set trace gas volume mixing ratios, 2005 values, IPCC (2007)
 ! carbon dioxide (379 ppmv) - this is being replaced by an annual function in v4.2
@@ -10260,7 +10260,6 @@ CONTAINS
     real :: n2o
     data n2o / 319.e-9 /
 #endif
-
 ! Set oxygen volume mixing ratio (for o2mmr=0.23143)
     real :: o2
     data o2 / 0.209488 /
@@ -10328,22 +10327,6 @@ CONTAINS
 ! Annual function for co2 in WRF v4.2
       co2 = (280. + 90.*exp(0.02*(yr-2000)))*1.e-6
 
-
-!ccc Read time-varying trace gases concentrations and interpolate them to run date.
-!
-#ifdef CLWRFGHG
-
-   CALL read_CAMgases(yr,julian,"RRTMG",co2,n2o,ch4,cfc11,cfc12)
-!Turn on print
-!   IF ( wrf_dm_on_monitor() ) THEN
-   WRITE(message,*)'CAM-CLWRF interpolated values______ year:',yr,' julian day:',julian
-   call wrf_debug( 100, message)
-   WRITE(message,*)'  CAM-CLWRF co2vmr: ',co2,' n2ovmr:',n2o,' ch4vmr:',ch4,' cfc11vmr:',cfc11,' cfc12vmr:',cfc12
-   call wrf_debug( 100, message)
-! ENDIF
-
-#endif
-
 #if ( WRF_CHEM == 1 )
       IF ( aer_ra_feedback == 1) then
       IF ( .NOT. &
@@ -10367,6 +10350,15 @@ CONTAINS
 
 !-----CALCULATE SHORT WAVE RADIATION
 !
+#ifdef CLWRFGHG
+! Read time-varying trace gases concentrations and interpolate them to run date
+   CALL read_CAMgases(yr,julian,"RRTMG",co2,n2o,ch4,cfc11,cfc12)
+   WRITE(message,*)'CAM-CLWRF interpolated values______ year:',yr,' julian day:',julian
+   call wrf_debug( 100, message)
+   WRITE(message,*)'  CAM-CLWRF co2vmr: ',co2,' n2ovmr:',n2o,' ch4vmr:',ch4,' cfc11vmr:',cfc11,' cfc12vmr:',cfc12
+   call wrf_debug( 100, message)
+#endif
+
 ! All fields are ordered vertically from bottom to top
 ! Pressures are in mb
 

@@ -1,0 +1,34 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads a prebuilt WRFChemand preprocessors  "
+        puts stderr "                  WRFChem version 4.2          "
+        puts stderr "     Stored at /nobackup/WRFChem/app/WRFChem4.2/ver1 "
+        puts stderr "
+        Version $version
+}
+
+module-whatis "WRFChem NWP Experimental version"
+
+flavours conflict WRFChem WRF
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+flavours root     /nobackup/WRFChem/app/WRFChem4.2/ver1
+flavours revision 1
+flavours commit
+
+setenv WRF_HOME [flavours path]
+
+flavours prepend-path PATH bin
+setenv ulimit -s unlimited
+setenv ulimit -c unlimited
+setenv WRF_CHEM 1
+setenv WRF_KPP 1
+setenv OMP_STACKSIZE 4G
+setenv OMP_NUM_THREADS 1
+
+flavours cleanup

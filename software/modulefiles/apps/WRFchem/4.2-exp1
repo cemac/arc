@@ -17,7 +17,7 @@ flavours conflict WRFChem WRF
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     /nobackup/WRFChem/app/WRFChem4.2/ver1
+flavours root     /nobackup/WRFChem/app/WRFChem4.2/exp-1
 flavours revision 1
 flavours commit
 

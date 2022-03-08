@@ -25,9 +25,9 @@ BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=$(pwd)
 # compilers for which WRF should be built:
-COMPILER_VERS='intel:17.0.1'
+COMPILER_VERS='intel:19.0.4'
 # mpi libraries for which WRF should be built:
-MPI_VERS='openmpi:2.0.2 intelmpi:2017.1.132'
+MPI_VERS='openmpi:3.1.4 intelmpi:2019.4.243'
 # get_file function:
 function get_file() {
   URL=${1}
@@ -58,7 +58,7 @@ function build_wrf() {
   cd ${BUILD_DIR}
   rm -rf v4.3.3.tar.gz
   tar xzf ${SRC_DIR}/v4.3.3.tar.gz
-  cd WRF-4.2
+  cd WRF-4.3.3
   sed -i "s|I_really_want_to_output_grib2_from_WRF = \"FALSE\" ; |I_really_want_to_output_grib2_from_WRF = \"TRUE\" ; |g" arch/Config.pl
   if [ $FC == "ifort" ] ; then
     echo -e "15\n1" | ./configure

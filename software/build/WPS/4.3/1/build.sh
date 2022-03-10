@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : WPS 4.1
+#description    : WPS 4.3
 # instructions  :
 # Source code   :
 # Register      :

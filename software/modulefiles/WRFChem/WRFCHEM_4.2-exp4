@@ -6,7 +6,7 @@ proc ModulesHelp { } {
         global version
         puts stderr "   This module loads a prebuilt WRFChemand preprocessors  "
         puts stderr "                  WRFChem version 4.2          "
-        puts stderr "     Stored at /nobackup/WRFChem/app/WRFChem4.2/exp-4 "
+        puts stderr "     Stored at /nobackup/WRFChem/software/apps/WRFChem4.2_hetchem202/4.2/4/"
         puts stderr "
         Version $version
 }
@@ -17,7 +17,7 @@ flavours conflict WRFChem WRF WRF_CHEM_4.2-exp3 WRF_CHEM_4.2-exp2 WRF_CHEM_4.2-e
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     /nobackup/WRFChem/app/WRFChem4.2/exp-4
+flavours root     /nobackup/WRFChem/software/apps/WRFChem4.2_hetchem202/4.2/
 flavours revision 4
 flavours commit
 

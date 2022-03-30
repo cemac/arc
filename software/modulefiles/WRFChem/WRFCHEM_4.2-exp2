@@ -13,7 +13,7 @@ proc ModulesHelp { } {
 
 module-whatis "WRFChem NWP Experimental version"
 
-flavours conflict WRFChem WRF WRF_CHEM_4.2-exp3 WRF_CHEM_4.2-exp4 WRF_CHEM_4.2-exp1
+flavours conflict WRFChem WRF WRFCHEM_4.2-exp3 WRFCHEM_4.2-exp4 WRFCHEM_4.2-exp1
 flavours prereq -class compiler
 flavours prereq -class mpi
 

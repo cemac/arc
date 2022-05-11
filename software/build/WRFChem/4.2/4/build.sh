@@ -51,7 +51,7 @@ function fix_MakeFile() {
   sed -i "s|LIBS   = -L\$(NETCDF_DIR)/lib \$(AR_FILES)|LIBS   = -lnetcdf -lnetcdff|g" Makefile
 }
 
-if [ ! -e ${SRC_DIR}/'WRFChem4.2_exp1.tar.gz' ] ; then
+if [ ! -e ${SRC_DIR}/'WRFChem4.2_gamma_ho2_1_dp.tar.gz' ] ; then
   # make src directory:
   mkdir -p ${SRC_DIR}
   echo "WRFchem tar file missing"

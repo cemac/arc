@@ -6,19 +6,19 @@ proc ModulesHelp { } {
         global version
         puts stderr "   This module loads a prebuilt WRFChemand preprocessors  "
         puts stderr "                  WRFChem version 4.2          "
-        puts stderr "     Stored at /nobackup/WRFChem/software/apps/WRFChem4.2_hetchem202/4.2/1 "
-        puts stderr "
+        puts stderr "     Stored at /nobackup/cemac/software/apps/WRFChem/4.2/4 "
+        puts stderr "   hetchem202 gamma_ho2_1_dp version "
         Version $version
 }
 
-module-whatis "WRFChem NWP Experimental version"
+module-whatis "WRFChem NWP "
 
-flavours conflict WRFChem WRF WRFCHEM_4.2-exp3 WRFCHEM_4.2-exp2 WRFCHEM_4.2-exp4
+flavours conflict WRFChem WRF
 flavours prereq -class compiler
 flavours prereq -class mpi
 
-flavours root     /nobackup/WRFChem/software/apps/WRFChem4.2_hetchem202/4.2/
-flavours revision 1
+flavours root     $::env(CEMAC_DIR)/software/apps/WRFChem/4.2
+flavours revision 4
 flavours commit
 
 setenv WRF_HOME [flavours path]

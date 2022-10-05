@@ -1,0 +1,41 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Multidimensional data analysis and computational experiments
+
+    Madagascar is an open-source software package for multidimensional
+    data analysis and reproducible computational experiments. Its
+    mission is to provide
+
+    * convenient and powerful environment
+    * convenient technology transfer tool
+
+    for researchers working with digital image and data processing in
+    geophysics and related fields. Technology developed using the
+    Madagascar project management system is transferred in the form of
+    recorded processing histories, which become \"computational
+    recipes\" to be verified, exchanged, and modified by users of the
+    system. 
+
+    Homepage: https://reproducibility.org/wiki/Main_Page
+  "
+}
+
+module-whatis "Multidimensional data analysis and computational experiments "
+
+flavours conflict madagascar
+
+flavours root     $::env(CEMAC_DIR)/software/apps/madagascar/3.1.1
+flavours revision 1
+flavours commit
+
+setenv MADAGASCAR_HOME [flavours path]
+setenv RSFROOT [flavours path]
+
+flavours prepend-path PATH    bin
+flavours prepend-path MANPATH share/man
+
+flavours cleanup

@@ -10,7 +10,8 @@ proc ModulesHelp { } {
 module-whatis "ParallelIO "
 
 flavours conflict PIO
-
+flavours prereq -class compiler
+flavours prereq -class mpi
 flavours root     $::env(CEMAC_DIR)/software/apps/PIO/2.5.9
 flavours revision 1
 flavours commit

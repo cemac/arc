@@ -69,7 +69,7 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf cmake
     # build variables:
     # environment variables - shell
     NETCDF=$(nc-config --prefix)

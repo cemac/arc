@@ -41,18 +41,18 @@ function build_MPAS() {
     mkdir -p ${INSTALL_DIR}
   fi
   cd ${BUILD_DIR}
-  cp -rp $SRC_DIR .
+  cp -rp $SRC_DIR/MPAS-Model .
   cd MPAS-Model
   if [ $FC == "ifort" ] ; then
     make -j4 ifort CORE=init_atmosphere USE_PIO2=true PRECISION=double
   else
-    make -j4 gfortran CORE=init_atmosphere USE_PIO2=true PRECISION=single
+    make -j4 gfortran CORE=init_atmosphere USE_PIO2=true PRECISION=double
   fi
   make clean CORE=atmosphere
   if [ $FC == "ifort" ] ; then
     make -j4 ifort CORE=atmosphere USE_PIO2=true PRECISION=double
   else
-    make -j4 gfortran CORE=atmosphere USE_PIO2=true PRECISION=single
+    make -j4 gfortran CORE=atmosphere USE_PIO2=true PRECISION=double
   fi
   if [ ! -e ${INSTALL_DIR}/bin ] ; then
     mkdir -p ${INSTALL_DIR}/bin

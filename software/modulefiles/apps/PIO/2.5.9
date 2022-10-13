@@ -1,0 +1,21 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    ParallelIO libraries
+}
+
+module-whatis "ParallelIO "
+
+flavours conflict PIO
+
+flavours root     $::env(CEMAC_DIR)/software/apps/PIO/2.59
+flavours revision 1
+flavours commit
+
+setenv  PIO /nobackup/earhbu/software/apps/PIO
+
+
+flavours cleanup

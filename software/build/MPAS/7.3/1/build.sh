@@ -110,9 +110,8 @@ do
       MPI_CC=mpicc
       MPI_FC=mpifort
     fi
-    FC=$MPI_FC
-    CC=$MPI_CC
-    export NETCDF PNETCDF MPI_CC MPI_FC CC FC
+    PIO=$PIO
+    export NETCDF PNETCDF MPI_CC MPI_FC CC FC PIO
     # start building:
     echo "building for : ${FLAVOUR}"
     # build MPAS:

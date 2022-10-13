@@ -69,7 +69,7 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf cmake
     # build variables:
     # environment variables - shell
     NETCDF=$(nc-config --prefix)
@@ -78,7 +78,7 @@ do
     MPI_FC=mpifort
     FC=$MPI_FC
     CC=$MPI_CC
-    export NETCDF PNETCDF MPI_CC MPI_FC
+    export NETCDF PNETCDF MPI_CC MPI_FC CC FC
     # start building:
     echo "building for : ${FLAVOUR}"
     # build PIO:

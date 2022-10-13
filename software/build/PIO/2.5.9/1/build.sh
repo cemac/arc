@@ -1,6 +1,6 @@
 #!/bin/bash -
 #title          : build.sh
-#description    : PIO and 2.5.8
+#description    : PIO and 2.5.9
 # instructions  :
 # Source code   :
 # Register      :
@@ -13,9 +13,9 @@
 #bash_version   : 4.2.46(2)-release
 #============================================================================
 ######## SOURCE
-#git clone https://github.com/NCAR/ParallelIO
+#git clone git@github.com:NCAR/ParallelIO.git
 #cd ParallelIO
-#git checkout -b pio-2.5.8 pio2_5_8
+# 2.5.9
 
 # source directory:
 SRC_DIR=$(readlink -f $(pwd)/../src)
@@ -23,7 +23,7 @@ SRC_DIR=$(readlink -f $(pwd)/../src)
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:
 APP_NAME='PIO'
-APP_VERSION='2.5.8'
+APP_VERSION='2.5.9'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -40,8 +40,8 @@ function build_pio() {
   BUILD_DIR=${2}
   INSTALL_DIR=${3}
   MY_CMP=${4}
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
+  if [ ! -e ${INSTALL_DIR} ] ; then
+    mkdir -p ${INSTALL_DIR}
   fi
   cd ${BUILD_DIR}
   cmake -DNetCDF_C_PATH=$NETCDF -DNetCDF_Fortran_PATH=$NETCDF -DPnetCDF_PATH=$PNETCDF -DHDF5_PATH=$NETCDF -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DPIO_USE_MALLOC=ON -DCMAKE_VERBOSE_MAKEFILE=1 -DPIO_ENABLE_TIMING=OFF $SRC_DIR/ParallelIO
@@ -69,18 +69,20 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf cmake
+    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 patchelf
     # build variables:
     # environment variables - shell
     NETCDF=$(nc-config --prefix)
     PNETCDF=$NETCDF
     MPI_CC=mpicc
     MPI_FC=mpifort
+    FC=$MPI_FC
+    CC=$MPI_CC
     export NETCDF PNETCDF MPI_CC MPI_FC
     # start building:
     echo "building for : ${FLAVOUR}"
     # build PIO:
-    if [ ! -e ${INSTALL_DIR}/lib/ibpioc.a  ] ; then
+    if [ ! -e ${INSTALL_DIR}/lib/libpioc.a  ] ; then
       echo "building pio"
       build_pio ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi

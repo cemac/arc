@@ -74,8 +74,13 @@ do
     # environment variables - shell
     NETCDF=$(nc-config --prefix)
     PNETCDF=$NETCDF
-    MPI_CC=mpicc
-    MPI_FC=mpifort
+    if [ $MP == "intelmpi" ] ; then
+      MPI_CC=mpiicc
+      MPI_FC=mpiifort
+    else
+      MPI_CC=mpicc
+      MPI_FC=mpifort
+    fi  
     FC=$MPI_FC
     CC=$MPI_CC
     export NETCDF PNETCDF MPI_CC MPI_FC CC FC

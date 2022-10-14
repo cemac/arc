@@ -115,7 +115,7 @@ do
     # start building:
     echo "building for : ${FLAVOUR}"
     # build MPAS:
-    if [ ! -e ${INSTALL_DIR}/lib/libMPASc.a  ] ; then
+    if [ ! -e ${INSTALL_DIR}/bin/atmosphere_model  ] ; then
       echo "building MPAS"
       build_MPAS ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR} ${CMP}
     fi

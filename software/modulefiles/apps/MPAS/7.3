@@ -1,0 +1,31 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+        global version
+        puts stderr "   This module loads MPAS v 7.3 atmosphere model  "
+        puts stderr "                  MPAS version 7.3      "
+        puts stderr "     Stored at /nobackup/cemac/software/apps/MPAS"
+        puts stderr "
+        Version $version
+}
+
+module-whatis "MPAS NWP "
+
+flavours conflict MPAS
+flavours prereq -class compiler
+flavours prereq -class mpi
+
+flavours root     $::env(CEMAC_DIR)/software/apps/MPAS/7.3
+flavours revision 1
+flavours commit
+
+setenv WRF_HOME [flavours path]
+
+flavours prepend-path PATH bin
+setenv ulimit -s unlimited
+setenv ulimit -c unlimited
+
+
+flavours cleanup

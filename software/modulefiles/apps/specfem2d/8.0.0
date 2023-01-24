@@ -1,0 +1,39 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    SPECFEM2D simulates forward and adjoint seismic wave propagation
+    in two-dimensional acoustic, (an)elastic, poroelastic or coupled
+    acoustic-(an)elastic-poroelastic media, with Convolution PML
+    absorbing conditions.
+
+    Meshing is based for instance upon Gmsh, Cubit, GiD or a simple
+    internal mesher provided with the package, and the
+    acoustic/(an)elastic/poroelastic solvers are based upon the
+    spectral-element method. The package may also be used to calculate
+    finite-frequency kernels and has full adjoint
+    capabilities. Convolution PML absorbing conditions are used to
+    efficiently absorb the outgoing wave field on the outer edges of
+    the grid.
+
+    See specfem.org.
+  "
+}
+
+module-whatis "SPECFEM2D "
+
+flavours conflict specfem2d
+flavours prereq -class compiler
+flavours prereq -optional -class mpi
+
+flavours root     $::env(CEMAC_DIR)/software/apps/specfem2d/8.0.0
+flavours revision 1
+flavours commit
+
+setenv SPECFEM2D_HOME [flavours path]
+
+flavours prepend-path PATH bin
+
+flavours cleanup

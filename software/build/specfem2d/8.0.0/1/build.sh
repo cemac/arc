@@ -3,7 +3,7 @@
 #description    : SPECFEM2D 8.0.0 build script
 #author         : Tamora D. James <t.d.james1@leeds.ac.uk>
 #date           : 20230124
-#updated        : 20230124
+#updated        : 20230125
 #version        : 1
 #usage          : ./build.sh
 #notes          : Manual: https://specfem2d.readthedocs.io/en/latest/

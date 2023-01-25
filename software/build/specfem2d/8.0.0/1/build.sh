@@ -40,12 +40,11 @@ function get_file() {
   fi
 }
 
-if [ ! -e ${SRC_DIR}/'v8.0.0.tar.gz' ] ; then
-  # make src directory:
-  mkdir -p ${SRC_DIR}
-  # get sources:
-  get_file https://github.com/SPECFEM/specfem2d/archive/refs/tags/v8.0.0.tar.gz
-fi
+# make src directory:
+mkdir -p ${SRC_DIR}
+
+# get sources:
+get_file https://github.com/SPECFEM/specfem2d/archive/refs/tags/v8.0.0.tar.gz
 
 # specfem2d builder function:
 function build_specfem2d() {
@@ -57,32 +56,23 @@ function build_specfem2d() {
   MY_MP=${5}
   # set up build dir:
   cd ${BUILD_DIR}
-  rm -rf v8.0.0.tar.gz
+  rm -rf ${APP_NAME}-${APP_VERSION}
   tar xzf ${SRC_DIR}/v8.0.0.tar.gz
   cd ${APP_NAME}-${APP_VERSION}
 
-  # build and install:
-  # Modify flags.guess to adjust compiler flags
-  # \cp flags.guess flags.guess.original
-  # e.g. intel compiler options:
-  #if [ "${MY_CMP}" = "intel" ] ; then
-    # ...
-  #fi
-
-  # configure:
-  if [ "${MY_MP}" = "none" ] ; then
-      ./configure
-  else
-      ./configure --with-mpi
+  # configure flags:
+  CONFIGURE_FLAGS="--prefix=${INSTALL_DIR}"
+  if [ "${MY_MP}" != "none" ] ; then
+    CONFIGURE_FLAGS="${CONFIGURE_FLAGS} --with-mpi"
   fi
 
-  # make:
+  # configure and build:
+  ./configure \
+    ${CONFIGURE_FLAGS} && \
   make
 
   # copy executables to install directory:
-  if [ ! -e ${INSTALL_DIR}/bin ] ; then
-    mkdir -p ${INSTALL_DIR}/bin
-  fi
+  mkdir -p ${INSTALL_DIR}/bin
   cp -p bin/* ${INSTALL_DIR}/bin/
 
   # copy documentation, examples etc to install directory:
@@ -110,7 +100,7 @@ do
     MP=${MPI_VER%:*}
     MP_VER=${MPI_VER#*:}
     # 'flavour':
-    if [ $MP != "none" ] ; then
+    if [ "${MP}" != "none" ] ; then
       FLAVOUR="${CMP}-${CMP_VER}-${MP}-${MP_VER}"
     else
       FLAVOUR="${CMP}-${CMP_VER}"
@@ -126,22 +116,15 @@ do
     # set up modules:
     module purge
     module load licenses sge ${CMP}/${CMP_VER}
-    if [ $MP != "none" ] ; then
+    if [ "${MP}" != "none" ] ; then
       module load ${MP}/${MP_VER}
     fi
     # build variables:
-    # environment variables - shell
     MPIF90=
     MPI_INC=
-    if [ $MP != "none" ] ; then
+    if [ "${MP}" != "none" ] ; then
       MPIF90=mpif90
-      for inc in `$MPIF90 -show |cut -d' ' -f2- | tr ' ' '\n' | grep "\-I"`; do
-	path=${inc/\-I/}
-	if [ -e ${path}/mpi.h ]; then
-	  MPI_INC=$path
-	  break
-	fi
-      done
+      MPI_INC=${MPI_HOME}/include
     fi
     export MPIF90 MPI_INC
 

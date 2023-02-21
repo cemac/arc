@@ -19,7 +19,7 @@ proc ModulesHelp { } {
 module-whatis "FCM Fortran build system + wrappers to Subversion"
 
 flavours conflict fcm
-flavours root     $::env(CEMAC_DIR)/software/apps/fcm/2021.5.0
+flavours root     $::env(CEMAC_DIR)/software/apps/fcm/2021.05.0
 flavours revision 1
 flavours commit
 

@@ -1,0 +1,27 @@
+#%Module 1.0
+package require flavours
+flavours init
+
+proc ModulesHelp { } {
+  puts stderr "
+    Rose application configuration toolkit
+
+    Includes cylc and some tools to assists with MOSRS.
+
+    Documentation : https://metomi.github.io/rose/
+  "
+}
+
+module-whatis "Rose application configuration toolkit "
+
+flavours conflict rose
+
+flavours root     $::env(CEMAC_DIR)/software/apps/rose/2019.01.8
+flavours revision 1
+flavours commit
+
+setenv ROSE_HOME [flavours path]
+
+flavours prepend-path PATH     bin
+
+flavours cleanup

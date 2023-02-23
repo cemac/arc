@@ -1,0 +1,23 @@
+# If shell is interactive and this is a login node ... :
+if [[ $- == *i* ]] && [[ ${HOSTNAME} =~ login.* ]] ; then
+  # GPG agent info file location:
+  GPG_INFO="${HOME}/.gnupg/gpg-agent-info/${HOSTNAME}"
+  # Source info file if exists: 
+  if [ -f "${GPG_INFO}" ]; then
+    . "${GPG_INFO}"
+    export GPG_AGENT_INFO
+  fi
+  # Check for running agent, else start a new one:
+  gpg-connect-agent /bye >& /dev/null || \
+  eval $(gpg-agent \
+           --no-use-standard-socket \
+           --daemon \
+           --write-env-file "${GPG_INFO}" \
+           --allow-preset-passphrase \
+           --max-cache-ttl 43200 \
+           2> /dev/null
+  )
+  # Set GPG_TTY variable:
+  GPG_TTY=$(tty)
+  export GPG_TTY
+fi

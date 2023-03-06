@@ -16,7 +16,6 @@ BUILD_VERSION='3'
 TOP_BUILD_DIR=$(pwd)
 # compilers for which madagascar should be built:
 COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-#COMPILER_VERS='intel:19.0.4'
 
 # get_file function:
 function get_file() {
@@ -73,7 +72,6 @@ function build_madagascar() {
   fi
 
   # madagascar:
-
 
   if [ ! -e ${INSTALL_DIR}/bin/sfdip ] ; then
     echo "building madagascar"

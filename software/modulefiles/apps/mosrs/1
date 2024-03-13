@@ -14,7 +14,7 @@ module-whatis "NetCDF visual browser "
 
 flavours conflict ncview
 
-flavours root     $::env(CEMAC_DIR)/software/apps/mosrs/1
+flavours root     $::env(CEMAC_DIR)/software/apps/mosrs
 flavours revision 1
 flavours commit
 

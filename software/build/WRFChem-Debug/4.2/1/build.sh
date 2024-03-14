@@ -14,7 +14,7 @@
 #============================================================================
 
 # source directory:
-SRC_DIR=$(readlink -f $(pwd)/../src)
+SRC_DIR=$(readlink -f $(pwd)/../../../WRFChem/4.2/src)
 # software directory:
 APPS_DIR="${CEMAC_DIR}/software/apps"
 # app information:

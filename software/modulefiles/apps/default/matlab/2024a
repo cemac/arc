@@ -1,0 +1,24 @@
+#%Module -*- tcl -*-
+
+set module_name matlab
+set module_version 2024a
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Matlab is a language designed for the rapid analysis
+    and display of data. It can run commands interactively
+    or be used to build more complicated programs.
+
+    Homepage : https://uk.mathworks.com/products/matlab.html
+  "
+}
+
+module-whatis "Data analysis and visualisation"
+
+prepend-path PATH $module_root/bin
+
+setenv MATLAB_HOME $module_root

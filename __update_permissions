@@ -28,9 +28,9 @@ chmod 2775 ${CEMAC_DIR}
 
 # top level files which should be group writeable:
 chgrp ${CEMAC_GROUP} \
-  ${CEMAC_DIR}/{cemac.sh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
 chmod g+rwX \
-  ${CEMAC_DIR}/{cemac.sh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
 
 # git directory:
 GIT_DIR="${CEMAC_DIR}/.git"

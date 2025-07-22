@@ -52,12 +52,14 @@ cd ${CEMAC_SOFTWARE}/build/fftw/3.3.10/1 && build
 cd ${CEMAC_SOFTWARE}/build/parallel/20250622/1 && build
 # svn 1.14.5:
 cd ${CEMAC_SOFTWARE}/build/svn/1.14.5/1 && build
-# panoply 5.6.1:
-cd ${CEMAC_SOFTWARE}/build/panoply/5.6.1/1 && build
 # cdo 2.5.2:
 cd ${CEMAC_SOFTWARE}/build/cdo/2.5.2/1 && build
+# nco 5.3.4:
+cd ${CEMAC_SOFTWARE}/build/nco/5.3.4/1 && build
 # ncview 2.1.11:
 cd ${CEMAC_SOFTWARE}/build/ncview/2.1.11/1 && build
+# panoply 5.6.1:
+cd ${CEMAC_SOFTWARE}/build/panoply/5.6.1/1 && build
 # bisicles/gia 20210202:
 cd ${CEMAC_SOFTWARE}/build/bisicles/gia/20210202/1 && build
 

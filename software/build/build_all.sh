@@ -56,6 +56,8 @@ cd ${CEMAC_SOFTWARE}/build/svn/1.14.5/1 && build
 cd ${CEMAC_SOFTWARE}/build/cdo/2.5.2/1 && build
 # nco 5.3.4:
 cd ${CEMAC_SOFTWARE}/build/nco/5.3.4/1 && build
+# ncl 6.6.2:
+cd ${CEMAC_SOFTWARE}/build/ncl/6.6.2/1 && build
 # ncview 2.1.11:
 cd ${CEMAC_SOFTWARE}/build/ncview/2.1.11/1 && build
 # panoply 5.6.1:

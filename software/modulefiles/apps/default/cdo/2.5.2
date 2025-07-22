@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name cdo
+set module_version 2.5.2
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Climate Data Operators
+
+    Homepage: https://code.zmaw.de/projects/cdo/
+    Documentation: https://code.zmaw.de/projects/cdo/wiki/Cdo#Documentation
+  "
+}
+
+module-whatis "Climate Data Operators"
+
+prepend-path PATH $module_root/bin
+
+setenv CDO_HOME $module_root

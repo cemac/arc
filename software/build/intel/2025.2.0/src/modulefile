@@ -1,0 +1,62 @@
+#%Module -*- tcl -*-
+
+set module_name XAPP_NAMEX
+set module_version XAPP_VERSIONX
+set module_build XBUILD_VERSIONX
+set module_flavour XFLAVOURX
+
+set module_root $::env(CEMAC_SOFTWARE)/compilers/$module_name/$module_version/$module_build/$module_flavour
+set module_apps $::env(CEMAC_SOFTWARE)/modulefiles/apps/$module_name-$module_version
+set module_libraries $::env(CEMAC_SOFTWARE)/modulefiles/libraries/$module_name-$module_version
+
+proc ModulesHelp { } {
+  puts stderr "
+    Intel compiler suite
+  "
+}
+
+module-whatis "Intel compiler suite"
+
+family compiler
+
+prepend-path CPATH $module_root/mkl/latest/include
+prepend-path LIBRARY_PATH $module_root/mkl/latest/lib
+prepend-path LD_LIBRARY_PATH $module_root/mkl/latest/lib
+prepend-path PKG_CONFIG_PATH $module_root/mkl/latest/lib/pkgconfig
+prepend-path NLSPATH $module_root/mkl/latest/share/locale/%l_%t/%N
+setenv MKLROOT $module_root/mkl/latest
+
+prepend-path PATH $module_root/compiler/latest/bin
+prepend-path LIBRARY_PATH $module_root/compiler/latest/lib
+prepend-path LD_LIBRARY_PATH $module_root/compiler/latest/lib
+prepend-path PKG_CONFIG_PATH $module_root/compiler/latest/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+prepend-path MANPATH $module_root/compiler/latest/share/man
+setenv CMPLR_ROOT $module_root/compiler/latest
+prepend-path NLSPATH $module_root/compiler/latest/lib/compiler/locale/%l_%t/%N
+prepend-path MODULEPATH $module_apps
+prepend-path MODULEPATH $module_libraries
+
+setenv INTEL_HOME $module_root
+setenv CC icx
+setenv CXX icpx
+setenv FC ifx
+setenv F77 ifx
+setenv F90 ifx
+
+if { [module-info mode load] } {
+  module save cemac-modules
+  module purge
+  module restore cemac-modules
+}
+
+if { [module-info mode unload] } {
+  module unuse $module_apps
+  module unuse $module_libraries
+}
+
+if { [module-info mode unload] &&
+     [module-info command] != "purge" &&
+     [module-info command] != "reload" } {
+  puts stdout "module reload"
+} 

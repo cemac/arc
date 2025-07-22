@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name XAPP_NAMEX
+set module_version XAPP_VERSIONX
+set module_build XBUILD_VERSIONX
+set module_flavour XFLAVOURX
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Panoply is a cross-platform application that plots geo-gridded and other
+    arrays from netCDF, HDF, GRIB, and other datasets.
+
+    Homepage : http://www.giss.nasa.gov/tools/panoply/
+  "
+}
+
+module-whatis "NetCDF, HDF and GRIB Data Viewer"
+
+prepend-path PATH $module_root/bin
+
+setenv PANOPLY_HOME $module_root

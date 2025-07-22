@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- bisicles/gia 20210202
-#  updated : 2021-02-02
+#  updated : 2025-07-16
 
 # bisicles build instructions:
 #
@@ -25,13 +25,14 @@
 #   https://github.com/cemacrr/libamrfile
 #
 # built on el6 to be compatible with most current linuxes
-# ask for access to github repository (license for libamrfile unknown ...)
 
 # verion information:
 #
-#  bisicles/gia 20190710:
+#  bisicles/gia 20211113:
 #
-#    > r3822 | skachuck | 2019-07-10 13:24:54 +0100 (Wed, 10 Jul 2019) | 1 line
+#    > r4132 | skachuck | 2021-11-18 15:09:20 +0000 (Thu, 18 Nov 2021) | 1 line
+#    >
+#    > Corrected checkpoint leveldata read problem
 #
 #  chombo 3.2.patch8:
 #
@@ -67,21 +68,28 @@
 #
 #    https://github.com/cemacrr/bisicles_gia/
 
+# directory containing this script:
+BASE_DIR=$(readlink -f $(dirname ${0}))
 # source directory:
-SRC_DIR=$(readlink -f $(pwd)/../src)
-# software directory:
-APPS_DIR="${CEMAC_DIR}/software/apps"
+SRC_DIR=$(readlink -f ${BASE_DIR}/../src)
+# apps directory:
+APPS_DIR="${CEMAC_SOFTWARE}/apps"
 # app information:
 APP_NAME='bisicles/gia'
 APP_VERSION='20210202'
+CHOMBO_VERSION='3.2.patch8'
+PETSC_VERSION='3.23.1'
+PYTHON_VERSION='3.12'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
-TOP_BUILD_DIR=$(pwd)
-# compilers for which bisicles should be built:
-COMPILER_VERS='gnu:native gnu:8.3.0 intel:19.0.4'
-# mpi libraries for which bisicles should be built:
-MPI_VERS='openmpi:3.1.4 mvapich2:2.3.1 intelmpi:2019.4.243'
+TOP_BUILD_DIR=${BASE_DIR}
+# compilers for which we should build:
+COMPILER_VERS='gnu:native gnu:14.2.0 intel:2025.2.0'
+# mpi libraries for which we should build:
+MPI_VERS='openmpi:5.0.8 mvapich:4.0 intelmpi:2025.2.0'
+# module files directory:
+MODULEFILES_DIR="${CEMAC_SOFTWARE}/modulefiles/apps"
 
 # get_file function:
 function get_file() {
@@ -100,9 +108,9 @@ function get_file() {
 mkdir -p ${SRC_DIR}
 
 # get sources:
-get_file 'https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.14.4.tar.gz'
+get_file "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-${PETSC_VERSION}.tar.gz"
 get_file 'https://raw.githubusercontent.com/cemac/extract_bisicles_data/master/extract_bisicles_data'
-get_file 'https://files.pythonhosted.org/packages/d4/0c/9840c08189e030873387a73b90ada981885010dd9aea134d6de30cd24cb8/virtualenv-15.1.0.tar.gz'
+get_file 'https://github.com/cemac/libamrfile/archive/refs/heads/master.zip' libamrfile.zip
 
 # gia files from github:
 if [ ! -e "${SRC_DIR}/src_gia.tar.gz" ] ; then
@@ -113,38 +121,6 @@ if [ ! -e "${SRC_DIR}/src_gia.tar.gz" ] ; then
   mv src_gia.tar.gz ${SRC_DIR}/
   rm -fr ./src_gia
 fi
-
-# python building function
-function build_python() {
-  # variables:
-  SRC_DIR=${1}
-  BUILD_DIR=${2}
-  PYTHON_DIR=${3}
-  PYTHON_LIB_DIR=${4}
-  PYTHON_VIRTUALENV=${5}
-  # build virtualenv:
-  cd ${BUILD_DIR}
-  if [ ! -e ${PYTHON_LIB_DIR}/virtualenv.py ] ; then
-    rm -fr virtualenv-15.1.0
-    tar xzf ${SRC_DIR}/virtualenv-15.1.0.tar.gz
-    cd virtualenv-15.1.0
-    # build and install virtualenv:
-    mkdir -p ${PYTHON_LIB_DIR}
-    /usr/bin/python setup.py build && \
-    rsync -av build/lib/ \
-      ${PYTHON_LIB_DIR}/
-  fi
-  # set up virtualenv:
-  if [ ! -e ${PYTHON_VIRTUALENV}/bin/activate ] ; then
-    echo "creating virtualenv"
-    mkdir -p ${PYTHON_VIRTUALENV}
-    PYTHONPATH="${PYTHON_LIB_DIR}" \
-      /usr/bin/python -m virtualenv ${PYTHON_VIRTUALENV}
-  fi
-  # activate virtualenv and install numpy, h5py and netCDF4:
-  (. ${PYTHON_VIRTUALENV}/bin/activate && \
-     pip install -U pip numpy h5py netCDF4==1.5.2)
-}
 
 # bisicles builder function:
 function build_bisicles() {
@@ -158,18 +134,26 @@ function build_bisicles() {
   if [ ! -e ${BISICLES_HOME}/BISICLES ] ; then
     echo "extracting bisicles"
     # extract!:
-    tar xzf ${SRC_DIR}/bisicles-20210202.tar.gz \
+    tar xzf ${SRC_DIR}/bisicles-${APP_VERSION}.tar.gz \
       -C ${BISICLES_HOME}
-    \mv ${BISICLES_HOME}/bisicles-20210202 \
+    \mv ${BISICLES_HOME}/bisicles-${APP_VERSION} \
       ${BISICLES_HOME}/BISICLES
+    # svn upgrade:
+    pushd ${BISICLES_HOME}/BISICLES && \
+    svn upgrade
+    popd
   fi
   if [ ! -e ${BISICLES_HOME}/Chombo ] ; then
     echo "extracting chombo"
     # extract!:
-    tar xzf ${SRC_DIR}/chombo-3.2.patch8.tar.gz \
+    tar xzf ${SRC_DIR}/chombo-${CHOMBO_VERSION}.tar.gz \
       -C ${BISICLES_HOME}
-    \mv ${BISICLES_HOME}/chombo-3.2.patch8 \
+    \mv ${BISICLES_HOME}/chombo-${CHOMBO_VERSION} \
       ${BISICLES_HOME}/Chombo
+    # svn upgrade:
+    pushd ${BISICLES_HOME}/Chombo && \
+    svn upgrade
+    popd
   fi
   # extract gia files:
   if [ ! -e ${BISICLES_HOME}/src_gia ] ; then
@@ -190,12 +174,18 @@ function build_bisicles() {
       ${BISICLES_HOME}/Make.defs.local
     sed -i "s|^\(FC\).*$|\1 = ${FC}|g" \
       ${BISICLES_HOME}/Make.defs.local
+    sed -i "s|^\(HDFINCFLAGS\).*$|\1 = -I${HDF5_HOME}/include|g" \
+      ${BISICLES_HOME}/Make.defs.local
+    sed -i "s|^\(HDFLIBFLAGS\).*$|\1 = -L${HDF5_HOME}/lib -lhdf5 -lz|g" \
+      ${BISICLES_HOME}/Make.defs.local
     sed -i "s|^\(HDFMPIINCFLAGS\).*$|\1 = -I${HDF5_HOME}/include|g" \
       ${BISICLES_HOME}/Make.defs.local
-    sed -i "s|^\(HDFMPILIBFLAGS\).*$|\1 = -L${HDF5_HOME}/lib -lhdf5  -lz|g" \
+    sed -i "s|^\(HDFMPILIBFLAGS\).*$|\1 = -L${HDF5_HOME}/lib -lhdf5 -lz|g" \
       ${BISICLES_HOME}/Make.defs.local
     if [ "${CMP}" = "intel" ] ; then
       sed -i "s|^\(foptflags\).*$|\1 = -fPIC -O3 -xHost -funroll-loops|g" \
+        ${BISICLES_HOME}/Make.defs.local
+      sed -i "s|^\(HDFMPILIBFLAGS\).*$|\1 = -L${HDF5_HOME}/lib -lhdf5 -lz -lifcore|g" \
         ${BISICLES_HOME}/Make.defs.local
     fi
   fi
@@ -204,19 +194,50 @@ function build_bisicles() {
       ${BISICLES_HOME}/Chombo/lib/mk/Make.defs.local
   fi
   # setup machine make options:
-  if [ ! -e ${BISICLES_HOME}/BISICLES/code/mk/arc4 ] ; then
+  if [ ! -e ${BISICLES_HOME}/BISICLES/code/mk/aire ] ; then
     echo "configuring machine specific make options"
-    cat > ${BISICLES_HOME}/BISICLES/code/mk/arc4 <<EOF
-PYTHON_VERSION=2.7
-PYTHON_INC=-I${PYTHON_HOME}/include/python2.7
-PYTHON_LIBS=-L${PYTHON_HOME}/lib -lpython2.7
+    cat > ${BISICLES_HOME}/BISICLES/code/mk/aire <<EOF
+PYTHON_VERSION=${PYTHON_VERSION}
+PYTHON_INC=-I${PYTHON_HOME}/include/python${PYTHON_VERSION}
+PYTHON_LIBS=-L${PYTHON_HOME}/lib -lpython${PYTHON_VERSION}
 NETCDF_INC=-I$(nc-config --includedir)
-NETCDF_LIBS=$(nc-config --flibs)
+NETCDF_LIBS=$(nf-config --flibs)
 EOF
-    ln -s arc4 \
-      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login1.arc4.leeds.ac.uk
-    ln -s arc4 \
-      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login2.arc4.leeds.ac.uk
+    ln -s aire \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login1.aire.lee.alces.network
+    ln -s aire \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login2.aire.lee.alces.network
+    ln -s aire \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login3.aire.lee.alces.network
+    ln -s aire \
+      ${BISICLES_HOME}/BISICLES/code/mk/Make.defs.login4.aire.lee.alces.network
+  fi
+  # csh path adjustments ... :
+  for FILE in \
+    ${BISICLES_HOME}/BISICLES/code/GNUmakefile \
+    ${BISICLES_HOME}/Chombo/releasedExamples/AMRPoisson/execCell/omprun_anag \
+    ${BISICLES_HOME}/Chombo/releasedExamples/AMRGodunov/execPolytropic/omprun_anag \
+    ${BISICLES_HOME}/Chombo/lib/test/BoxTools/mpirun.sh \
+    ${BISICLES_HOME}/Chombo/lib/util/ChomboCompare/chdiff/chdiff \
+    ${BISICLES_HOME}/Chombo/lib/util/migration/fixRepo \
+    ${BISICLES_HOME}/Chombo/lib/util/migration/removeEmptyDirs \
+    ${BISICLES_HOME}/Chombo/lib/mk/Make.rules \
+    ${BISICLES_HOME}/Chombo/lib/mk/reverse \
+    ${BISICLES_HOME}/Chombo/lib/mk/autoconf/Automake.rules
+  do
+    \cp ${FILE} ${FILE}.original
+    sed -i 's|/bin/csh|/usr/bin/env -S csh|g' ${FILE}
+  done
+  # patching ... :
+  \cp ${BISICLES_HOME}/Chombo/lib/src/BoxTools/LoadBalance.cpp \
+    ${BISICLES_HOME}/Chombo/lib/src/BoxTools/LoadBalance.cpp.original
+  sed -i 's|\(^#include <set>\)|\1\n#include <limits>|g' \
+    ${BISICLES_HOME}/Chombo/lib/src/BoxTools/LoadBalance.cpp
+  if [ "${CMP}" = "intel" ] ; then
+    \cp ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H \
+      ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H.original
+    sed -i 's|inline bool less|inline constexpr bool less|g' \
+      ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H
   fi
   # build bisicles:
   if [ "${USE_PETSC}" = "TRUE" ] ; then
@@ -229,13 +250,16 @@ EOF
   if [ ! -e ${BISICLES_HOME}/bin/ftestwrapper.2d${BIN_SUFFIX} ] ; then
     echo "building bisicles"
     cd ${BISICLES_HOME}/BISICLES/code && \
-    if [ "${MPI_TYPE}" = "mvapich2" ] || [ "${MPI_TYPE}" = "intelmpi" ] ; then
+    if [ "${MPI_TYPE}" = "mvapich" ] || [ "${MPI_TYPE}" = "intelmpi" ] ; then
       sed -i 's|-lmpi_cxx|-lmpicxx|g' cdriver/GNUmakefile
+    elif [ "${MPI_TYPE}" = "openmpi" ] ; then
+      sed -i 's|-lmpi_cxx||g' cdriver/GNUmakefile
     fi
     FFTWDIR=${FFTW_HOME} \
     make -j8 \
       all \
       OPT=TRUE \
+      DEBUG=FALSE \
       MPI=TRUE \
       USE_FFTW=TRUE \
       USE_PETSC=${USE_PETSC}
@@ -302,15 +326,12 @@ EOF
     ln -s BISICLES/BISICLES/examples \
       ${INSTALL_DIR}/
   fi
-  # add bisicles extraction tool ... create python virtualenv:
-  build_python ${SRC_DIR} ${BUILD_DIR} ${INSTALL_DIR}/python \
-               ${INSTALL_DIR}/python/lib \
-               ${INSTALL_DIR}/python/virtualenv
   # extract extraction tool:
   if [ ! -e ${INSTALL_DIR}/extract_bisicles_data ] ; then
     mkdir ${INSTALL_DIR}/extract_bisicles_data
-    tar xzf ${SRC_DIR}/amrfile.tar.gz \
-      -C ${INSTALL_DIR}/extract_bisicles_data
+    unzip ${SRC_DIR}/libamrfile.zip 
+    rsync -aS libamrfile-master/amrfile \
+      ${INSTALL_DIR}/extract_bisicles_data/
     \cp ${SRC_DIR}/extract_bisicles_data \
       ${INSTALL_DIR}/extract_bisicles_data/
     chmod 755 ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data
@@ -319,8 +340,8 @@ EOF
     cat > ${INSTALL_DIR}/bin/extract_bisicles_data <<EOF
 #!/bin/bash
 . /etc/profile.d/modules.sh
-module load python/2.7.16
-. ${INSTALL_DIR}/python/virtualenv/bin/activate
+. ${CEMAC_DIR}/cemac.sh
+module load python3
 export PYTHONPATH="${INSTALL_DIR}/extract_bisicles_data"
 exec ${INSTALL_DIR}/extract_bisicles_data/extract_bisicles_data "\${@}"
 EOF
@@ -348,30 +369,37 @@ do
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # set up modules:
     module purge
-    module load licenses sge ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 \
-      fftw python/2.7.16 patchelf
+    module load \
+      ${CMP}/${CMP_VER} ${MP}/${MP_VER} \
+      autoconf automake \
+      hdf5 netcdf fftw python3 patchelf svn tcsh
     # build variables:
-    CPATH="${PYTHON_HOME}/include/python2.7:${CPATH}"
-    CFLAGS='-O2 -fPIC'
+    CPATH="${PYTHON_HOME}/include/python${PYTHON_VERSION}:${CPATH}"
+    if [ "${CMP}" = "gnu" ] && [ ${CMP_VER%%.*} != 'native' ] && [ ${CMP_VER%%.*} -gt 14 ] ; then
+      CFLAGS='-O2 -fPIC -std=gnu17'
+    else
+      CFLAGS='-O2 -fPIC'
+    fi
     CXXFLAGS='-O2 -fPIC'
     CPPFLAGS='-O2 -fPIC'
     FFLAGS='-O2 -fPIC'
     FCFLAGS='-O2 -fPIC'
     export CPATH CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
     # start building:
-    echo "building for : ${FLAVOUR}"
+    echo "building ${APP_NAME} with ${COMPILER_VER} and ${MPI_VER}"
     # petsc:
     unset PETSC_DIR
     if [ ! -e ${INSTALL_DIR}/petsc/lib/libpetsc.so ] ; then
-      echo "building petsc"
+      echo "building petsc with ${COMPILER_VER} and ${MPI_VER}"
       # set up build dir:
-      cd ${BUILD_DIR}
-      rm -fr ${BUILD_DIR}/petsc-3.14.4
+      cd ${BUILD_DIR} && \
+      rm -fr ./petsc-${PETSC_VERSION}
       # extract source:
-      tar xzf ${SRC_DIR}/petsc-lite-3.14.4.tar.gz
-      cd petsc-3.14.4
+      tar xzf ${SRC_DIR}/petsc-lite-${PETSC_VERSION}.tar.gz
+      cd petsc-${PETSC_VERSION}
       # configure and build:
       ./configure \
+        --with-debugging=no \
         --download-fblaslapack=yes \
         --download-hypre=yes \
         -with-x=0 \
@@ -380,26 +408,46 @@ do
         --with-hypre=yes \
         --prefix=${INSTALL_DIR}/petsc \
         --with-c2html=0 \
-        --with-ssl=0  && \
-        make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
-        PETSC_ARCH=arch-linux2-c-debug \
+        --with-ssl=0 \
+        ${PETCS_OPTIONS} \
+        --COPTFLAGS="${CFLAGS}" \
+        --CXXOPTFLAGS="${CXXFLAGS}" \
+        --FOPTFLAGS="${FCFLAGS}" && \
+      make \
+        -j8 \
+        PETSC_DIR=${BUILD_DIR}/petsc-${PETSC_VERSION} \
+        PETSC_ARCH=arch-linux-c-opt \
         all && \
-        make -j8 \
-        PETSC_DIR=${BUILD_DIR}/petsc-3.14.4 \
-        PETSC_ARCH=arch-linux2-c-debug \
+      make \
+        -j8 \
+        PETSC_DIR=${BUILD_DIR}/petsc-${PETSC_VERSION} \
+        PETSC_ARCH=arch-linux-c-opt \
         install
     fi
     export PETSC_DIR=${INSTALL_DIR}/petsc
     # build bisicles. non petsc:
     if [ ! -e ${INSTALL_DIR}/bin/ftestwrapper.2d ] ; then
-      echo "building bisicles without petsc"
+      echo "building bisicles without petsc with ${COMPILER_VER} and ${MPI_VER}"
       build_bisicles ${INSTALL_DIR}/BISICLES FALSE ${MP}
     fi
     # build bisicles.  petsc version:
     if [ ! -e ${INSTALL_DIR}/bin/ftestwrapper.2d.PETSC ] ; then
-      echo "building bisicles with petsc"
+      echo "building bisicles with petsc with ${COMPILER_VER} and ${MPI_VER}"
       build_bisicles ${INSTALL_DIR}/BISICLES_PETSC TRUE ${MP}
+    fi
+    # module file for this application:
+    MODULEFILE=${MODULEFILES_DIR}/${FLAVOUR}/${APP_NAME}/${APP_VERSION}
+    # modulefile:
+    if [ ! -e ${MODULEFILE} ] ; then
+      echo "installing modulefile for ${COMPILER_VER} and ${MPI_VER}"
+      mkdir -p ${MODULEFILES_DIR}/${FLAVOUR}/${APP_NAME}
+      \cp ${SRC_DIR}/modulefile \
+        ${MODULEFILE}
+      sed -i "s|XAPP_NAMEX|${APP_NAME}|g" ${MODULEFILE}
+      sed -i "s|XAPP_VERSIONX|${APP_VERSION}|g" ${MODULEFILE}
+      sed -i "s|XBUILD_VERSIONX|${BUILD_VERSION}|g" ${MODULEFILE}
+      sed -i "s|XFLAVOURX|${FLAVOUR}|g" ${MODULEFILE}
+      sed -i "s|XPREREQX|${CMP}/${CMP_VER} ${MP}/${MP_VER}|g" ${MODULEFILE}
     fi
   done
 done

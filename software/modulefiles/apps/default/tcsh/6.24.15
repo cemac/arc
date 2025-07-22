@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name tcsh
+set module_version 6.24.15
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    C shell with file name completion and command line editing
+
+    Homepage: https://www.tcsh.org/
+  "
+}
+
+module-whatis "C shell with file name completion and command line editing"
+
+prepend-path PATH $module_root/bin
+prepend-path MANPATH $module_root/share/man
+
+setenv TCSH_HOME $module_root

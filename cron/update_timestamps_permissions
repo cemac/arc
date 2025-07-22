@@ -1,8 +1,0 @@
-#!/bin/bash
-# CEMAC data directory:
-CEMAC_DIR='/nobackup/cemac'
-export CEMAC_DIR
-# Update time stamps:
-###find ${CEMAC_DIR} -exec touch '{}' -ah \;
-# Update permissions:
-${CEMAC_DIR}/__update_permissions

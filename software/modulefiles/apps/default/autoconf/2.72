@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name autoconf
+set module_version 2.72
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Autoconf is an extensible package of M4 macros that produce shell scripts to
+    automatically configure software source code packages.
+
+    Homepage: https://www.gnu.org/software/autoconf/
+  "
+}
+
+module-whatis "Automatic configure script builder"
+
+prepend-path PATH $module_root/bin
+
+setenv AUTOCONF_HOME $module_root

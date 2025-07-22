@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name XAPP_NAMEX
+set module_version XAPP_VERSIONX
+set module_build XBUILD_VERSIONX
+set module_flavour XFLAVOURX
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Automake is a tool for generating Makefile.in files compliant with the GNU
+    Coding Standards. 
+
+    Homepage: https://www.gnu.org/software/automake/
+  "
+}
+
+module-whatis "Tool for generating Makefile.in files"
+
+prepend-path PATH $module_root/bin
+
+setenv AUTOMAKE_HOME $module_root

@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name XAPP_NAMEX
+set module_version XAPP_VERSIONX
+set module_build XBUILD_VERSIONX
+set module_flavour XFLAVOURX
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Subversion version control
+
+    Homepage: https://subversion.apache.org/
+  "
+}
+
+module-whatis "Subversion version control"
+
+prepend-path PATH $module_root/bin
+prepend-path MANPATH $module_root/share/man
+
+setenv SVN_HOME $module_root

@@ -1,14 +1,10 @@
-# CEMAC environment set up
+# Set CEMAC_DIR:
+setenv CEMAC_DIR '/users/cemac'
 
-# cemac data dir:
-setenv CEMAC_DIR '/nobackup/cemac'
+# Set CEMAC_SOFTWARE:
+setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software"
 
-# add cemac modules:
-if (! ${?MODULEPATH}) then
-  setenv MODULEPATH ${CEMAC_DIR}/software/modulefiles/apps:${CEMAC_DIR}/software/modulefiles/compilers:${CEMAC_DIR}/software/modulefiles/libraries
-else if (":${MODULEPATH}:" !~ *":${CEMAC_DIR}/software/modulefiles:"*) then
-  setenv MODULEPATH ${CEMAC_DIR}/software/modulefiles/apps:${CEMAC_DIR}/software/modulefiles/compilers:${CEMAC_DIR}/software/modulefiles/libraries:${MODULEPATH}
-endif
-
-# have to unset this to use flavours not owned by root:
-unsetenv MODULE_FLAVOUR_OWNER
+# Set MODULEPATH:
+module purge
+unsetenv MODULEPATH
+setenv MODULEPATH "${CEMAC_SOFTWARE}/modulefiles/libraries/default:${CEMAC_SOFTWARE}/modulefiles/compilers:${CEMAC_SOFTWARE}/modulefiles/apps/default"

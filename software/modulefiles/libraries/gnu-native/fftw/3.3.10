@@ -1,0 +1,33 @@
+#%Module -*- tcl -*-
+
+set module_name fftw
+set module_version 3.3.10
+set module_build 1
+set module_flavour gnu-native
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Discrete Fourier Transform library
+
+    Homepage: https://fftw.org/
+  "
+}
+
+module-whatis "Discrete Fourier Transform library"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib
+prepend-path MANPATH $module_root/share/man
+prepend-path INFOPATH $module_root/share/info
+prepend-path PKG_CONFIG_PATH $module_root/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv FFTW_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq gnu/native
+}

@@ -1,0 +1,22 @@
+#%Module -*- tcl -*-
+
+set module_name parallel
+set module_version 20250622
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    GNU parallel is a shell tool for executing jobs in parallel using one or more computers.
+
+    Homepage: https://www.gnu.org/software/parallel/
+  "
+}
+
+module-whatis "Shell tool for executing jobs in parallel"
+
+prepend-path PATH $module_root/bin
+
+setenv PARALLEL_HOME $module_root

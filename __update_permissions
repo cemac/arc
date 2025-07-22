@@ -78,8 +78,14 @@ done
 chmod -R a+rX ${CEMAC_SOFTWARE}/modulefiles
 chmod -R g+rwX ${CEMAC_SOFTWARE}/modulefiles
 
+# make data directory group writeable:
+DATA_DIR="${CEMAC_DIR}/data"
+chgrp -R ${CEMAC_GROUP} ${DATA_DIR}
+find ${DATA_DIR} -type d -exec chmod g+s '{}' +
+chmod -R g+rwX ${DATA_DIR}
+
 # make cron directory group writeable:
 CRON_DIR="${CEMAC_DIR}/cron"
 chgrp -R ${CEMAC_GROUP} ${CRON_DIR}
-find ${CRON_DIR} -type d -exec chmod g+s '{}' \;
+find ${CRON_DIR} -type d -exec chmod g+s '{}' +
 chmod -R g+rwX ${CRON_DIR}

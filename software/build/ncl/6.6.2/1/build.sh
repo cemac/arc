@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- ncl 6.6.2
-#  updated : 2025-07-15
+#  updated : 2025-07-22
 #  installed via conda ...
 
 # directory containing this script:

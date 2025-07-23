@@ -1,0 +1,27 @@
+#%Module -*- tcl -*-
+
+set module_name visit
+set module_version 3.4.2
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    VisIt is an open source interactive parallel visualization and graphical
+    analysis tool for viewing scientific data. It can be used to visualize
+    scalar and vector fields defined on 2D and 3D structured and unstructured
+    meshes. VisIt was designed to handle very large data set sizes in the
+    terascale range and yet can also handle small data sets in the kilobyte
+    range.
+
+    Homepage : https://visit-dav.github.io/visit-website/
+  "
+}
+
+module-whatis "Visualization, animation and analysis tool"
+
+prepend-path PATH $module_root/bin
+
+setenv VISIT_HOME $module_root

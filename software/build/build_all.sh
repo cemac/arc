@@ -68,6 +68,8 @@ cd ${CEMAC_SOFTWARE}/build/matlab/2024a/1 && build
 cd ${CEMAC_SOFTWARE}/build/fcm/2021.05.0/1 && build
 # visit 3.4.2:
 cd ${CEMAC_SOFTWARE}/build/visit/3.4.2/1 && build
+# R 4.3.3:
+cd ${CEMAC_SOFTWARE}/build/R/4.3.3/1 && build
 # bisicles/gia 20210202:
 cd ${CEMAC_SOFTWARE}/build/bisicles/gia/20210202/1 && build
 

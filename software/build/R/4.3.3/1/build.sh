@@ -80,11 +80,12 @@ EOF
   # set up conda:
   . ${CONDA_DIR}/etc/profile.d/conda.sh
   # update first:
-  mamba update -n base -y python
-  mamba update -n base -y --all
+  conda remove -n base -y mamba libmamba libmambapy
+  conda update -n base -y python
+  conda update -n base -y --all
   # add packages:
   if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    mamba install --no-py-pin -y ${CONDA_PACKAGES}
+    conda install -y ${CONDA_PACKAGES}
   fi
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}

@@ -18,5 +18,3 @@ proc ModulesHelp { } {
 module-whatis "Statistical computing and graphics"
 
 prepend-path PATH $module_root/bin
-
-setenv R_HOME $module_root

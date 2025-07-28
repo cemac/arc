@@ -22,6 +22,7 @@ module-whatis "Xml I/O Server library"
 prepend-path PATH $module_root/bin
 prepend-path CPATH $module_root/include
 prepend-path LIBRARY_PATH $module_root/lib
+prepend-path CMAKE_PREFIX_PATH $module_root/
 
 setenv XIOS_HOME $module_root
 

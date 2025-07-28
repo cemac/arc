@@ -72,6 +72,8 @@ cd ${CEMAC_SOFTWARE}/build/visit/3.4.2/1 && build
 cd ${CEMAC_SOFTWARE}/build/R/4.3.3/1 && build
 # bisicles/gia 20210202:
 cd ${CEMAC_SOFTWARE}/build/bisicles/gia/20210202/1 && build
+# xios 20220707:
+cd ${CEMAC_SOFTWARE}/build/xios/20220707/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

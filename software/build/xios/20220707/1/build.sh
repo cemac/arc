@@ -38,7 +38,7 @@ module load svn
 
 # get xios from svn:
 if [ ! -e "${SRC_DIR}/xios.tar.gz" ] ; then
-  echo "getting xios source"
+  echo "getting ${APP_NAME} source"
   pushd ${SRC_DIR}
   svn co http://forge.ipsl.jussieu.fr/ioserver/svn/XIOS/trunk ${APP_NAME} && \
   tar czf xios.tar.gz ${APP_NAME}
@@ -71,7 +71,7 @@ do
     module load ${CMP}/${CMP_VER} ${MP}/${MP_VER} netcdf hdf5 svn
     # xios:
     if [ ! -e ${INSTALL_DIR}/lib/libxios.a ] ; then
-      echo "building xios"
+      echo "building ${APP_NAME} with ${COMPILER_VER} and ${MPI_VER}"
       # set up build dir:
       cd ${BUILD_DIR} && \
       rm -fr ./${APP_NAME}

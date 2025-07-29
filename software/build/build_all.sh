@@ -74,6 +74,8 @@ cd ${CEMAC_SOFTWARE}/build/R/4.3.3/1 && build
 cd ${CEMAC_SOFTWARE}/build/bisicles/gia/20210202/1 && build
 # xios 20220707:
 cd ${CEMAC_SOFTWARE}/build/xios/20220707/1 && build
+# atlas 3.10.3:
+cd ${CEMAC_SOFTWARE}/build/atlas/3.10.3/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

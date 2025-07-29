@@ -1,0 +1,29 @@
+#%Module -*- tcl -*-
+
+set module_name atlas
+set module_version 3.10.3
+set module_build 1
+set module_flavour gnu-native
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Automatically Tuned Linear Algebra Software
+
+    Homepage: http://math-atlas.sourceforge.net/
+  "
+}
+
+module-whatis "Automatically Tuned Linear Algebra Software"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv ATLAS_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq gnu/native
+}

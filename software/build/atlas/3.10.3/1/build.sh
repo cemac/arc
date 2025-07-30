@@ -12,7 +12,7 @@ APPS_DIR="${CEMAC_SOFTWARE}/libraries"
 # app information:
 APP_NAME='atlas'
 APP_VERSION='3.10.3'
-LAPACK_VERSION='3.5.0'
+LAPACK_VERSION='3.12.1'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -39,7 +39,7 @@ function get_file() {
 mkdir -p ${SRC_DIR}
 
 # get sources:
-get_file "http://www.netlib.org/lapack/lapack-${LAPACK_VERSION}.tgz"
+get_file "https://github.com/Reference-LAPACK/lapack/archive/refs/tags/v${LAPACK_VERSION}.tar.gz" lapack-${LAPACK_VERSION}.tgz
 get_file "http://downloads.sourceforge.net/project/math-${APP_NAME}/Stable/${APP_VERSION}/${APP_NAME}${APP_VERSION}.tar.bz2"
 
 # set up build environment:
@@ -68,14 +68,9 @@ do
   # set up modules:
   module purge
   module load ${CMP}/${CMP_VER} autoconf automake
-  # intel configure flags:
-  if [ "${CMP}" = "intel" ] ; then
-    MY_CONFIGURE_FLAGS="-C ic ${CC} -F ic '-fPIC' -C if ${FC} -F if '-fPIC'"
-    MY_CFLAGS='-fPIC -Wno-implicit-function-declaration -Wno-implicit-int'
-  else
-    MY_CONFIGURE_FLAGS=''
-    MY_CFLAGS='-fPIC -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-implicit-int'
-  fi
+  # compiler / configure flags:
+  ATLAS_CFLAGS='-fPIC -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-implicit-int'
+  ATLAS_CONFIGURE_FLAGS="-C ic ${CC} -F ic '-fPIC' -C if ${FC} -F if '-fPIC'"
   # build atlas:
   if [ ! -e ${INSTALL_DIR}/lib/libatlas.a ] ; then
     echo "building ${APP_NAME} with ${COMPILER_VER}"
@@ -89,20 +84,24 @@ do
     cd ATLAS.build
     ../ATLAS/configure \
       --cc=${CC} \
-      --cflags="${MY_CFLAGS}" \
+      --cflags="${ATLAS_CFLAGS}" \
       --with-netlib-lapack-tarfile=${SRC_DIR}/lapack-${LAPACK_VERSION}.tgz \
-      ${MY_CONFIGURE_FLAGS} \
+      ${ATLAS_CONFIGURE_FLAGS} \
       -A HAMMER -V 896 \
       -D c -DWALL \
       -Fa alg '-fPIC' \
-      -Fa ac "${MY_CFLAGS}" \
+      -Fa ac "${ATLAS_CFLAGS}" \
       -b 64 \
-      -Ss pmake 'make -j1' \
+      -Ss pmake 'make -j16' \
       -t 64 \
       -v 2 \
-      --prefix=${INSTALL_DIR} && \
-    make -j1 && \
-    make -j1 install
+      --prefix=${INSTALL_DIR}
+    \cp src/lapack/reference/make.inc.example \
+        src/lapack/reference/make.inc.example.original
+    sed -i "s|^CC = .*$|CC = ${CC}|g" src/lapack/reference/make.inc.example
+    sed -i "s|^FC = .*$|FC = ${FC}|g" src/lapack/reference/make.inc.example
+    make && \
+    make install
   fi 
   # module file for this application:
   MODULEFILE=${MODULEFILES_DIR}/${FLAVOUR}/${APP_NAME}/${APP_VERSION}

@@ -20,6 +20,8 @@ TIRPC_VERSION='1.3.6'
 HDF4_VERSION='2.16-2'
 HDF5_VERSION='1.14.6'
 NETCDF_VERSION='4.9.3'
+ANTLR_VERSION='2.7.7'
+ANTLR_JAR_VERSION='3.5.3'
 # build version:
 BUILD_VERSION='1'
 # build dir:
@@ -61,6 +63,8 @@ get_file "https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF
 get_file "https://github.com/HDFGroup/hdf5/releases/download/hdf5_${HDF5_VERSION}/hdf5-${HDF5_VERSION}.tar.gz"
 get_file "https://downloads.unidata.ucar.edu/netcdf-c/${NETCDF_VERSION}/netcdf-c-${NETCDF_VERSION}.tar.gz"
 get_file "https://github.com/nco/nco/archive/5.3.4.tar.gz" ${APP_NAME}-${APP_VERSION}.tar.gz
+get_file "https://www.antlr2.org/download/antlr-${ANTLR_VERSION}.tar.gz"
+get_file "http://www.antlr3.org/download/antlr-${ANTLR_JAR_VERSION}-complete.jar"
 
 # set up build environment:
 module purge
@@ -247,6 +251,39 @@ if [ ! -e ${DEPS_DIR}/lib/libnetcdf.a ] ; then
     --prefix=${DEPS_DIR} && \
   make -j16 && \
   make -j16 install
+fi
+
+# antlr:
+
+if [ ! -e ${DEPS_DIR}/bin/antlr ] ; then
+  echo "building antlr"
+  # set up build dir:
+  cd ${BUILD_DIR} && \
+  rm -fr ./antlr-${ANTLR_VERSION}
+  # extract source:
+  tar xzf ${SRC_DIR}/antlr-${ANTLR_VERSION}.tar.gz
+  cd antlr-${ANTLR_VERSION}
+  # patch:
+  \cp \
+    ./lib/cpp/antlr/CharScanner.hpp \
+    ./lib/cpp/antlr/CharScanner.hpp.original
+  sed -i \
+    's|\(#include <map>\)|\1\n#include <strings.h>|g' \
+    ./lib/cpp/antlr/CharScanner.hpp
+  # build and install:
+  ./configure \
+    --prefix=${DEPS_DIR} && \
+  make -j16 && \
+  make -j16 install
+  # copy jar file:
+  \cp ${SRC_DIR}/antlr-${ANTLR_JAR_VERSION}-complete.jar \
+    ${DEPS_DIR}/lib/antlr.jar 
+  # create wrapper script:
+  cat > ${DEPS_DIR}/bin/antlr <<EOF
+#!/bin/bash
+exec java -classpath ${DEPS_DIR}/lib/antlr.jar antlr.Tool "\${@}"
+EOF
+  chmod 755 ${DEPS_DIR}/bin/antlr
 fi
 
 # nco:

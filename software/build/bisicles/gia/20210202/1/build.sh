@@ -87,7 +87,7 @@ TOP_BUILD_DIR=${BASE_DIR}
 # compilers for which we should build:
 COMPILER_VERS='gnu:native gnu:14.2.0 intel:2025.2.0'
 # mpi libraries for which we should build:
-MPI_VERS='openmpi:5.0.8 mvapich:4.0 intelmpi:2025.2.0'
+MPI_VERS='openmpi:5.0.6 mvapich:4.0 intelmpi:2025.2.0'
 # module files directory:
 MODULEFILES_DIR="${CEMAC_SOFTWARE}/modulefiles/apps"
 

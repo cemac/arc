@@ -28,12 +28,10 @@ cd ${CEMAC_SOFTWARE}/build/patchelf/0.18.0/1 && build
 cd ${CEMAC_SOFTWARE}/build/tcsh/6.24.15/1 && build
 # gnu 14.2.0:
 cd ${CEMAC_SOFTWARE}/build/gnu/14.2.0/1 && build
-### # gnu 15.1.0:
-### cd ${CEMAC_SOFTWARE}/build/gnu/15.1.0/1 && build
 # intel 2025.2.0:
 cd ${CEMAC_SOFTWARE}/build/intel/2025.2.0/1 && build
-# openmpi 5.0.8:
-cd ${CEMAC_SOFTWARE}/build/openmpi/5.0.8/1 && build
+# openmpi 5.0.6:
+cd ${CEMAC_SOFTWARE}/build/openmpi/5.0.6/1 && build
 # mvapich 4.0:
 cd ${CEMAC_SOFTWARE}/build/mvapich/4.0/1 && build
 # intelmpi 2025.2.0:

@@ -1,0 +1,31 @@
+#%Module -*- tcl -*-
+
+set module_name xios
+set module_version 20220707
+set module_build 1
+set module_flavour gnu-14.2.0-openmpi-5.0.6
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    The XIOS (Xml I/O Server) library is based on client-server principles
+    where the server manages the outputs asynchronously from the client (the
+    climate model) so that the bottleneck of writing data is alleviated.
+
+    Homepage: https://lmdz-forge.lmd.jussieu.fr/mediawiki/Planets/index.php/The_XIOS_Library
+  "
+}
+
+module-whatis "Xml I/O Server library"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv XIOS_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq gnu/14.2.0 openmpi/5.0.6
+}

@@ -402,7 +402,7 @@ do
         --with-debugging=no \
         --download-fblaslapack=yes \
         --download-hypre=yes \
-        -with-x=0 \
+        --with-x=0 \
         --with-c++support=yes \
         --with-mpi=yes \
         --with-hypre=yes \

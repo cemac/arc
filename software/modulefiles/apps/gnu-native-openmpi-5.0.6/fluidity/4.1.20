@@ -1,0 +1,26 @@
+#%Module -*- tcl -*-
+
+set module_name fluidity
+set module_version 4.1.20
+set module_build 1
+set module_flavour gnu-native-openmpi-5.0.6
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Computational Fluid Dynamics Code
+
+    Homepage: https://github.com/FluidityProject
+  "
+}
+
+module-whatis "Computational Fluid Dynamics Code"
+
+prepend-path PATH $module_root/bin
+
+setenv FLUIDITY_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq gnu/native openmpi/5.0.6
+}

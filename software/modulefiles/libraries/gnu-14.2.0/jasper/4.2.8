@@ -1,0 +1,32 @@
+#%Module -*- tcl -*-
+
+set module_name jasper
+set module_version 4.2.8
+set module_build 1
+set module_flavour gnu-14.2.0
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    JasPer Image Coding Toolkit
+
+    Homepage: https://www.ece.uvic.ca/~frodo/jasper/
+  "
+}
+
+module-whatis "JasPer Image Coding Toolkit"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib
+prepend-path MANPATH $module_root/share/man
+prepend-path PKG_CONFIG_PATH $module_root/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv JASPER_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq gnu/14.2.0
+}

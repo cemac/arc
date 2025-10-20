@@ -30,7 +30,11 @@ setenv NETCDF $module_root
 
 if { [module-info mode load] } {
   if { [module-info shell bash] } {
-    puts stdout "LOADEDMODULES=\"\${LOADEDMODULES/:$module_name\\\/$module_version/}:$module_name\/$module_version\" ; export LOADEDMODULES"
+    puts stdout "_MY_LMFILE=\"$ModulesCurrentModulefile\" ; export _MY_LMFILE"
+    puts stdout "_LMFILES_=\"\${_LMFILES_/:\${_MY_LMFILE//\//\\\\/}/}:\${_MY_LMFILE}\" ; export _LMFILES_"
+    puts stdout "_MY_MODULE=\"$module_name\/$module_version\" ; export _MY_MODULE"
+    puts stdout "LOADEDMODULES=\"\${LOADEDMODULES/:\${_MY_MODULE//\//\\\\/}/}:\${_MY_MODULE}\" ; export LOADEDMODULES"
+    puts stdout "unset _MY_LMFILE _MY_MODULE"
   }
 }
 

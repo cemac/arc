@@ -28,6 +28,12 @@ prepend-path CMAKE_PREFIX_PATH $module_root/
 
 setenv FFTW_HOME $module_root
 
+if { [module-info mode load] } {
+  if { [module-info shell bash] } {
+    
+  }
+}
+
 if { [module-info command] != "purge" } {
   prereq gnu/14.2.0
 }

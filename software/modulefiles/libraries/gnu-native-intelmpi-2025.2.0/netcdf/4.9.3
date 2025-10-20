@@ -28,6 +28,12 @@ prepend-path CMAKE_PREFIX_PATH $module_root/
 setenv NETCDF_HOME $module_root
 setenv NETCDF $module_root
 
+if { [module-info mode load] } {
+  if { [module-info shell bash] } {
+    puts stdout "LOADEDMODULES=\"\${LOADEDMODULES/:$module_name\\\/$module_version/}:$module_name\/$module_version\" ; export LOADEDMODULES"
+  }
+}
+
 if { [module-info command] != "purge" } {
   prereq gnu/native intelmpi/2025.2.0
 }

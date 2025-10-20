@@ -54,6 +54,4 @@ if { [module-info command] != "purge" } {
 if { [module-info mode unload] } {
   module unuse $module_apps
   module unuse $module_libraries
-  remove-path MODULEPATH $module_apps
-  remove-path MODULEPATH $module_libraries
 }

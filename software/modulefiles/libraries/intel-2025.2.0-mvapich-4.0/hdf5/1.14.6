@@ -26,6 +26,12 @@ prepend-path CMAKE_PREFIX_PATH $module_root/
 
 setenv HDF5_HOME $module_root
 
+if { [module-info mode load] } {
+  if { [module-info shell bash] } {
+    puts stdout "LOADEDMODULES=\"\${LOADEDMODULES/:$module_name\\\/$module_version/}:$module_name\/$module_version\" ; export LOADEDMODULES"
+  }
+}
+
 if { [module-info command] != "purge" } {
   prereq intel/2025.2.0 mvapich/4.0
 }

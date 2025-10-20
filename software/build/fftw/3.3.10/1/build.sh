@@ -140,6 +140,7 @@ do
     sed -i "s|XBUILD_VERSIONX|${BUILD_VERSION}|g" ${MODULEFILE}
     sed -i "s|XFLAVOURX|${FLAVOUR}|g" ${MODULEFILE}
     sed -i "s|XPREREQX|${CMP}/${CMP_VER}|g" ${MODULEFILE}
+    sed -i "s|XLOADBASHX||g" ${MODULEFILE}
   fi
 done
 
@@ -240,6 +241,7 @@ do
       sed -i "s|XBUILD_VERSIONX|${BUILD_VERSION}|g" ${MODULEFILE}
       sed -i "s|XFLAVOURX|${FLAVOUR}|g" ${MODULEFILE}
       sed -i "s|XPREREQX|${CMP}/${CMP_VER} ${MP}/${MP_VER}|g" ${MODULEFILE}
+      sed -i 's|XLOADBASHX|puts stdout "LOADEDMODULES=\\"\\${LOADEDMODULES/:$module_name\\\\\\\/$module_version/}:$module_name\\/$module_version\\" ; export LOADEDMODULES"|g' ${MODULEFILE}
     fi
   done
 done

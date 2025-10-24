@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name apptainer
+set module_version 1.4.3
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Portable, Reproducible Containers
+
+    Homepage: https://apptainer.org/
+    Documentation: https://apptainer.org/documentation/
+  "
+}
+
+module-whatis "Portable, Reproducible Containers"
+
+prepend-path PATH $module_root/bin
+
+setenv APPTAINER_ROOT $module_root

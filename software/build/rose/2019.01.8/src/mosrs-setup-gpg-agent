@@ -1,0 +1,16 @@
+# If shell is interactive and this is a login node ... :
+if [[ $- == *i* ]] && [[ ${HOSTNAME} =~ login.* ]] ; then
+  # Check for running agent, else start a new one:
+  gpg-connect-agent --no-autostart /bye 2>&1 | \
+  grep -q 'no gpg-agent running' >& /dev/null && \
+  gpg-agent \
+    --daemon \
+    --allow-preset-passphrase \
+    --max-cache-ttl 43200 \
+    2> /dev/null
+fi
+# Set GPG variables:
+export GPG_AGENT_INFO="/run/user/$(id -u)/gnupg/S.gpg-agent"
+export GPG_AGENT_INFO
+GPG_TTY=$(tty) 
+export GPG_TTY

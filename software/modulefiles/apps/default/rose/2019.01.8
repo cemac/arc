@@ -1,0 +1,24 @@
+#%Module -*- tcl -*-
+
+set module_name rose
+set module_version 2019.01.8
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Rose application configuration toolkit
+
+    Includes cylc and some tools to assists with MOSRS.
+
+    Documentation : https://metomi.github.io/rose/
+  "
+}
+
+module-whatis "Rose application configuration toolkit"
+
+prepend-path PATH $module_root/bin
+
+setenv ROSE_ROOT $module_root

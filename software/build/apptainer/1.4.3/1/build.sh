@@ -20,8 +20,6 @@ BUILD_DIR=${BASE_DIR}
 FLAVOUR='default'
 # installation directory:
 INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
-# dependencies:
-DEPS_DIR="${INSTALL_DIR}/deps"
 # module files directory:
 MODULEFILES_DIR="${CEMAC_SOFTWARE}/modulefiles/apps/${FLAVOUR}"
 # module file for this application:

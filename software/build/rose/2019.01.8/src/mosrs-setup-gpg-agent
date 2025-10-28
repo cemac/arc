@@ -8,9 +8,9 @@ if [[ $- == *i* ]] && [[ ${HOSTNAME} =~ login.* ]] ; then
     --allow-preset-passphrase \
     --max-cache-ttl 43200 \
     2> /dev/null
+  # Set GPG variables:
+  export GPG_AGENT_INFO="/run/user/$(id -u)/gnupg/S.gpg-agent"
+  export GPG_AGENT_INFO
+  GPG_TTY=$(tty)
+  export GPG_TTY
 fi
-# Set GPG variables:
-export GPG_AGENT_INFO="/run/user/$(id -u)/gnupg/S.gpg-agent"
-export GPG_AGENT_INFO
-GPG_TTY=$(tty) 
-export GPG_TTY

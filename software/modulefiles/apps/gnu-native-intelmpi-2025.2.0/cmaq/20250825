@@ -1,0 +1,32 @@
+#%Module -*- tcl -*-
+
+set module_name cmaq
+set module_version 20250825
+set module_build 1
+set module_flavour gnu-native-intelmpi-2025.2.0
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Community Multiscale Air Quality Model
+
+    An active open-source development project of the U.S. EPA that consists of
+    a suite of programs for conducting air quality model simulations.
+
+    Homepage: https://www.epa.gov/cmaq/
+  "
+}
+
+module-whatis "Community Multiscale Air Quality Model"
+
+prepend-path PATH $module_root/bin
+
+setenv CMAQ $module_root
+setenv CMAQ_REPO $module_root/CMAQ_REPO
+setenv CMAQ_HOME $module_root/CMAQ_REPO
+setenv IOAPI_ROOT $module_root/ioapi
+
+if { [module-info command] != "purge" } {
+  prereq gnu/native intelmpi/2025.2.0
+}

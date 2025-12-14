@@ -1,0 +1,23 @@
+#%Module -*- tcl -*-
+
+set module_name ksh
+set module_version 1.0.10
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Korn shell
+
+    Homepage: https://github.com/ksh93/ksh/
+  "
+}
+
+module-whatis "Korn shell"
+
+prepend-path PATH $module_root/bin
+prepend-path MANPATH $module_root/share/man
+
+setenv KSH_HOME $module_root

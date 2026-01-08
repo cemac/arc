@@ -129,9 +129,9 @@ EOF
       rsync -a ${APP_NAME^^}-${APP_VERSION}/ ${INSTALL_DIR}/
     fi
     # create link in um link dir. work out link directory for this version:
-    LINK_CMP=${CMP:0:1}
+    LINK_CMP=${CMP:0:2}
     LINK_CMP_VER=${CMP_VER//./}
-    LINK_MP=${MP:0:1}
+    LINK_MP=${MP:0:2}
     LINK_MP_VER=${MP_VER//./}
     MY_LINK_DIR=${TOP_LINK_DIR}/${APP_VERSION}/${BUILD_VERSION}
     MY_LINK=${MY_LINK_DIR}/${LINK_CMP}${LINK_CMP_VER}${LINK_MP}${LINK_MP_VER}

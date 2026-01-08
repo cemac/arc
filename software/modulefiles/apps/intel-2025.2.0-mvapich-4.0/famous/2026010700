@@ -1,0 +1,49 @@
+#%Module -*- tcl -*-
+
+set module_name famous
+set module_version 2026010700
+set module_build 1
+set module_flavour intel-2025.2.0-mvapich-4.0
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    FAMOUS.
+
+    A portable version of the FAMOUS climate model based on HadCM3 from the Met
+    Office.
+
+    Documentation: https://cms.ncas.ac.uk/miscellaneous/um-famous/
+  "
+}
+
+module-whatis "A portable version of the FAMOUS climate mode"
+
+append-path PATH $module_root/vn4.5/utils
+prepend-path PATH $module_root/bin
+prepend-path FPATH $module_root/vn4.5/scripts/functions
+setenv UMDIR /users/cemac/um/2026010700/1/i202520m40
+setenv --set-if-undef DATA_DIR $::env(SCRATCH)/um
+setenv --set-if-undef MY_UMHOME $::env(SCRATCH)/um
+setenv --set-if-undef MY_OUTPUT $::env(SCRATCH)/um/umui_out
+setenv --set-if-undef UMUI_RUNS $::env(HOME) 
+setenv --set-if-undef MPIF90_UM mpif90
+setenv --set-if-undef MPIF90_SHARED 1
+setenv --set-if-undef MPIF90_STATIC ""
+setenv --set-if-undef UM_HOME $::env(HOME)
+setenv --set-if-undef UMTEST $::env(HOME)
+setenv --set-if-undef NPROC 6
+setenv UMMACHINE OTHER
+setenv BUILDHOST OTHER
+setenv SCRDEFS MPP,OTHER
+setenv PROGDEFS LINUX,MPPRECON,MPP,FRL8,C_LOW_U
+setenv UM_AWK awk
+setenv UM_SED sed
+setenv UM_GREP grep
+
+setenv FAMOUS_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq intel/2025.2.0 mvapich/4.0
+}

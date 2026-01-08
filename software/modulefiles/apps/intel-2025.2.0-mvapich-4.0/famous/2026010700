@@ -23,7 +23,7 @@ module-whatis "A portable version of the FAMOUS climate mode"
 append-path PATH $module_root/vn4.5/utils
 prepend-path PATH $module_root/bin
 prepend-path FPATH $module_root/vn4.5/scripts/functions
-setenv UMDIR /users/cemac/um/2026010700/1/in202520mv40
+setenv UMDIR /users/cemac/um/78f74751
 setenv --set-if-undef DATA_DIR $::env(SCRATCH)/um
 setenv --set-if-undef MY_UMHOME $::env(SCRATCH)/um
 setenv --set-if-undef MY_OUTPUT $::env(SCRATCH)/um/umui_out

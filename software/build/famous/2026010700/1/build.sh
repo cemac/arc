@@ -100,6 +100,8 @@ do
 # Overridable pathnames
 TMPDIR=\${TMPDIR:-\${DATA_DIR}/tmp}
 export TMPDIR
+# Set umask:
+umask 0022
 # Create directories if they don't exist
 [ ! -d \$MY_UMHOME ] && mkdir -p \$MY_UMHOME
 [ ! -d \$TMPDIR ] && mkdir -p \$TMPDIR

@@ -1,0 +1,36 @@
+#%Module -*- tcl -*-
+
+set module_name XAPP_NAMEX
+set module_version XAPP_VERSIONX
+set module_build XBUILD_VERSIONX
+set module_flavour XFLAVOURX
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    Xconv is a program designed to convert model output into a format suitable
+    for use in various plotting packages. Xconv is designed to be simple to use
+    with a point and click, windows based interface. Xconv can read data in the
+    following formats:
+
+    * Data output from the Met. Office Unified Model
+    * Met. Office PP format
+    * GRIB format (Edition 1 and 2)
+    * NetCDF format (classic, 64-bit offset and netCDF-4 classic model)
+    * Grads format
+
+    The following output formats are supported by xconv:
+
+    * NetCDF format (classic, 64-bit offset and netCDF-4 classic model)
+    * Grads format
+
+    Homepage: https://ncas-cms.github.io/xconv-doc/
+  "
+}
+
+module-whatis "Convert model output to various formats"
+
+prepend-path PATH $module_root/bin
+
+setenv XCONC_HOME $module_root

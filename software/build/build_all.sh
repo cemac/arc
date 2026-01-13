@@ -90,6 +90,8 @@ cd ${CEMAC_SOFTWARE}/build/cmaq/20250825/1 && build
 cd ${CEMAC_SOFTWARE}/build/ksh/1.0.10/1 && build
 # famous 2026010700:
 cd ${CEMAC_SOFTWARE}/build/famous/2026010700/1 && build
+# xconv 1.94:
+cd ${CEMAC_SOFTWARE}/build/xconv/1.94/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

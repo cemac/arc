@@ -2,7 +2,7 @@
 
 set module_name gamma
 set module_version 20251203
-set module_build 1
+set module_build 2
 set module_flavour default
 
 set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour

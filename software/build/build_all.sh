@@ -98,6 +98,8 @@ cd ${CEMAC_SOFTWARE}/build/gamma/20251203/2 && build
 cd ${CEMAC_SOFTWARE}/build/flexpart/10.4/1 && build
 # flex_extract 20250709:
 cd ${CEMAC_SOFTWARE}/build/flex_extract/20250709/1 && build
+# flexpart 11.1:
+cd ${CEMAC_SOFTWARE}/build/flexpart/11.1/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

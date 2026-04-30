@@ -1,0 +1,60 @@
+--- a/netcdf_output_mod.f90	2025-08-11 09:33:08.000000000 +0100
++++ b/netcdf_output_mod.f90	2026-04-30 08:38:41.911321742 +0100
+@@ -57,7 +57,7 @@
+   !  include 'netcdf.inc'
+ 
+   ! parameter for data compression (1-9, 9 = most aggressive)
+-  integer, parameter :: deflate_level = 5
++  integer, parameter :: deflate_level = 1
+   logical, parameter :: min_size = .false.   ! if set true, redundant fields (topography) are not written to minimize file size
+ 
+   integer            :: tpointer=0,tpointer_part=0,ppointer_part=0,partinitpointer=0,partinitpointer1=0
+@@ -492,7 +492,7 @@
+   ! output orography
+   if (.not. min_size) then
+     call nf90_err(nf90_def_var(ncid, 'ORO', nf90_int, (/ lonDimID, latDimID /), oroID,  &
+-      deflate_level=deflate_level, chunksizes= (/ nnx, nny /)))
++      deflate_level=deflate_level))
+     call nf90_err(nf90_put_att(ncid, oroID, 'standard_name', 'surface altitude'))
+     call nf90_err(nf90_put_att(ncid, oroID, 'long_name', 'outgrid surface altitude'))
+     call nf90_err(nf90_put_att(ncid, oroID, 'units', 'm'))
+@@ -527,8 +527,7 @@
+     ! concentration output
+     if ((iout.eq.1).or.(iout.eq.3).or.(iout.eq.5)) then
+       call nf90_err(nf90_def_var(ncid,'spec'//anspec//'_mr', nf90_float, dIDs, sID , &
+-           deflate_level = deflate_level,  &
+-           chunksizes = chunksizes ))
++           deflate_level = deflate_level))
+       call nf90_err(nf90_put_att(ncid, sID, 'units', units))
+       call nf90_err(nf90_put_att(ncid, sID, 'long_name', species(i)))
+       call nf90_err(nf90_put_att(ncid, sID, 'decay', decay(i)))
+@@ -548,8 +547,7 @@
+     ! mixing ratio output
+     if ((iout.eq.2).or.(iout.eq.3)) then
+       call nf90_err(nf90_def_var(ncid,'spec'//anspec//'_pptv', nf90_float, dIDs, sID , &
+-           deflate_level = deflate_level,  &
+-           chunksizes = chunksizes ))
++           deflate_level = deflate_level))
+       call nf90_err(nf90_put_att(ncid, sID, 'units', 'pptv'))
+       call nf90_err(nf90_put_att(ncid, sID, 'long_name', species(i)))
+       call nf90_err(nf90_put_att(ncid, sID, 'decay', decay(i)))
+@@ -569,8 +567,7 @@
+     ! wet and dry deposition fields for forward runs
+     if ((ldirect.eq.1).and.(wetdep)) then
+       call nf90_err(nf90_def_var(ncid,'WD_spec'//anspec, nf90_float, depdIDs, &
+-           wdsID, deflate_level = deflate_level, &
+-           chunksizes = dep_chunksizes))
++           wdsID, deflate_level = deflate_level))
+       call nf90_err(nf90_put_att(ncid, wdsID, 'units', '1e-12 kg m-2'))
+       call nf90_err(nf90_put_att(ncid, wdsID, 'weta_gas', weta_gas(i)))
+       call nf90_err(nf90_put_att(ncid, wdsID, 'wetb_gas', wetb_gas(i)))
+@@ -588,8 +585,7 @@
+     endif
+     if ((ldirect.eq.1).and.(drydep)) then
+       call nf90_err(nf90_def_var(ncid,'DD_spec'//anspec, nf90_float, depdIDs, &
+-           ddsID, deflate_level = deflate_level, &
+-           chunksizes = dep_chunksizes))
++           ddsID, deflate_level = deflate_level))
+       call nf90_err(nf90_put_att(ncid, ddsID, 'units', '1e-12 kg m-2'))
+       call nf90_err(nf90_put_att(ncid, ddsID, 'dryvel', dryvel(i)))
+       call nf90_err(nf90_put_att(ncid, ddsID, 'reldiff', reldiff(i)))

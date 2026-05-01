@@ -100,6 +100,8 @@ cd ${CEMAC_SOFTWARE}/build/flexpart/10.4/1 && build
 cd ${CEMAC_SOFTWARE}/build/flex_extract/20250709/1 && build
 # flexpart 11.1:
 cd ${CEMAC_SOFTWARE}/build/flexpart/11.1/1 && build
+# eccodes 2.35.0:
+cd ${CEMAC_SOFTWARE}/build/eccodes/2.35.0/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

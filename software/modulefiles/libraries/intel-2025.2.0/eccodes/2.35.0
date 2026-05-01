@@ -1,0 +1,31 @@
+#%Module -*- tcl -*-
+
+set module_name eccodes
+set module_version 2.35.0
+set module_build 1
+set module_flavour intel-2025.2.0
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    ECMWF GRIB and BUFR Library
+
+    Homepage: https://confluence.ecmwf.int/display/ECC/ecCodes+Home
+  "
+}
+
+module-whatis "ECMWF GRIB and BUFR Library"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib
+prepend-path PKG_CONFIG_PATH $module_root/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv ECCODES_HOME $module_root
+
+if { [module-info command] != "purge" } {
+  prereq intel/2025.2.0
+}

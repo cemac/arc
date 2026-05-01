@@ -13,6 +13,7 @@ APPS_DIR="${CEMAC_SOFTWARE}/apps"
 APP_NAME='flex_extract'
 APP_VERSION='20250709'
 APP_GIT_VERSION='58c396316c4574f58037bbf28a71decd4200a491'
+CONDA_INSTALLER='Miniforge3-Linux-x86_64.sh'
 EMOS_VERSION='4.5.9'
 # build version:
 BUILD_VERSION='1'
@@ -24,6 +25,8 @@ FLAVOUR='default'
 INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
 # dependencies:
 DEPS_DIR="${INSTALL_DIR}/deps"
+# conda install directory:
+CONDA_DIR="${DEPS_DIR}/conda"
 # module files directory:
 MODULEFILES_DIR="${CEMAC_SOFTWARE}/modulefiles/apps/${FLAVOUR}"
 # module file for this application:
@@ -46,6 +49,7 @@ function get_file() {
 mkdir -p ${BUILD_DIR} ${SRC_DIR} ${INSTALL_DIR} ${DEPS_DIR}
 
 # get sources:
+get_file "https://github.com/conda-forge/miniforge/releases/latest/download/${CONDA_INSTALLER}"
 get_file "https://confluence.ecmwf.int/download/attachments/3473472/libemos-${EMOS_VERSION}-Source.tar.gz?api=v2" libemos-${EMOS_VERSION}-Source.tar.gz
 
 # get flex extract via git:
@@ -61,7 +65,7 @@ fi
 
 # set up build environment:
 module purge
-module load gnu/native eccodes fftw
+module load gnu/native eccodes/2.35.0 fftw
 PATH="${DEPS_DIR}/bin:${PATH}"
 LIBRARY_PATH="${DEPS_DIR}/lib:${LIBRARY_PATH}"
 CPATH="${DEPS_DIR}/include:${CPATH}"
@@ -75,6 +79,34 @@ export PATH LIBRARY_PATH CPATH PKG_CONFIG_PATH \
        CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
 
 # build!:
+
+# python:
+
+if [ ! -e ${CONDA_DIR}/bin/python ] ; then
+  echo "building python environment"
+  # clear out any existing conda directory:
+  \rm -fr ${CONDA_DIR}
+  # make installer executable:
+  chmod 755 ${SRC_DIR}/${CONDA_INSTALLER}
+  # run installer:
+  ${SRC_DIR}/${CONDA_INSTALLER} \
+    -b \
+    -p ${CONDA_DIR}
+  # set up condarc:
+  cat > ${CONDA_DIR}/.condarc <<EOF
+channels:
+- conda-forge
+default_threads: 16
+EOF
+  # set up conda:
+  . ${CONDA_DIR}/etc/profile.d/conda.sh
+  # add packages:
+  mamba install \
+    --no-py-pin \
+    -y \
+    -n base \
+    'eccodes==2.35.0' python-eccodes genshi cdsapi
+fi
 
 # emos:
 
@@ -173,10 +205,19 @@ EOF
   # copy files in to place:
   mkdir -p ${INSTALL_DIR}/flex_extract
   rsync -a ${APP_NAME}-${APP_VERSION}/ ${INSTALL_DIR}/flex_extract/
-  # add link to submit.py:
+  # wrap submit.py:
   mkdir -p ${INSTALL_DIR}/bin
-  ln -s ../flex_extract/Source/Python/submit.py \
-    ${INSTALL_DIR}/bin/flex_extract_submit
+  cat > ${INSTALL_DIR}/bin/flex_extract_submit <<EOF
+#!/usr/bin/env bash
+CONDA_DIR="${CONDA_DIR}"
+FLEX_EXTRACT_DIR="${INSTALL_DIR}/flex_extract"
+module purge >& /dev/null
+. \${CONDA_DIR}/etc/profile.d/conda.sh
+conda activate base
+[ -z "\${OMP_NUM_THREADS}" ] && export OMP_NUM_THREADS="4"
+exec \${FLEX_EXTRACT_DIR}/Source/Python/submit.py "\${@}"
+EOF
+  chmod 755 ${INSTALL_DIR}/bin/flex_extract_submit
 fi
 
 # modulefile:

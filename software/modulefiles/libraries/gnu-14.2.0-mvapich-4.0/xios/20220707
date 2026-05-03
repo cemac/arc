@@ -7,6 +7,8 @@ set module_flavour gnu-14.2.0-mvapich-4.0
 
 set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
 
+conflict xios
+
 proc ModulesHelp { } {
   puts stderr "
     The XIOS (Xml I/O Server) library is based on client-server principles

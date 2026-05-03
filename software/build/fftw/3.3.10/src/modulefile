@@ -7,6 +7,8 @@ set module_flavour XFLAVOURX
 
 set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
 
+conflict XAPP_NAMEX
+
 proc ModulesHelp { } {
   puts stderr "
     Discrete Fourier Transform library

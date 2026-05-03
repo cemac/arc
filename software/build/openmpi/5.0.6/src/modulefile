@@ -9,6 +9,8 @@ set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$m
 set module_apps $::env(CEMAC_SOFTWARE)/modulefiles/apps/$module_flavour-$module_name-$module_version
 set module_libraries $::env(CEMAC_SOFTWARE)/modulefiles/libraries/$module_flavour-$module_name-$module_version
 
+conflict XAPP_NAMEX
+
 proc ModulesHelp { } {
   puts stderr "
     OpenMPI MPI library

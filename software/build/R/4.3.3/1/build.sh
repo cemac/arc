@@ -61,9 +61,9 @@ module purge
 
 # build!:
 
-# ncl:
+# R:
 
-if [ ! -e ${INSTALL_DIR}/bin/ncl ] ; then
+if [ ! -e ${INSTALL_DIR}/bin/R ] ; then
   echo "building ${APP_NAME}"
   # make installer executable:
   chmod 755 ${SRC_DIR}/${CONDA_INSTALLER}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- flexpart 10.4
-#  updated : 2026-04-28
+#  updated : 2026-05-03
 
 # directory containing this script:
 BASE_DIR=$(readlink -f $(dirname ${0}))
@@ -46,7 +46,7 @@ get_file "https://gitlab.phaidra.org/flexpart/${APP_NAME}/-/archive/v${APP_VERSI
 
 # set up build environment:
 module purge
-module load gnu intelmpi eccodes netcdf
+module load gnu intelmpi eccodes/2.35.0 netcdf
 CFLAGS='-O2 -fPIC'
 CXXFLAGS='-O2 -fPIC'
 CPPFLAGS='-O2 -fPIC'

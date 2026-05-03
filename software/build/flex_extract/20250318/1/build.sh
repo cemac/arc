@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#- flex_extract 20250709
-#  updated : 2026-04-29
+#- flex_extract 20250318
+#  updated : 2026-05-03
 
 # directory containing this script:
 BASE_DIR=$(readlink -f $(dirname ${0}))
@@ -11,8 +11,8 @@ SRC_DIR=$(readlink -f ${BASE_DIR}/../src)
 APPS_DIR="${CEMAC_SOFTWARE}/apps"
 # app information:
 APP_NAME='flex_extract'
-APP_VERSION='20250709'
-APP_GIT_VERSION='58c396316c4574f58037bbf28a71decd4200a491'
+APP_VERSION='20250318'
+APP_GIT_VERSION='faa0055b93aa3f1604cf30c3d3c648b2f393198c'
 CONDA_INSTALLER='Miniforge3-Linux-x86_64.sh'
 EMOS_VERSION='4.5.9'
 # build version:

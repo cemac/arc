@@ -82,6 +82,8 @@ cd ${CEMAC_SOFTWARE}/build/jasper/4.2.8/1 && build
 cd ${CEMAC_SOFTWARE}/build/apptainer/1.4.3/1 && build
 # rose 2019.01.8:
 cd ${CEMAC_SOFTWARE}/build/rose/2019.01.8/1 && build
+# eccodes 2.35.0:
+cd ${CEMAC_SOFTWARE}/build/eccodes/2.35.0/1 && build
 # eccodes 2.44.0:
 cd ${CEMAC_SOFTWARE}/build/eccodes/2.44.0/1 && build
 # cmaq 20250825:
@@ -96,12 +98,10 @@ cd ${CEMAC_SOFTWARE}/build/xconv/1.94/1 && build
 cd ${CEMAC_SOFTWARE}/build/gamma/20251203/2 && build
 # flexpart 10.4:
 cd ${CEMAC_SOFTWARE}/build/flexpart/10.4/1 && build
-# flex_extract 20250709:
-cd ${CEMAC_SOFTWARE}/build/flex_extract/20250709/1 && build
 # flexpart 11.1:
 cd ${CEMAC_SOFTWARE}/build/flexpart/11.1/1 && build
-# eccodes 2.35.0:
-cd ${CEMAC_SOFTWARE}/build/eccodes/2.35.0/1 && build
+# flex_extract 20250318:
+cd ${CEMAC_SOFTWARE}/build/flex_extract/20250318/1 && build
 
 # update permissions ... :
 echo "*  updating permissions in ${CEMAC_DIR}"

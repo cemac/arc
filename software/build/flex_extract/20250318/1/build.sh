@@ -201,6 +201,7 @@ PREFIX EA
 CWC 1
 RRINT 1
 ECTRANS 1
+PUBLIC 1
 EOF
   # copy files in to place:
   mkdir -p ${INSTALL_DIR}/flex_extract

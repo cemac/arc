@@ -88,12 +88,14 @@ do
     make -j16 install
   fi
   # wrap srun ... :
-  cat > ${INSTALL_DIR}/bin/srun <<EOF
+  if [ ! -e ${INSTALL_DIR}/bin/srun ] ; then
+    cat > ${INSTALL_DIR}/bin/srun <<EOF
 #!/bin/bash
 export OMPI_MCA_orte_precondition_transports="\$(uuidgen | awk -F '-' '{print \$1\$2\$3"-"\$4\$5}')"
 exec /usr/bin/srun "\${@}"
 EOF
-  chmod 755 ${INSTALL_DIR}/bin/srun
+    chmod 755 ${INSTALL_DIR}/bin/srun
+  fi
   # module file for this application:
   MODULEFILE=${MODULEFILES_DIR}/${FLAVOUR}/${APP_NAME}/${APP_VERSION}
   # modulefile:

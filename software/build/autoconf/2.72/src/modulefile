@@ -7,6 +7,8 @@ set module_flavour XFLAVOURX
 
 set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
 
+conflict XAPP_NAMEX
+
 proc ModulesHelp { } {
   puts stderr "
     Autoconf is an extensible package of M4 macros that produce shell scripts to

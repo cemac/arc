@@ -7,6 +7,8 @@ set module_flavour default
 
 set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
 
+conflict panoply
+
 proc ModulesHelp { } {
   puts stderr "
     Panoply is a cross-platform application that plots geo-gridded and other

@@ -7,6 +7,8 @@ set module_flavour default
 
 set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
 
+conflict parallel
+
 proc ModulesHelp { } {
   puts stderr "
     GNU parallel is a shell tool for executing jobs in parallel using one or more computers.

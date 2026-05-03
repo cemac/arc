@@ -7,6 +7,8 @@ set module_flavour default
 
 set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
 
+conflict rose
+
 proc ModulesHelp { } {
   puts stderr "
     Rose application configuration toolkit

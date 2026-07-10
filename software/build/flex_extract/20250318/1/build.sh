@@ -219,6 +219,17 @@ conda activate base
 exec \${FLEX_EXTRACT_DIR}/Source/Python/submit.py "\${@}"
 EOF
   chmod 755 ${INSTALL_DIR}/bin/flex_extract_submit
+  # adjust these files:
+  PYCLASS_DIR="${INSTALL_DIR}/flex_extract/Source/Python/Classes"
+  for PYCLASS_FILE in ControlFile.py EcFlexpart.py MarsRetrieval.py UioFiles.py
+  do
+    if [ -e "${PYCLASS_DIR}/${PYCLASS_FILE}.original" ] ; then
+      continue
+    fi
+    \cp ${PYCLASS_DIR}/${PYCLASS_FILE} \
+      ${PYCLASS_DIR}/${PYCLASS_FILE}.original
+    sed -i "s|\(sys.path.append('../')\)|### \1|g" ${PYCLASS_DIR}/${PYCLASS_FILE}
+  done
 fi
 
 # modulefile:

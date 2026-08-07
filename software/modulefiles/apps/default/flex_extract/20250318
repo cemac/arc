@@ -1,0 +1,29 @@
+#%Module -*- tcl -*-
+
+set module_name flex_extract
+set module_version 20250318
+set module_build 1
+set module_flavour default
+
+set module_root $::env(CEMAC_SOFTWARE)/apps/$module_name/$module_version/$module_build/$module_flavour
+
+conflict flex_extract
+
+proc ModulesHelp { } {
+  puts stderr "
+    Retrieve ECMWF data for FLEXPART input
+
+    flex_extract is a software package to support retrieving meteorological
+    fields from the European Centre for Medium-Range Weather Forecasts' (ECMWF)
+    Meteorological Archival and Retrieval System (MARS) as input for the
+    FLEXTRA/FLEXPART Atmospheric Transport Modelling system.
+
+    Homepage: https://flexpart.img.univie.ac.at/flexextract/
+  "
+}
+
+module-whatis "Retrieve ECMWF data for FLEXPART input"
+
+prepend-path PATH $module_root/bin
+
+setenv FLEX_EXTRACT_HOME $module_root

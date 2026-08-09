@@ -37,7 +37,7 @@ cd ${CEMAC_SOFTWARE}/build/nvhpc/26.5/1 && build
 # openmpi 4.1.8:
 cd ${CEMAC_SOFTWARE}/build/openmpi/4.1.8/1 && build
 # openmpi 5.0.6:
-cd ${CEMAC_SOFTWARE}/build/openmpi/5.0.6/1 && build
+cd ${CEMAC_SOFTWARE}/build/openmpi/5.0.6/2 && build
 # mvapich 4.0:
 cd ${CEMAC_SOFTWARE}/build/mvapich/4.0/1 && build
 # intelmpi 2025.2.0:

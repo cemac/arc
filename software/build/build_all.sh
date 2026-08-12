@@ -39,7 +39,7 @@ cd ${CEMAC_SOFTWARE}/build/openmpi/4.1.8/1 && build
 # openmpi 5.0.6:
 cd ${CEMAC_SOFTWARE}/build/openmpi/5.0.6/2 && build
 # mvapich 4.0:
-cd ${CEMAC_SOFTWARE}/build/mvapich/4.0/1 && build
+cd ${CEMAC_SOFTWARE}/build/mvapich/4.0/2 && build
 # intelmpi 2025.2.0:
 cd ${CEMAC_SOFTWARE}/build/intelmpi/2025.2.0/1 && build
 # python3 3.12.11:

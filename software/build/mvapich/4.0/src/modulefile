@@ -39,6 +39,9 @@ setenv MPICXX mpic++
 setenv MPIF77 mpif77
 setenv MPIF90 mpif90
 
+setenv SLURM_MPI_TYPE pmi2
+setenv SLURM_CPU_BIND_TYPE cores
+
 if { [module-info mode load] } {
   module save cemac-modules
   module purge

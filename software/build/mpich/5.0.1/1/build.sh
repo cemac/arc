@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#- mvapich 4.0
+#- mpich 5.0.1
 #  updated : 2026-08-12
 
 # directory containing this script:
@@ -10,12 +10,10 @@ SRC_DIR=$(readlink -f ${BASE_DIR}/../src)
 # libraries directory:
 APPS_DIR="${CEMAC_SOFTWARE}/libraries"
 # app information:
-APP_NAME='mvapich'
-APP_VERSION='4.0'
-# slurm version to build against (need to download source):
-SLURM_VERSION='24.05.3'
+APP_NAME='mpich'
+APP_VERSION='5.0.1'
 # build version:
-BUILD_VERSION='2'
+BUILD_VERSION='1'
 # top level build dir:
 TOP_BUILD_DIR=${BASE_DIR}
 # compilers for which we should build:
@@ -41,8 +39,7 @@ mkdir -p ${SRC_DIR}
 
 # get sources:
 get_file 'https://dl.rockylinux.org/vault/rocky/9.7/CRB/x86_64/os/Packages/m/munge-devel-0.5.13-14.el9_7.x86_64.rpm'
-get_file "https://mvapich.cse.ohio-state.edu/download/${APP_NAME}/mv2/${APP_NAME}-${APP_VERSION}.tar.gz"
-get_file "https://download.schedmd.com/slurm/slurm-${SLURM_VERSION}.tar.bz2"
+get_file "https://www.mpich.org/static/downloads/${APP_VERSION}/${APP_NAME}-${APP_VERSION}.tar.gz"
 
 # set up build environment:
 CFLAGS='-O2 -fPIC'
@@ -83,7 +80,13 @@ do
   LD_LIBRARY_PATH="${DEPS_DIR}/lib:${LD_LIBRARY_PATH}"
   PKG_CONFIG_PATH="${DEPS_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PATH CPATH LIBRARY_PATH LD_LIBRARY_PATH PKG_CONFIG_PATH
-  # build mvapich:
+  # set CFLAGS:
+  if [ "${CMP}" = "nvhpc" ] ; then
+    export CFLAGS='-O2 -fPIC'
+  else  
+    export CFLAGS='-O2 -fPIC -Wno-implicit-function-declaration'
+  fi
+  # build mpich:
   if [ ! -e ${INSTALL_DIR}/bin/mpirun ] ; then
     echo "building ${APP_NAME} with ${COMPILER_VER}"
     # libmunge devel files:
@@ -106,15 +109,6 @@ do
     # set up build dir:
     cd ${BUILD_DIR} && \
     rm -fr ./${APP_NAME}-${APP_VERSION}
-    # build slurm for headers ... :
-    rm -fr ./slurm-${SLURM_VERSION} ./slurm
-    tar xjf ${SRC_DIR}/slurm-${SLURM_VERSION}.tar.bz2
-    pushd  ./slurm-${SLURM_VERSION} && \
-    ./configure \
-      --prefix=${BUILD_DIR}/slurm && \
-    make -j16 && \
-    make -j16 install
-    popd
     # libnl links ... :
     mkdir -p ${DEPS_DIR}/lib
     for LIBNL_LIB in $(find /usr/lib64 -type l -name 'libnl*.so.*')
@@ -122,18 +116,21 @@ do
       ln -s ${LIBNL_LIB} \
         ${DEPS_DIR}/lib/$(basename ${LIBNL_LIB} | egrep -o 'libnl.*\.so')
     done
+    # more links
+    ln -s /usr/lib64/libevent_core-2.1.so.7  ${DEPS_DIR}/lib/libevent_core.so
+    ln -s /usr/lib64/libevent_pthreads-2.1.so.7 ${DEPS_DIR}/lib/libevent_pthreads.so
+    ln -s /usr/lib64/libhwloc.so.15 ${DEPS_DIR}/lib/libhwloc.so
     # extract source:
     tar xzf ${SRC_DIR}/${APP_NAME}-${APP_VERSION}.tar.gz
     cd ${APP_NAME}-${APP_VERSION}
     # configure and build:
-    LDFLAGS="-L${DEPS_DIR}/lib" \
+    LDFLAGS="-L${DEPS_DIR}/lib -lpmix" \
     ./configure \
       --enable-shared \
       --enable-static \
       --enable-debuginfo \
       --enable-cxx \
-      --with-slurm-include=${BUILD_DIR}/slurm/include \
-      --with-slurm-lib=/usr/lib64/slurm \
+      --with-slurm \
       --prefix=${INSTALL_DIR} && \
     make -j16 && \
     make -j16 install

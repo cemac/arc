@@ -1,21 +1,21 @@
 #%Module -*- tcl -*-
 
-set module_name mvapich
-set module_version 4.0
-set module_build 2
+set module_name mpich
+set module_version 5.0.1
+set module_build 1
 set module_flavour nvhpc-26.5
 
 set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
 set module_apps $::env(CEMAC_SOFTWARE)/modulefiles/apps/$module_flavour-$module_name-$module_version
 set module_libraries $::env(CEMAC_SOFTWARE)/modulefiles/libraries/$module_flavour-$module_name-$module_version
 
-conflict mvapich
+conflict mpich
 
 proc ModulesHelp { } {
   puts stderr "
-    MVAPICH MPI library
+    MPICH MPI library
 
-    Homepage: https://mvapich.cse.ohio-state.edu/
+    Homepage: https://www.mpich.org/
   "
 }
 

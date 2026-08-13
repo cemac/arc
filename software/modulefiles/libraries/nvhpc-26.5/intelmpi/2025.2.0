@@ -1,0 +1,65 @@
+#%Module -*- tcl -*-
+
+set module_name intelmpi
+set module_version 2025.2.0
+set module_build 2
+set module_flavour nvhpc-26.5
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+set module_apps $::env(CEMAC_SOFTWARE)/modulefiles/apps/$module_flavour-$module_name-$module_version
+set module_libraries $::env(CEMAC_SOFTWARE)/modulefiles/libraries/$module_flavour-$module_name-$module_version
+
+conflict intelmpi
+
+proc ModulesHelp { } {
+  puts stderr "
+    Intel MPI library
+  "
+}
+
+module-whatis "MPI library"
+
+family mpi
+
+setenv I_MPI_ROOT $module_root
+setenv FI_PROVIDER_PATH $module_root/libfabric/lib/prov
+prepend-path PATH $module_root/bin.wrapped
+prepend-path PATH $module_root/bin
+prepend-path PATH $module_root/libfabric/bin
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path LIBRARY_PATH $module_root/libfabric/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib/release
+prepend-path LD_LIBRARY_PATH $module_root/libfabric/lib
+prepend-path PKG_CONFIG_PATH $module_root/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+prepend-path MANPATH $module_root/share/man
+prepend-path MODULEPATH $module_apps
+prepend-path MODULEPATH $module_libraries
+
+setenv MPI_HOME $module_root
+setenv MPICC mpicc
+setenv MPICXX mpic++
+setenv MPIF77 mpif77
+setenv MPIF90 mpif90
+
+setenv I_MPI_CC nvc
+setenv I_MPI_CXX nvc++
+setenv I_MPI_FC nvfortran
+setenv I_MPI_F77 nvfortran
+setenv I_MPI_F90 nvfortran
+
+if { [module-info mode load] } {
+  module save cemac-modules
+  module purge
+  module restore cemac-modules
+}
+
+if { [module-info command] != "purge" } {
+  prereq nvhpc/26.5
+}
+
+if { [module-info mode unload] } {
+  module unuse $module_apps
+  module unuse $module_libraries
+}

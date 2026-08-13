@@ -43,7 +43,7 @@ cd ${CEMAC_SOFTWARE}/build/mpich/5.0.1/1 && build
 # mvapich 4.0:
 cd ${CEMAC_SOFTWARE}/build/mvapich/4.0/2 && build
 # intelmpi 2025.2.0:
-cd ${CEMAC_SOFTWARE}/build/intelmpi/2025.2.0/1 && build
+cd ${CEMAC_SOFTWARE}/build/intelmpi/2025.2.0/2 && build
 # python3 3.12.11:
 cd ${CEMAC_SOFTWARE}/build/python3/3.12.11/1 && build
 # hdf5 1.14.6:

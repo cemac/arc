@@ -47,13 +47,13 @@ cd ${CEMAC_SOFTWARE}/build/intelmpi/2025.2.0/2 && build
 # python3 3.12.11:
 cd ${CEMAC_SOFTWARE}/build/python3/3.12.11/1 && build
 # hdf5 1.14.6:
-cd ${CEMAC_SOFTWARE}/build/hdf5/1.14.6/1 && build
+cd ${CEMAC_SOFTWARE}/build/hdf5/1.14.6/2 && build
 # netcdf 4.9.3:
-cd ${CEMAC_SOFTWARE}/build/netcdf/4.9.3/1 && build
+cd ${CEMAC_SOFTWARE}/build/netcdf/4.9.3/2 && build
 # netcdf 3.6.3:
-cd ${CEMAC_SOFTWARE}/build/netcdf/3.6.3/1 && build
+cd ${CEMAC_SOFTWARE}/build/netcdf/3.6.3/2 && build
 # fftw 3.3.10:
-cd ${CEMAC_SOFTWARE}/build/fftw/3.3.10/1 && build
+cd ${CEMAC_SOFTWARE}/build/fftw/3.3.10/2 && build
 # parallel 20250622:
 cd ${CEMAC_SOFTWARE}/build/parallel/20250622/1 && build
 # svn 1.14.5:

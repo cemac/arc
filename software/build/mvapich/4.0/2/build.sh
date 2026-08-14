@@ -64,8 +64,6 @@ do
   BUILD_DIR="${TOP_BUILD_DIR}/${FLAVOUR}"
   # installation directory:
   INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
-  # dependencies directory:
-  DEPS_DIR="${INSTALL_DIR}/deps"
   # make build and install directories:
   mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
   # set up modules:
@@ -77,17 +75,17 @@ do
   __LIBRARY_PATH=${LIBRARY_PATH}
   __LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
   __PKG_CONFIG_PATH=${PKG_CONFIG_PATH}
-  PATH="${DEPS_DIR}/bin:${PATH}"
-  CPATH="${DEPS_DIR}/include:${CPATH}"
-  LIBRARY_PATH="${DEPS_DIR}/lib:${LIBRARY_PATH}"
-  LD_LIBRARY_PATH="${DEPS_DIR}/lib:${LD_LIBRARY_PATH}"
-  PKG_CONFIG_PATH="${DEPS_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  PATH="${INSTALL_DIR}/bin:${PATH}"
+  CPATH="${INSTALL_DIR}/include:${CPATH}"
+  LIBRARY_PATH="${INSTALL_DIR}/lib:${LIBRARY_PATH}"
+  LD_LIBRARY_PATH="${INSTALL_DIR}/lib:${LD_LIBRARY_PATH}"
+  PKG_CONFIG_PATH="${INSTALL_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PATH CPATH LIBRARY_PATH LD_LIBRARY_PATH PKG_CONFIG_PATH
   # build mvapich:
   if [ ! -e ${INSTALL_DIR}/bin/mpirun ] ; then
     echo "building ${APP_NAME} with ${COMPILER_VER}"
     # libmunge devel files:
-    if [ ! -e ${DEPS_DIR}/lib/libmunge.so ] ; then
+    if [ ! -e ${INSTALL_DIR}/lib/libmunge.so ] ; then
       echo "extracting munge devel files"
       # set up build dir:
       cd ${BUILD_DIR} && \
@@ -96,12 +94,12 @@ do
       mkdir munge && \
       cd munge
       rpm2cpio ${SRC_DIR}/munge-devel-0.5.13-14.el9_7.x86_64.rpm | cpio -id
-      mkdir -p ${DEPS_DIR}/include
+      mkdir -p ${INSTALL_DIR}/include
       rsync -a \
         usr/include/ \
-        ${DEPS_DIR}/include/
-      mkdir -p ${DEPS_DIR}/lib
-      ln -s /usr/lib64/libmunge.so.2.0.0 ${DEPS_DIR}/lib/libmunge.so
+        ${INSTALL_DIR}/include/
+      mkdir -p ${INSTALL_DIR}/lib
+      ln -s /usr/lib64/libmunge.so.2.0.0 ${INSTALL_DIR}/lib/libmunge.so
     fi
     # set up build dir:
     cd ${BUILD_DIR} && \
@@ -116,17 +114,17 @@ do
     make -j16 install
     popd
     # libnl links ... :
-    mkdir -p ${DEPS_DIR}/lib
+    mkdir -p ${INSTALL_DIR}/lib
     for LIBNL_LIB in $(find /usr/lib64 -type l -name 'libnl*.so.*')
     do
       ln -s ${LIBNL_LIB} \
-        ${DEPS_DIR}/lib/$(basename ${LIBNL_LIB} | egrep -o 'libnl.*\.so')
+        ${INSTALL_DIR}/lib/$(basename ${LIBNL_LIB} | egrep -o 'libnl.*\.so')
     done
     # extract source:
     tar xzf ${SRC_DIR}/${APP_NAME}-${APP_VERSION}.tar.gz
     cd ${APP_NAME}-${APP_VERSION}
     # configure and build:
-    LDFLAGS="-L${DEPS_DIR}/lib" \
+    LDFLAGS="-L${INSTALL_DIR}/lib" \
     ./configure \
       --enable-shared \
       --enable-static \

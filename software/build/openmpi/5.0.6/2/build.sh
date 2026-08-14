@@ -61,8 +61,6 @@ do
   BUILD_DIR="${TOP_BUILD_DIR}/${FLAVOUR}"
   # installation directory:
   INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
-  # dependencies directory:
-  DEPS_DIR="${INSTALL_DIR}/deps"
   # make build and install directories:
   mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
   # set up modules:
@@ -74,18 +72,18 @@ do
   __LIBRARY_PATH=${LIBRARY_PATH}
   __LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
   __PKG_CONFIG_PATH=${PKG_CONFIG_PATH}
-  PATH="${DEPS_DIR}/bin:${PATH}"
-  CPATH="${DEPS_DIR}/include:${CPATH}"
-  LIBRARY_PATH="${DEPS_DIR}/lib:${LIBRARY_PATH}"
-  LD_LIBRARY_PATH="${DEPS_DIR}/lib:${LD_LIBRARY_PATH}"
-  PKG_CONFIG_PATH="${DEPS_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  PATH="${INSTALL_DIR}/bin:${PATH}"
+  CPATH="${INSTALL_DIR}/include:${CPATH}"
+  LIBRARY_PATH="${INSTALL_DIR}/lib:${LIBRARY_PATH}"
+  LD_LIBRARY_PATH="${INSTALL_DIR}/lib:${LD_LIBRARY_PATH}"
+  PKG_CONFIG_PATH="${INSTALL_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
   export PATH CPATH LIBRARY_PATH LD_LIBRARY_PATH PKG_CONFIG_PATH
   # build openmpi:
   if [ ! -e ${INSTALL_DIR}/bin/mpirun ] ; then
     echo "building ${APP_NAME} with ${COMPILER_VER}"
     rm -fr ./${APP_NAME}-${APP_VERSION}
     # libmunge devel files:
-    if [ ! -e ${DEPS_DIR}/lib/libmunge.so ] ; then
+    if [ ! -e ${INSTALL_DIR}/lib/libmunge.so ] ; then
       echo "extracting munge devel files"
       # set up build dir:
       cd ${BUILD_DIR} && \
@@ -94,12 +92,12 @@ do
       mkdir munge && \
       cd munge
       rpm2cpio ${SRC_DIR}/munge-devel-0.5.13-14.el9_7.x86_64.rpm | cpio -id
-      mkdir -p ${DEPS_DIR}/include
+      mkdir -p ${INSTALL_DIR}/include
       rsync -a \
         usr/include/ \
-        ${DEPS_DIR}/include/
-      mkdir -p ${DEPS_DIR}/lib
-      ln -s /usr/lib64/libmunge.so.2.0.0 ${DEPS_DIR}/lib/libmunge.so
+        ${INSTALL_DIR}/include/
+      mkdir -p ${INSTALL_DIR}/lib
+      ln -s /usr/lib64/libmunge.so.2.0.0 ${INSTALL_DIR}/lib/libmunge.so
     fi
     # set up build dir:
     cd ${BUILD_DIR} && \
@@ -128,6 +126,12 @@ do
       --prefix=${INSTALL_DIR} && \
     make -j16 && \
     make -j16 install
+    # 'fix' mpif-sizeof.h for nvhpc:
+    if [ "${CMP}" = "nvhpc" ] ; then
+      \cp ${INSTALL_DIR}/include/mpif-sizeof.h \
+        ${INSTALL_DIR}/include/mpif-sizeof.h.original
+      sed -i 's|COMPLEX\*4|COMPLEX\*8|g' ${INSTALL_DIR}/include/mpif-sizeof.h
+    fi
   fi
   # wrap srun ... :
   if [ ! -e ${INSTALL_DIR}/bin/srun ] ; then

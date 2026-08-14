@@ -65,6 +65,20 @@ if [ ! -e ${INSTALL_DIR}/compilers/bin/nvfortran ] ; then
   \mv ${INSTALL_DIR}/INSTALL/Linux_x86_64/${APP_VERSION}/* \
     ${INSTALL_DIR}/
   \rm -fr ${INSTALL_DIR}/INSTALL
+  # add siterc:
+  cat > ${INSTALL_DIR}/compilers/bin/siterc <<EOF
+# Add the contents of CPATH to the include file path.
+
+# get the value of the environment variable CPATH
+variable CPATH is environment(CPATH);
+
+# split this value at colons, each is prefixed with "-idir" later
+variable cpath is
+default(\$if(\$CPATH,\$replace(\$CPATH,":", )));
+
+# add the -idir arguments to the link line
+append SITEINC=\$cpath;
+EOF
 fi
 
 # modulefile:

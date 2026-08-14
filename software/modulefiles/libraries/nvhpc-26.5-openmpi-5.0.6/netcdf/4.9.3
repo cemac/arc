@@ -1,0 +1,43 @@
+#%Module -*- tcl -*-
+
+set module_name netcdf
+set module_version 4.9.3
+set module_build 2
+set module_flavour nvhpc-26.5-openmpi-5.0.6
+
+set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
+
+proc ModulesHelp { } {
+  puts stderr "
+    NetCDF data format library
+
+    Homepage: http://www.unidata.ucar.edu/software/netcdf/
+  "
+}
+
+module-whatis "NetCDF data format library"
+
+prepend-path PATH $module_root/bin
+prepend-path CPATH $module_root/include
+prepend-path LIBRARY_PATH $module_root/lib
+prepend-path LD_LIBRARY_PATH $module_root/lib
+prepend-path MANPATH $module_root/share/man
+prepend-path PKG_CONFIG_PATH $module_root/lib/pkgconfig
+prepend-path CMAKE_PREFIX_PATH $module_root/
+
+setenv NETCDF_HOME $module_root
+setenv NETCDF $module_root
+
+if { [module-info mode load] } {
+  if { [module-info shell bash] } {
+    puts stdout "_MY_LMFILE=\"$ModulesCurrentModulefile\" ; export _MY_LMFILE"
+    puts stdout "_LMFILES_=\"\${_LMFILES_/:\${_MY_LMFILE//\//\\\\/}/}:\${_MY_LMFILE}\" ; export _LMFILES_"
+    puts stdout "_MY_MODULE=\"$module_name\/$module_version\" ; export _MY_MODULE"
+    puts stdout "LOADEDMODULES=\"\${LOADEDMODULES/:\${_MY_MODULE//\//\\\\/}/}:\${_MY_MODULE}\" ; export LOADEDMODULES"
+    puts stdout "unset _MY_LMFILE _MY_MODULE"
+  }
+}
+
+if { [module-info command] != "purge" } {
+  prereq nvhpc/26.5 openmpi/5.0.6
+}

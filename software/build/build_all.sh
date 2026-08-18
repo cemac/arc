@@ -79,7 +79,7 @@ cd ${CEMAC_SOFTWARE}/build/R/4.3.3/1 && build
 # bisicles/gia 20210202:
 cd ${CEMAC_SOFTWARE}/build/bisicles/gia/20210202/1 && build
 # xios 20220707:
-cd ${CEMAC_SOFTWARE}/build/xios/20220707/1 && build
+cd ${CEMAC_SOFTWARE}/build/xios/20220707/2 && build
 # atlas 3.10.3:
 cd ${CEMAC_SOFTWARE}/build/atlas/3.10.3/2 && build
 # fluidity 4.1.20:

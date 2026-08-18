@@ -3,7 +3,7 @@
 set module_name xios
 set module_version 20220707
 set module_build 2
-set module_flavour gnu-14.2.0-mvapich-4.0
+set module_flavour gnu-14.2.0-mpich-5.0.1
 
 set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
 
@@ -29,5 +29,5 @@ prepend-path CMAKE_PREFIX_PATH $module_root/
 setenv XIOS_HOME $module_root
 
 if { [module-info command] != "purge" } {
-  prereq gnu/14.2.0 mvapich/4.0
+  prereq gnu/14.2.0 mpich/5.0.1
 }

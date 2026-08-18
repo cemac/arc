@@ -3,7 +3,7 @@
 set module_name jasper
 set module_version 4.2.8
 set module_build 2
-set module_flavour gnu-native
+set module_flavour nvhpc-23.11
 
 set module_root $::env(CEMAC_SOFTWARE)/libraries/$module_name/$module_version/$module_build/$module_flavour
 
@@ -30,5 +30,5 @@ prepend-path CMAKE_PREFIX_PATH $module_root/
 setenv JASPER_HOME $module_root
 
 if { [module-info command] != "purge" } {
-  prereq gnu/native
+  prereq nvhpc/23.11
 }

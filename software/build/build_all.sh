@@ -85,7 +85,7 @@ cd ${CEMAC_SOFTWARE}/build/atlas/3.10.3/3 && build
 # fluidity 4.1.20:
 cd ${CEMAC_SOFTWARE}/build/fluidity/4.1.20/1 && build
 # jasper 4.2.8:
-cd ${CEMAC_SOFTWARE}/build/jasper/4.2.8/1 && build
+cd ${CEMAC_SOFTWARE}/build/jasper/4.2.8/2 && build
 # apptainer 1.4.3:
 cd ${CEMAC_SOFTWARE}/build/apptainer/1.4.3/1 && build
 # rose 2019.01.8:

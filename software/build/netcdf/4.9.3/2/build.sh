@@ -227,10 +227,6 @@ do
     if [ "$?" != "0" ] ; then
       continue
     fi
-    # skip nvhpc + intelmpi:
-    if [ "${CMP}" = "nvhpc" ] && [ "${MP}" = "intelmpi" ] ; then
-      continue
-    fi
     # make build and install directories:
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
     # build variables:

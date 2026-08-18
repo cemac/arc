@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#- hdf5 1.14.6
-#  updated : 2026-08-13
+#- fftw 3.3.10
+#  updated : 2025-07-16
 
 # directory containing this script:
 BASE_DIR=$(readlink -f $(dirname ${0}))
@@ -10,8 +10,8 @@ SRC_DIR=$(readlink -f ${BASE_DIR}/../src)
 # libraries directory:
 APPS_DIR="${CEMAC_SOFTWARE}/libraries"
 # app information:
-APP_NAME='hdf5'
-APP_VERSION='1.14.6'
+APP_NAME='fftw'
+APP_VERSION='3.3.10'
 # build version:
 BUILD_VERSION='2'
 # top level build dir:
@@ -40,7 +40,7 @@ function get_file() {
 mkdir -p ${SRC_DIR}
 
 # get sources:
-get_file "https://github.com/HDFGroup/${APP_NAME}/releases/download/${APP_NAME}_${APP_VERSION}/${APP_NAME}-${APP_VERSION}.tar.gz"
+get_file "https://fftw.org/${APP_NAME}-${APP_VERSION}.tar.gz"
 
 # set up build environment:
 CFLAGS='-O2 -fPIC'
@@ -66,29 +66,66 @@ do
   INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
   # set up modules:
   module purge
-  module load ${CMP}/${CMP_VER}
+  module load ${CMP}/${CMP_VER} autoconf automake
   if [ "$?" != "0" ] ; then
     continue
   fi
   # make build and install directories:
   mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
-  # build hdf5:
-  if [ ! -e ${INSTALL_DIR}/lib/libhdf5.so ] ; then
-    echo "building ${APP_NAME} with ${COMPILER_VER}"
-    # set up build dir:
-    cd ${BUILD_DIR} && \
-    rm -fr ./${APP_NAME}-${APP_VERSION}
-    # extract source:
+  # extract source:
+  if [ ! -e ${BUILD_DIR}/${APP_NAME}-${APP_VERSION} ] ; then
+    cd ${BUILD_DIR}
     tar xzf ${SRC_DIR}/${APP_NAME}-${APP_VERSION}.tar.gz
-    cd ${APP_NAME}-${APP_VERSION}
-    # build and install:
-    ./configure \
+  fi
+  # build fftw3f:
+  if [ ! -e ${INSTALL_DIR}/lib/libfftw3f.a ] ; then
+    echo "building ${APP_NAME}3f with ${COMPILER_VER}"
+    # build and install with float enabled:
+    cd ${BUILD_DIR} && \
+    rm -fr ./${APP_NAME}-${APP_VERSION}.buildf
+    mkdir ${APP_NAME}-${APP_VERSION}.buildf
+    cd ${APP_NAME}-${APP_VERSION}.buildf
+    ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
       --enable-shared=yes \
       --enable-static=yes \
-      --enable-fortran \
-      --enable-cxx \
-      --enable-build-mode=production \
-      --enable-tests=no \
+      --enable-openmp \
+      --enable-float \
+      --enable-threads \
+      --prefix=${INSTALL_DIR} && \
+    make -j16 && \
+    make -j16 install
+  fi
+  # fftw3l:
+  if [ ! -e ${INSTALL_DIR}/lib/libfftw3l.a ] ; then
+    echo "building ${APP_NAME}3l with ${COMPILER_VER}"
+    # build and install with long double enabled:
+    cd ${BUILD_DIR} && \
+    rm -fr ./${APP_NAME}-${APP_VERSION}.buildl
+    mkdir ${APP_NAME}-${APP_VERSION}.buildl
+    cd ${APP_NAME}-${APP_VERSION}.buildl
+    ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
+      --enable-shared=yes \
+      --enable-static=yes \
+      --enable-openmp \
+      --enable-long-double \
+      --enable-threads \
+      --prefix=${INSTALL_DIR} && \
+    make -j16 && \
+    make -j16 install
+  fi
+  # fftw3:
+  if [ ! -e ${INSTALL_DIR}/lib/libfftw3.a ] ; then
+    echo "building ${APP_NAME}3 with ${COMPILER_VER}"
+    # build and install without float or long enabled:
+    cd ${BUILD_DIR} && \
+    rm -fr ./${APP_NAME}-${APP_VERSION}.build
+    mkdir ${APP_NAME}-${APP_VERSION}.build
+    cd ${APP_NAME}-${APP_VERSION}.build
+    ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
+      --enable-shared=yes \
+      --enable-static=yes \
+      --enable-openmp \
+      --enable-threads \
       --prefix=${INSTALL_DIR} && \
     make -j16 && \
     make -j16 install
@@ -133,40 +170,66 @@ do
     if [ "$?" != "0" ] ; then
       continue
     fi
-    # nvhpc + intelmpi, use mpich mpi.mod ... :
-    if [ "${CMP}" = "nvhpc" ] && [ "${MP}" = "intelmpi" ] ; then
-      MY_CPATH="${CEMAC_SOFTWARE}/libraries/mpich/5.0.1/1/nvhpc-26.5/include:${CPATH}"
-    else
-      MY_CPATH="${CPATH}"
-    fi
     # make build and install directories:
     mkdir -p ${BUILD_DIR} ${INSTALL_DIR}
-    # build hdf5:
-    if [ ! -e ${INSTALL_DIR}/lib/libhdf5.so ] ; then
-      echo "building ${APP_NAME} with ${COMPILER_VER} and ${MPI_VER}"
-      # set up build dir:
-      cd ${BUILD_DIR} && \
-      rm -fr ./${APP_NAME}-${APP_VERSION}
-      # extract source:
+    # extract source:
+    if [ ! -e ${BUILD_DIR}/${APP_NAME}-${APP_VERSION} ] ; then
+      cd ${BUILD_DIR}
       tar xzf ${SRC_DIR}/${APP_NAME}-${APP_VERSION}.tar.gz
-      cd ${APP_NAME}-${APP_VERSION}
-      # build and install:
-      CC="mpicc" \
-      CXX="mpic++" \
-      F77="mpif77" \
-      FC="mpif90" \
-      CPATH="${MY_CPATH}" \
-      ./configure \
+    fi
+    # build fftw3f:
+    if [ ! -e ${INSTALL_DIR}/lib/libfftw3f.a ] ; then
+      echo "building ${APP_NAME}3f with ${COMPILER_VER} and ${MPI_VER}"
+      # build and install with float enabled:
+      cd ${BUILD_DIR} && \
+      rm -fr ./${APP_NAME}-${APP_VERSION}.buildf
+      mkdir ${APP_NAME}-${APP_VERSION}.buildf
+      cd ${APP_NAME}-${APP_VERSION}.buildf
+      ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
         --enable-shared=yes \
         --enable-static=yes \
-        --enable-fortran \
-        --enable-cxx \
-        --enable-build-mode=production \
-        --enable-tests=no \
-        --enable-parallel \
-        --enable-unsupported \
+        --enable-mpi \
+        --enable-openmp \
+        --enable-float \
+        --enable-threads \
         --prefix=${INSTALL_DIR} && \
-      CPATH="${MY_CPATH}" \
+      make -j16 && \
+      make -j16 install
+    fi
+    # fftw3l:
+    if [ ! -e ${INSTALL_DIR}/lib/libfftw3l.a ] ; then
+      echo "building ${APP_NAME}3l with ${COMPILER_VER} and ${MPI_VER}"
+      # build and install with long double enabled:
+      cd ${BUILD_DIR} && \
+      rm -fr ./${APP_NAME}-${APP_VERSION}.buildl
+      mkdir ${APP_NAME}-${APP_VERSION}.buildl
+      cd ${APP_NAME}-${APP_VERSION}.buildl
+      ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
+        --enable-shared=yes \
+        --enable-static=yes \
+        --enable-mpi \
+        --enable-openmp \
+        --enable-long-double \
+        --enable-threads \
+        --prefix=${INSTALL_DIR} && \
+      make -j16 && \
+      make -j16 install
+    fi
+    # fftw3:
+    if [ ! -e ${INSTALL_DIR}/lib/libfftw3.a ] ; then
+      echo "building ${APP_NAME}3 with ${COMPILER_VER} and ${MPI_VER}"
+      # build and install without float or long enabled:
+      cd ${BUILD_DIR} && \
+      rm -fr ./${APP_NAME}-${APP_VERSION}.build
+      mkdir ${APP_NAME}-${APP_VERSION}.build
+      cd ${APP_NAME}-${APP_VERSION}.build
+      ${BUILD_DIR}/${APP_NAME}-${APP_VERSION}/configure \
+        --enable-shared=yes \
+        --enable-static=yes \
+        --enable-mpi \
+        --enable-openmp \
+        --enable-threads \
+        --prefix=${INSTALL_DIR} && \
       make -j16 && \
       make -j16 install
     fi

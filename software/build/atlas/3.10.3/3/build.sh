@@ -106,6 +106,9 @@ do
     sed -i "s|^FC = .*$|FC = ${FC}|g" src/lapack/reference/make.inc.example
     sed -i 's|-O2 |-O2 -fPIC |g' src/lapack/reference/make.inc.example
     sed -i 's|-O2 |-O2 -fPIC |g' src/lapack/reference/INSTALL/*
+    if [ "${CMP}" = "nvhpc" ] ; then
+      sed -i 's|-frecursive||g' src/lapack/reference/make.inc.example
+    fi
     make && \
     make install
   fi 

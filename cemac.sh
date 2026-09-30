@@ -3,11 +3,7 @@ CEMAC_DIR='/users/cemac'
 export CEMAC_DIR
 
 # Set CEMAC_SOFTWARE:
-if [[ "${HOSTNAME}" =~ ^calder ]] ; then
-  CEMAC_SOFTWARE="${CEMAC_DIR}/calder/software"
-else
-  CEMAC_SOFTWARE="${CEMAC_DIR}/software"
-fi
+CEMAC_SOFTWARE="${CEMAC_DIR}/software/calder"
 export CEMAC_SOFTWARE
 
 # Set MODULEPATH:

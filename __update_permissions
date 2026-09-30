@@ -7,7 +7,7 @@
 # set CEMAC_DIR:
 CEMAC_DIR='/users/cemac'
 # set CEMAC_SOFTWARE:
-CEMAC_SOFTWARE="${CEMAC_DIR}/software"
+CEMAC_SOFTWARE="${CEMAC_DIR}/software/calder"
 # set group for group ownerships:
 CEMAC_GROUP='cemac'
 
@@ -22,18 +22,20 @@ PATH='/usr/bin'
 LD_LIBRARY_PATH=''
 export PATH LD_LIBRARY_PATH
 
-# CEMAC_DIR should be owned by group, and group writeable:
+# CEMAC_DIR and CEMAC_SOFTWARE should be owned by group, and group writeable:
 chgrp ${CEMAC_GROUP} ${CEMAC_DIR}
 chmod 2775 ${CEMAC_DIR}
+chgrp ${CEMAC_GROUP} ${CEMAC_SOFTWARE}
+chmod 2775 ${CEMAC_SOFTWARE}
 
 # top level files which should be group writeable:
 chgrp ${CEMAC_GROUP} \
-  ${CEMAC_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_SOFTWARE}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
 chmod g+rwX \
-  ${CEMAC_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
+  ${CEMAC_SOFTWARE}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
 
 # git directory:
-GIT_DIR="${CEMAC_DIR}/.git"
+GIT_DIR="${CEMAC_SOFTWARE}/.git"
 
 # make git directory group writeable:
 chgrp -R ${CEMAC_GROUP} ${GIT_DIR}

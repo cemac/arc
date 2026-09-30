@@ -4,15 +4,15 @@
   <br>
 </div>
 
-## CEMAC AIRE Directory
+## CEMAC CALDER Directory
 
 [![GitHub top language](https://img.shields.io/github/languages/top/cemac/arc.svg)](https://github.com/cemac/arc) [![GitHub issues](https://img.shields.io/github/issues/cemac/arc.svg)](https://github.com/cemac/arc/issues) [![GitHub last commit](https://img.shields.io/github/last-commit/cemac/arc.svg)](https://github.com/cemac/arc/commits/master)  ![GitHub](https://img.shields.io/github/license/cemac/arc.svg)
 [![HitCount](http://hits.dwyl.com/{cemac}/{arc}.svg)](http://hits.dwyl.com/{cemac}/{arc})
 
 
-This directory contains CEMAC content for the AIRE system.
+This directory contains CEMAC content for the CALDER system.
 
-The content is located on AIRE within the directory `/users/cemac`.
+The content is located on CALDER within the directory `/users/cemac`.
 
 The Git repository contains software build scripts, environment module files,
 files for setting required shell variables, crontabs and related scripts, and a
@@ -23,7 +23,7 @@ script for setting the required permissions on the various directories.
 The `cemac.sh` and `cemac.csh` files can be used to set up the environment for
 a `bash` or `csh` shell.
 
-AIRE defaults to `bash` shell, and the following could be added to your
+CALDER defaults to `bash` shell, and the following could be added to your
 `${HOME}/.bashrc` file:
 
 ```
@@ -41,7 +41,7 @@ The following variables will be set:
   * `CEMAC_DIR` : will be set to the location of the CEMAC directory,
     `/users/cemac`
   * `CEMAC_SOFTWARE` : will be set to the location of the CEMAC software directory,
-    `/users/cemac/software`
+    `/users/cemac/software/calder`
 
 #### Environment Modules
 

@@ -2,11 +2,7 @@
 setenv CEMAC_DIR '/users/cemac'
 
 # Set CEMAC_SOFTWARE:
-if ( "${HOSTNAME}" =~ "calder*" ) then
-  setenv CEMAC_SOFTWARE "${CEMAC_DIR}/calder/software"
-else
-  setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software"
-endif
+setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software/calder"
 
 # Set MODULEPATH:
 module purge

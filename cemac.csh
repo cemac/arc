@@ -3,7 +3,7 @@ setenv CEMAC_DIR '/users/cemac'
 
 # Set CEMAC_SOFTWARE:
 if ( "${HOSTNAME}" =~ "calder*" ) then
-  setenv CEMAC_SOFTWARE "${CEMAC_DIR}/calder/software"
+  setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software/calder"
 else
   setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software"
 endif

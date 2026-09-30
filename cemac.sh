@@ -4,7 +4,7 @@ export CEMAC_DIR
 
 # Set CEMAC_SOFTWARE:
 if [[ "${HOSTNAME}" =~ ^calder ]] ; then
-  CEMAC_SOFTWARE="${CEMAC_DIR}/calder/software"
+  CEMAC_SOFTWARE="${CEMAC_DIR}/software/calder"
 else
   CEMAC_SOFTWARE="${CEMAC_DIR}/software"
 fi

@@ -2,7 +2,7 @@
 setenv CEMAC_DIR '/users/cemac'
 
 # Set CEMAC_SOFTWARE:
-setenv CEMAC_SOFTWARE "${CEMAC_DIR}/software/calder"
+setenv CEMAC_SOFTWARE "${CEMAC_DIR}/calder/software"
 
 # Set MODULEPATH:
 module purge

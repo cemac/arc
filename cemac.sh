@@ -3,7 +3,7 @@ CEMAC_DIR='/users/cemac'
 export CEMAC_DIR
 
 # Set CEMAC_SOFTWARE:
-CEMAC_SOFTWARE="${CEMAC_DIR}/software/calder"
+CEMAC_SOFTWARE="${CEMAC_DIR}/calder/software"
 export CEMAC_SOFTWARE
 
 # Set MODULEPATH:

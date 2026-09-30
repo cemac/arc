@@ -41,7 +41,7 @@ The following variables will be set:
   * `CEMAC_DIR` : will be set to the location of the CEMAC directory,
     `/users/cemac`
   * `CEMAC_SOFTWARE` : will be set to the location of the CEMAC software directory,
-    `/users/cemac/software/calder`
+    `/users/cemac/calder/software`
 
 #### Environment Modules
 

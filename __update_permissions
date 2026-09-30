@@ -7,7 +7,7 @@
 # set CEMAC_DIR:
 CEMAC_DIR='/users/cemac'
 # set CEMAC_SOFTWARE:
-CEMAC_SOFTWARE="${CEMAC_DIR}/software/calder"
+CEMAC_SOFTWARE="${CEMAC_DIR}/calder/software"
 # set group for group ownerships:
 CEMAC_GROUP='hpc-cemac'
 

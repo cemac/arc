@@ -1,5 +1,5 @@
 module_name = "python3"
-module_version = "3.14.7"
+module_version = "3.13.15"
 module_build = "1"
 module_flavour = "default"
 

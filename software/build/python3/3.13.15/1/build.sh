@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#- python3 3.14.7
+#- python3 3.13.15
 #  updated : 2025-07-15
 
 # directory containing this script:
@@ -11,7 +11,7 @@ SRC_DIR=$(readlink -f ${BASE_DIR}/../src)
 APPS_DIR="${CEMAC_SOFTWARE}/compilers"
 # app information:
 APP_NAME='python3'
-APP_VERSION='3.14.7'
+APP_VERSION='3.13.15'
 # build version:
 BUILD_VERSION='1'
 # build dir:

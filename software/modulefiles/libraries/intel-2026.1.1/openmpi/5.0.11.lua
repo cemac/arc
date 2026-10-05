@@ -58,3 +58,6 @@ setenv("MPICC", "mpicc")
 setenv("MPICXX", "mpic++")
 setenv("MPIF77", "mpif77")
 setenv("MPIF90", "mpif90")
+
+setenv("SLURM_MPI_TYPE", "pmix")
+setenv("SLURM_CPU_BIND_TYPE", "cores")

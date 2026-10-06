@@ -51,7 +51,6 @@ prepend_path("MANPATH", module_root .. "/share/man", ":")
 prepend_path("MODULEPATH", module_apps, ":")
 prepend_path("MODULEPATH", module_libraries, ":")
 
-
 setenv("MPI_HOME", module_root)
 setenv("MPICH_HOME", module_root)
 setenv("MPICH_MODULE_HOME", module_root)

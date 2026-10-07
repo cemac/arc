@@ -20,6 +20,8 @@ BUILD_DIR=${BASE_DIR}
 FLAVOUR='default'
 # installation directory:
 INSTALL_DIR="${APPS_DIR}/${APP_NAME}/${APP_VERSION}/${BUILD_VERSION}/${FLAVOUR}"
+# dependencies:
+DEPS_DIR="${INSTALL_DIR}/deps"
 # module files directory:
 MODULEFILES_DIR="${CEMAC_SOFTWARE}/modulefiles/apps/${FLAVOUR}"
 # module file for this application:
@@ -38,24 +40,57 @@ function get_file() {
   fi
 }
 
-# make build, src and install directories:
-mkdir -p ${BUILD_DIR} ${SRC_DIR} ${INSTALL_DIR}
+# make build, src, install and dependencies directories:
+mkdir -p ${BUILD_DIR} ${SRC_DIR} ${INSTALL_DIR} ${DEPS_DIR}
 
 # get sources:
+get_file 'https://dl.rockylinux.org/vault/rocky/9.7/AppStream/x86_64/os/Packages/n/ncurses-devel-6.2-12.20210508.el9.x86_64.rpm'
 get_file "https://github.com/Kitware/CMake/releases/download/v${APP_VERSION}/${APP_NAME}-${APP_VERSION}.tar.gz"
 
 
 # set up build environment:
 module purge
 module load gnu/native autoconf automake
+PATH="${DEPS_DIR}/bin:${PATH}"
+LIBRARY_PATH="${DEPS_DIR}/lib:${LIBRARY_PATH}"
+CPATH="${DEPS_DIR}/include:${CPATH}"
+PKG_CONFIG_PATH="${DEPS_DIR}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 CFLAGS='-O2 -fPIC'
 CXXFLAGS='-O2 -fPIC'
 CPPFLAGS='-O2 -fPIC'
 FFLAGS='-O2 -fPIC'
 FCFLAGS='-O2 -fPIC'
-export CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
+export PATH LIBRARY_PATH CPATH PKG_CONFIG_PATH \
+       CFLAGS CXXFLAGS CPPFLAGS FFLAGS FCFLAGS
 
 # build!:
+
+# curses devel files:
+if [ ! -e ${DEPS_DIR}/lib/libcurses.so ] ; then
+  echo "extracting curses devel files"
+  # set up build dir:
+  cd ${BUILD_DIR} && \
+  rm -fr ./curses
+  # extract files:
+  mkdir curses && \
+  cd curses
+  rpm2cpio ${SRC_DIR}/ncurses-devel-6.2-12.20210508.el9.x86_64.rpm | cpio -id
+  mkdir -p ${DEPS_DIR}/{bin,include,lib}
+  rsync -a \
+    usr/bin/ \
+    ${DEPS_DIR}/bin/
+  rsync -a \
+    usr/include/ \
+    ${DEPS_DIR}/include/
+  rsync -a \
+    usr/lib64/pkgconfig \
+    ${DEPS_DIR}/lib/
+  for CURSES_LIB in libform libformw libmenu libmenuw libncurses libncursesw libpanel \
+                    libpanelw libtic libtinfo
+  do
+    ln -s /usr/lib64/${CURSES_LIB}.so.6.2 ${DEPS_DIR}/lib/${CURSES_LIB}.so
+  done
+fi
 
 # cmake:
 
@@ -69,7 +104,11 @@ if [ ! -e ${INSTALL_DIR}/bin/cmake ] ; then
   # build and install:
   cd ${APP_NAME}-${APP_VERSION} && \
     ./configure \
-    --prefix=${INSTALL_DIR} && \
+    --parallel=16 \
+    --prefix=${INSTALL_DIR} \
+    -- \
+    -DCURSES_INCLUDE_PATH=${DEPS_DIR}/include \
+    -DCURSES_CURSES_LIBRARY='-lncurses -ltinfo' && \
     make -j16 && \
     make -j16 install
 fi

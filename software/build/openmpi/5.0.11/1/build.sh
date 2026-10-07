@@ -122,12 +122,6 @@ do
     # extract source:
     tar xzf ${SRC_DIR}/${APP_NAME}-${APP_VERSION}.tar.gz
     cd ${APP_NAME}-${APP_VERSION}
-    # compiler specific config options:
-    if [ "${CMP}" = "nvhpc" ] ; then
-      MY_CONFIG_FLAGS="--with-cuda=${NVHPC_HOME}/cuda"
-    else
-      MY_CONFIG_FLAGS=''
-    fi
     # configure and build:
     ./configure \
       --enable-shared \
@@ -139,8 +133,8 @@ do
       --with-cma \
       --with-libevent=internal \
       --with-pmix=internal \
+      --with-cuda=no \
       --disable-show-load-errors-by-default \
-      ${MY_CONFIG_FLAGS} \
       --prefix=${INSTALL_DIR} && \
     make -j16 && \
     make -j16 install

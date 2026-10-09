@@ -12,6 +12,8 @@ APPS_DIR="${CEMAC_SOFTWARE}/libraries"
 # app information:
 APP_NAME='mpich'
 APP_VERSION='5.0.2'
+# libfabric directory ... :
+LIBFABRIC_DIR='/opt/ohpc/pub/mpi/libfabric/1.18.0'
 # build version:
 BUILD_VERSION='1'
 # top level build dir:
@@ -40,7 +42,6 @@ mkdir -p ${SRC_DIR}
 # get sources:
 get_file 'https://dl.rockylinux.org/vault/rocky/9.7/CRB/x86_64/os/Packages/m/munge-devel-0.5.13-14.el9_7.x86_64.rpm'
 get_file 'https://dl.rockylinux.org/vault/rocky/9.7/CRB/x86_64/os/Packages/l/libpsm2-devel-12.0.1-1.el9.x86_64.rpm'
-get_file 'https://repos.openhpc.community/OpenHPC/3/update.3.4/EL_9/x86_64/slurm-devel-ohpc-24.11.5-331.ohpc.1.1.x86_64.rpm'
 get_file "https://www.mpich.org/static/downloads/${APP_VERSION}/${APP_NAME}-${APP_VERSION}.tar.gz"
 
 # set up build environment:
@@ -123,26 +124,6 @@ do
       mkdir -p ${INSTALL_DIR}/lib
       ln -s /usr/lib64/libpsm2.so.2.2 ${INSTALL_DIR}/lib/libpsm2.so
     fi
-    # libpmi2 devel files:
-    if [ ! -e ${INSTALL_DIR}/lib/libpmi2.so ] ; then
-      echo "extracting pmi2 devel files"
-      # set up build dir:
-      cd ${BUILD_DIR} && \
-      rm -fr ./pmi2
-      # extract files:
-      mkdir pmi2 && \
-      cd pmi2
-      rpm2cpio ${SRC_DIR}/slurm-devel-ohpc-24.11.5-331.ohpc.1.1.x86_64.rpm | cpio -id
-      mkdir -p ${INSTALL_DIR}/include
-      rsync -a \
-        usr/include/ \
-        ${INSTALL_DIR}/include/
-      rsync -a \
-        usr/include/slurm/pmi2.h \
-        ${INSTALL_DIR}/include/
-      mkdir -p ${INSTALL_DIR}/lib
-      ln -s /usr/lib64/libpmi2.so.0.0.0 ${INSTALL_DIR}/lib/libpmi2.so
-    fi
     # set up build dir:
     cd ${BUILD_DIR} && \
     rm -fr ./${APP_NAME}-${APP_VERSION}
@@ -167,7 +148,8 @@ do
       --enable-debuginfo \
       --enable-cxx \
       --with-slurm \
-      --with-pmi2=${INSTALL_DIR} \
+      --with-device=ch4:ofi \
+      --with-libfabric=${LIBFABRIC_DIR} \
       --prefix=${INSTALL_DIR} && \
     make -j16 && \
     make -j16 install

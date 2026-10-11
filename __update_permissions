@@ -24,20 +24,21 @@ PATH='/usr/bin'
 LD_LIBRARY_PATH=''
 export PATH LD_LIBRARY_PATH
 
-# set group id to CEMAC_GROUP:
-newgrp ${CEMAC_GROUP}
-
 # CEMAC_DIR, CEMAC_HOST_DIR and CEMAC_SOFTWARE should be owned by group, and group writeable:
+sg ${CEMAC_GROUP} <<EOF
 chgrp ${CEMAC_GROUP} ${CEMAC_DIR}
 chmod 2775 ${CEMAC_DIR}
 chgrp ${CEMAC_GROUP} ${CEMAC_HOST_DIR}
 chmod 2775 ${CEMAC_HOST_DIR}
 chgrp ${CEMAC_GROUP} ${CEMAC_SOFTWARE}
 chmod 2775 ${CEMAC_SOFTWARE}
+EOF
 
 # top level files which should be group writeable:
+sg ${CEMAC_GROUP} <<EOF
 chgrp ${CEMAC_GROUP} \
   ${CEMAC_HOST_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
+EOF
 chmod g+rwX \
   ${CEMAC_HOST_DIR}/{cemac.csh,cemac.sh,LICENSE,README.md,__update_permissions}
 
@@ -45,12 +46,16 @@ chmod g+rwX \
 GIT_DIR="${CEMAC_HOST_DIR}/.git"
 
 # make git directory group writeable:
+sg ${CEMAC_GROUP} <<EOF
 chgrp -R ${CEMAC_GROUP} ${GIT_DIR}
+EOF
 find ${GIT_DIR} -type d -exec chmod g+s '{}' +
 chmod -R g+rwX ${GIT_DIR}
 
 # set group ownership of top level directories:
+sg ${CEMAC_GROUP} <<EOF
 find ${CEMAC_SOFTWARE} -maxdepth 2 -type d -exec chgrp ${CEMAC_GROUP} '{}' +
+EOF
 find ${CEMAC_SOFTWARE} -maxdepth 2 -type d -exec chmod g+s '{}' +
 
 # try to make build directories group writeable:
@@ -89,12 +94,16 @@ chmod -R g+rwX ${CEMAC_SOFTWARE}/modulefiles
 
 # make data directory group writeable:
 DATA_DIR="${CEMAC_DIR}/data"
+sg ${CEMAC_GROUP} <<EOF
 chgrp -R ${CEMAC_GROUP} ${DATA_DIR}
+EOF
 find ${DATA_DIR} -type d -exec chmod g+s '{}' +
 chmod -R g+rwX ${DATA_DIR}
 
 # make cron directory group writeable:
 CRON_DIR="${CEMAC_DIR}/cron"
+sg ${CEMAC_GROUP} <<EOF
 chgrp -R ${CEMAC_GROUP} ${CRON_DIR}
+EOF
 find ${CRON_DIR} -type d -exec chmod g+s '{}' +
 chmod -R g+rwX ${CRON_DIR}

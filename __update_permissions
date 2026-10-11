@@ -24,6 +24,9 @@ PATH='/usr/bin'
 LD_LIBRARY_PATH=''
 export PATH LD_LIBRARY_PATH
 
+# set group id to CEMAC_GROUP:
+newgrp ${CEMAC_GROUP}
+
 # CEMAC_DIR, CEMAC_HOST_DIR and CEMAC_SOFTWARE should be owned by group, and group writeable:
 chgrp ${CEMAC_GROUP} ${CEMAC_DIR}
 chmod 2775 ${CEMAC_DIR}

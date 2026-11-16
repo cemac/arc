@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #- cdo 2.6.6
-#  updated : 2025-07-18
+#  updated : 2026-11-16
 
 # directory containing this script:
 BASE_DIR=$(readlink -f $(dirname ${0}))

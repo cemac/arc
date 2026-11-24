@@ -216,7 +216,7 @@ EOF
   if [ "${CMP}" = "intel" ] ; then
     \cp ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H \
       ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H.original
-    sed -i 's|inline bool less|inline constexpr bool less|g' \
+    sed -i 's|inline  bool less|inline constexpr bool less|g' \
       ${BISICLES_HOME}/Chombo/lib/src/BoxTools/IntVect.H
   fi
   \cp ${BISICLES_HOME}/Chombo/lib/src/BoxTools/CH_HDF5.H \

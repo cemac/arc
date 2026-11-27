@@ -29,6 +29,8 @@ MODULEFILE=${MODULEFILES_DIR}/${APP_NAME}/${APP_VERSION}.lua
 CONDA_INSTALLER='Miniforge3-Linux-x86_64.sh'
 # conda install directory:
 CONDA_DIR="${INSTALL_DIR}/conda"
+# conda environment name:
+CONDA_ENV='R'
 # conda packages to add:
 CONDA_PACKAGES="
   r-base==${APP_VERSION} rstudio-desktop r-tidyverse r-rgdal r-rgeos r-raster
@@ -79,10 +81,13 @@ default_threads: 16
 EOF
   # set up conda:
   . ${CONDA_DIR}/etc/profile.d/conda.sh
-  # add packages:
-  if [ ! -z "${CONDA_PACKAGES}" ] ; then
-    mamba install -y ${CONDA_PACKAGES}
-  fi
+  # update first:
+  mamba update -n base -y python
+  mamba update -n base -y --all
+  # create environment:
+  mamba create -n ${CONDA_ENV} -y ${CONDA_PACKAGES}
+  # add pip packages:
+  conda activate ${CONDA_ENV}
   if [ ! -z "${PIP_PACKAGES}" ] ; then
     pip install ${PIP_PACKAGES}
   fi
@@ -97,6 +102,7 @@ for FILE in \${CONDA_PREFIX}/etc/conda/activate.d/*.sh
 do
   . \${FILE}
 done
+conda activate ${CONDA_ENV}
 exec \$(basename \${0}) "\${@}"
 EOF
   chmod 755 ${INSTALL_DIR}/bin/__wrapper

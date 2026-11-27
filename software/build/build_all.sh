@@ -40,6 +40,8 @@ cd ${CEMAC_SOFTWARE}/build/nvhpc/26.9/1 && build
 cd ${CEMAC_SOFTWARE}/build/python3/3.13.15/1 && build
 # python2 2.7.15:
 cd ${CEMAC_SOFTWARE}/build/python2/2.7.15/1 && build
+# R 4.3.3:
+cd ${CEMAC_SOFTWARE}/build/R/4.3.3/1 && build
 
 # openmpi 4.1.8:
 cd ${CEMAC_SOFTWARE}/build/openmpi/4.1.8/1 && build
